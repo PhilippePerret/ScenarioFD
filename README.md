@@ -1,64 +1,55 @@
-# Scenario
+# 🎥 ScenarioFFD
 
-L'idée est de faire un programme, dans un browser, pour écrire un scénario.
+*-- experimental --*
 
-L'écran serait composé de deux partie : 
+Final Draft sucks (\*)… *ScenarioFFD* comes to import from and export to FinalDraft Format without using Final-Draft.
 
-* au-dessus, la visualisation du script formaté
-* en dessous, une "console" dans laquelle on tape le texte du scénario, de façon la plus simple possible.
+"FFD" stands for "Fuck Final Draft" 🤣 (\*).
 
-## Lancement d'un fichier SRPS
-
-Pour le moment, tant que l'application Scenario.app ne fonctionne pas, il faut Ouvrir un Terminal au dossier du fichier .srps (c'est un bundle, pas un fichier) et lancer la commande 'scenario' (note : ce n'est plus le .zshrc qui définit l'alias, il est enregistré dans `/usr/local/bin` ).
+(\*) a lot of bugs, a lot of limitations, poor tools, no configuration, hegemony.
 
 
-## Fonctionnalités
+## Technology
 
-* snippets pour ré-écrire facilement un nom, un décor, etc. Par exemple, si on a utilisé "JOHN" comme nom de personnage, lorsque l'on tape "J[TAB]", le programme remplace le texte par "JOHN"
+**ScenarioFFD** uses **WAA technology** (Without Ajax Application) who let you make a server-less but server-client application using Webdriver using only `WAA.send` (server side) and `WAA.send` (client side) to communicate as with Ajax.
 
-## Principes
+**ScenarioFFD** uses **InsideTests** to test in real-time and make sure the app is up-and-running.
 
-* Pour ne pas surcharger l'éditeur (la console), on édite toujours une seule scène (dès qu'on clique dessus, ça l'édite — sauver toujours la scène courante).
 
-## Code pour le script
+## Getting started
 
-* les actions sont de simples lignes :
+1. Ruby should be installed on your machine,
+2. clone repository in a `Programms` folder (for instance only),
+3. make command alias: 
+  ~~~bash
+  ln -s ~/Programs/ScenarioFD/scenario.rb /usr/local/bin/scenario
+  ~~~
+4. make the program executable:
+  ~~~bash
+  cd ~/Programs/ScenarioFD
+  sudo chmod +x scenario.rb
+  ~~~
+5. create a folder for your first script:
+  ~~~bash
+  mkdir -p ~/Documents/Scripts/ScenarioFD
+  cd ~/Documents/Scripts/ScenarioFD
+  mkdir firstScenario
+  ~~~
+6. open a Terminal at script folder: in Finder right-click on folder and choose "New Terminal at Folder" or:
+  ~~~bash
+  cd firstScenario
+  ~~~
+7. run command line:
+  ~~~bash
+  scenario
+  ~~~
 
-  ```
-  > Ceci est une action
-  ```
+Next times you just have to:
 
-* les noms de personnages qui parlent sont des lignes terminant par ":" :
-  
-  ```
-  > NOM DU PERSONNAGE:
-  ```
+1. open a Terminal at script folder (right-click on folder > "New Terminal at Folder"),
+2. run `scenario`.
 
-* les dialogues se trouvent à une tabulation du bord :
 
-  ```
-  > NOM DU PERSONNAGE:
-  > \t Ce qu'il dit est comme ça
-  ```
+## Where can I find help?
 
-* les dialogues alternatifs sont amorcés par '^' :
-
-  ```
-  > NOM DU PERSONNAGE:
-  >   Ce qu'il dit
-  >   ^Ce qu'il pourrait dire aussi
-  >   ^Ou dire ça aussi
-  ```
-* les intitulés commencent par ":" :
-
-  ```
-  > :INT. MAISON - JOUR
-  ```
-
-* les notes commencent par "$N" (note : peut-être que toutes les balises qui ne sont pas à écrire sont précédées du signe '$')
-
-  ```
-  > Une belle action ou une description.
-  > $N Une note sur cette action ou cette description.
-  > $N Une autre note sur cette action description.
-  ```
+In manuals (only french right now).

@@ -1,6 +1,5 @@
 ## EN COURS
 
-* Voir gitub
 * Implémenter Log pour les messages (système)
 * CORRIGER LES BUGS
 * Faire des tests
