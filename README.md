@@ -52,4 +52,4 @@ Next times you just have to:
 
 ## Where can I find help?
 
-In manuals (only french right now).
+In manuals (only in french right now).

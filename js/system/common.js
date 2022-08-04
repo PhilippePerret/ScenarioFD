@@ -7,7 +7,6 @@
  * version 2.1
  * 
  */
-
 function not(v){ return ! v }
 
 /**
