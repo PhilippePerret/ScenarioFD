@@ -7,6 +7,18 @@ class InCadre {
     return this._log || (this._log = new LogClass('InCadre'))
   }
 
+  /**
+   * Méthode appelée au chargement d'un nouveau scénario, avant 
+   * que ses données ne soient dispatchées
+   * 
+   */
+  static resetAll(){
+    delete this._allbytype
+    delete this._panneau_infos
+    delete this._panneau_prefs
+    delete this._panneau_todo
+  }
+
   static get(key, cadre) {
     let panneau ;
     switch(key){
@@ -17,7 +29,7 @@ class InCadre {
     case 'navigator':
       return new Navigator(cadre)
     case 'todo':
-      return new Panneau('todo', cadre)
+      return this.getPanneau('todo', TodoScenario, cadre)
     case 'filter':
       return new ScenarioFilter(cadre)
     case 'infos':

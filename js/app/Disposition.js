@@ -11,6 +11,18 @@
 
 class Disposition {
 
+  static get log(){
+    return this._log || (this._log = new LogClass('InsideTest'))
+  }
+
+  /**
+   * Au chargement d'un nouveau scénario, on initialise tout
+   * 
+   */
+  static resetAll(){
+    Cadre.Dispo.forEachContent('destroy')
+  }
+
   constructor(params){
     this.index = params.index
     this.previousDispo = params.previousDispo
@@ -18,9 +30,7 @@ class Disposition {
     this.data  = CADRES_DISPOSITIONS[this.index]
   }
 
-  get log(){
-    return this._log || (this._log = new LogClass('Disposition'))
-  }
+  get log(){ return this.constructor.log }
 
   build(){
     this.buildCadres()

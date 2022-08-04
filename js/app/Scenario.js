@@ -14,6 +14,7 @@ class Scenario {
    */
   static onLoad(data){
     this.log.debug("Données scénario reçues : " + JString(data))
+    this.resetAll()
     this.current = new Scenario(data)
     this.current.dispatchInfos()
     Preferences.setValues(data.preferences) // et les applique
@@ -50,6 +51,19 @@ class Scenario {
     else { erreur(data.error) }
   }
 
+  /**
+   * Méthode appelée au chargement d'un nouveau scénario, pour 
+   * repartir à neuf
+   * 
+   */
+  static resetAll(){
+    // Vider les cadres mais rester dans la position courante
+    Cadre.resetAll()
+    // Les contenus de cadre
+    InCadre.resetAll()
+    // Les/la disposition
+    Disposition.resetAll()
+  }
 
 //##################################################################
 

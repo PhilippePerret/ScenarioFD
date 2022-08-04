@@ -7,11 +7,28 @@ class Cadre {
   }
 
   /**
+   * Appelé au chargement d'un nouveau scénario, avant de charger
+   * ses données. On part du principe qu'il y a peut-être des incadres
+   * et autres panneaux instanciés.
+   * 
+   */
+  static resetAll(){
+    this.log.in('::resetAll')
+    
+    this.log.out('::resetAll')
+  }
+
+  /**
    * Appelé au démarrage
    * 
    */
   static prepare(){
-    this.log.in('prepare')
+    this.log.in('::prepare')
+
+    if ( this.isPrepared ) { 
+      this.log.out('::prepare (sans rien faire, déjà préparé)')
+      return this
+    }
     /*
     |  Construction des boutons
     */
@@ -26,8 +43,9 @@ class Cadre {
     DGetAll('.mini-cadres', this.btnDispo).forEach( picto => {
       picto.addEventListener('click', this.onClickPictoDisposition.bind(this, picto))
     })
-
-    this.log.out('prepare')
+    this.isPrepared = true
+    this.log.out('::prepare')
+    return this
   } // prepare
 
 
