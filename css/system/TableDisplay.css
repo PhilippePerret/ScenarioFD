@@ -1,0 +1,34 @@
+/*
+  Pour la classe DisplayTable qui permet de construire des
+  listing à plusieurs colonnes
+*/
+div.tabled {
+  display: table;
+  display-layout: fixed;
+  width: 100%;
+  border-width: 1px 0 0 0;
+  border-style: solid;
+  border-color: #CCC;
+  margin: 0;
+  padding: 0;
+}
+div.table-row {
+  display: table-row;
+}
+div.table-row.header {
+  font-weight: bold;
+}
+
+div.table-row:nth-child(odd) {
+  background-color: #EFEFEF;
+}
+div.table-row:nth-child(even) {
+  background-color: #EFEFFF;
+}
+div.table-cell {
+  display: table-cell;
+  border-width: 0 1px 1px 1px;
+  border-style: solid;
+  border-color: transparent #DDD #BBB #DDD;
+  padding: 2px 1em;
+}

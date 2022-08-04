@@ -1,0 +1,151 @@
+# 0.5.3
+
+  - Exportation au format XML FinalDraft est à nouveau opérationnel et rationnel. Prêt à s'adapter à tout changement de format de données.
+
+# 0.5.2
+
+  - Déplacement des paragraphes dans la console à l'aide de CMD-CTRL-FlècheH/B
+
+# 0.5.1
+
+  - Amélioration des InsideTests (et documentation)
+  - Autocomplétion générale mise en place
+    - Traitement des intitulés de scène
+    - Traitement des noms de personnage qui parlent
+
+# 0.5.0
+
+  - Première production d'un document scenario.xml à partir d'un document FinalDraft !
+
+# 0.4.15
+  
+  - Arrangement des icones d'Incadre.
+  - Correction du bug sur le redimensionnement impossible après avoir changer le contenu d'un cadre.
+  - Correction du bug sur le calcul de la hauteur moyenne des lignes
+  - Correction du bug sur l'ajout d'une scène sans sélection
+
+# 0.4.14
+
+  - Correction bug sur doublement de la scène dans la timeline au déplacement par changement de $page
+  - Le Tooltip s'aligne parfaitement à son objet, quel que soit le zoom
+  - Sélection de la scène dans le previewer courant quand on la clique dans la timeline
+  
+# 0.4.13
+
+  - Rationnalisation du parsing de la scène
+
+# 0.4.12
+
+  - Enregistrement des préférences
+  - Bonne gestion de l'affichage/masquage des timelines en préférences
+  - Fabrication que l'application Scenario, avec l'extension .srps qui 
+    transforme le dossier scénario en bundle (fichier package)
+    (mais pour le moment, impossible de faire marque l'application :
+     le fichier .srps lance bien l'exécutable, mais celui-ci crash
+     sans donner de raison)
+
+# 0.4.11
+
+  - Gestion du zoom dans les timelines (slider)
+  - Gestion de l'affichage/masquage des différentes timeline
+  - nouveaux menus pour se focaliser sur une partie (opérationnel)
+  - stylisation du slider de timeline
+
+# 0.4.10
+
+  - Insertion correct d'une scène, à tous les endroits
+  
+# 0.4.9
+
+  - Enregistrement des informations dans le fichier XML
+  - Actualisation des données XML dans un fichier
+  - Backup du fichier original
+  
+# 0.4.8
+
+  - Dimensionnement correct de tous les contenus, plain et normaux.
+  - Les préférences remplissent leur fenêtre.
+  
+# 0.4.7
+
+  - modification de la position de toutes les scènes après une scène allongée ou rétrécie.
+  - Gestion de la sélection de la scène éditée
+  - Possibilité d'ajouter la nouvelle scène à l'endroit voulu (fin, début, avant ou après la scène sélectionné).
+  
+# 0.4.6
+
+  - Préférence pour le nombre de lignes dans une page de scénario
+  - Calcul de la hauteur moyenne d'une ligne
+  - Calcul juste de la durée d'une scène
+
+# 0.4.5
+
+  - Numérotation des intitulés de scènes
+  - Stylisation des intitulés de scènes (plus de petites capitales, qui posent problème avec les chiffres)
+
+# 0.4.4
+  
+  - Traitement des préférences avec TableDisplay
+  - class TableDisplay pour de beaux affichages des données cellulaires
+
+# 0.4.3
+
+  Gestion du survol, du clic et du double-clic sur une scène dans les
+  Timeline. Respectivement, la scène affiche son résumé (ou ses premières)
+  lignes, scrolle jusqu'à la scène dans le previewer courant ou met
+  la scène en édition.
+  
+# 0.4.2
+
+  - Masquage/affichage des différentes Timeline
+  - Placement correct d'une nouvelle scène sans page sur la timeline
+  - Classe Tooltip pour afficher des petits messages accrochés aux 
+    objets, à commencer par le résumé des scènes (ou les premières 
+    lignes)
+  
+# 0.4.1
+
+  - Ajustement parfait de la règle graduée de la timeline
+  
+# 0.4.0
+
+  - On peut à nouveau éditer des scènes
+  - On peut à nouveau créer des scènes
+  - On peut à nouveau enregistrer le scénario
+  - On peut modifier la position d'une scène
+  - On peut modifier la durée d'une scène
+
+# 0.3.4
+  
+  - Passage d'un contenu (console, preview) d'une disposition à une autre
+  - Observation des boutons opérationnelle
+
+# 0.3.3
+
+  - On peut mettre le contenu que l'on veut dans un cadre
+  - Boutons avec image pour choisir le contenu
+  - Rationnalisation des dimensions
+
+# 0.3.2
+
+  - Instance Disposition permettant de mieux gérer la disposition
+    courante
+  - Les problèmes de redimensionnement ont été réglés.
+
+# 0.3.1
+
+  - Correction du bon fonctionnement des cadres
+  
+# 0.3.0
+
+  - Version avec des cadres divisant la fenêtre et pouvant contenir
+    différents contenus (pour le moment, seulement la prévisualisa-
+    tion et la console de scène)
+
+# 0.2.0
+
+  - Première exportation sous forme de document Final-Draft
+
+# 0.1.0
+
+  - Première mise en place grossière.

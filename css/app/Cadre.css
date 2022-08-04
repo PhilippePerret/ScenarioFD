@@ -1,0 +1,198 @@
+/*
+| Pour les cadres
+*/
+section#cadres_container {
+  position: relative;
+}
+section#cadres_container div.cadre {
+  position: absolute;
+  border: 2px solid #CCC;
+  padding: 0;
+  margin:  0;
+}
+section#cadres_container > div.cadre > section.in-cadre > div.content {
+  transform-origin: top left;
+  height: calc(100% - 40px);
+  width:  inherit;
+  position: relative;
+}
+section#cadres_container > div.cadre > section.in-cadre > div.content:not(.plain){
+  padding: 1em;
+  overflow_y: auto;
+}
+section#cadres_container > div.cadre > section.in-cadre > div.toolsbar {
+  width: 100%;
+  height:  30px;
+  padding-top: 4px;
+  background-color: green;
+}
+
+button#cadres-disposition {
+  overflow: hidden;
+  transition: height 0.3s;
+}
+button#cadres-disposition div.mini-cadres {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  margin-left: -4px;
+  border: 2px solid;
+}
+button#cadres-disposition div.mini-cadres:hover {
+  background-color: #ad54d5;
+}
+
+button#cadres-disposition:hover {
+  height: 350px;
+  /*transition: 0.3s;*/
+}
+button#cadres-disposition:hover div.mini-cadres {
+  display: block !important; /* sur class hidden */
+  margin-bottom: 8px;
+  position: relative;
+}
+/* Les div dessinant les dispos */
+
+button#cadres-disposition div.mini-cadres > div.mini-cadre-cross {
+  position: absolute;
+}
+button#cadres-disposition div.mini-cadres:hover {
+  border-color: white;
+}
+button#cadres-disposition div.mini-cadres:hover > div.mini-cadre-cross {
+  background-color: white!important;
+}
+button#cadres-disposition div.mini-cadres:not(:hover) > div.mini-cadre-cross {
+  background-color: black!important; /* excommenter pour voir les traits en couleur */
+}
+button#cadres-disposition div.mini-cadres > div.cross-VT {
+  background-color: red;
+  top: 0;
+  left: 15px;
+  width: 2px;
+  height: 16px;
+}
+button#cadres-disposition div.mini-cadres > div.cross-VB {
+  background-color: green;
+  top: 16px;
+  left: 15px;
+  width: 2px;
+  height: 16px;
+}
+button#cadres-disposition div.mini-cadres > div.cross-HL {
+  background-color: yellow;
+  top: 15px;
+  left: 0;
+  width: 16px;
+  height: 2px;
+}
+button#cadres-disposition div.mini-cadres > div.cross-HR {
+  background-color: blue;
+  top: 15px;
+  height: 2px;
+  left: 16px;
+  width: 16px;
+}
+
+button#cadres-disposition div.mini-cadres > div.BB {
+  border-bottom-color: black;
+}
+button#cadres-disposition div.mini-cadres > div.BR {
+  border-right-color: black;
+}
+
+
+/* --- Pour les contenus --- */
+
+section.in-cadre {
+  width: 100%;
+  height: calc(100%);
+  position: relative;
+  overflow: hidden;
+}
+section.in-cadre > div.content {
+  width: 100%;
+  height: calc(100% - 50px);
+}
+section.in-cadre > div.toolsbar {
+  height: 50px;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  text-align: right;
+}
+
+section.in-cadre > div.toolsbar > * {
+  margin-right: 0.5em;
+}
+
+section.in-cadre > div.toolsbar > button.btn-type-content {
+  position: absolute;
+  bottom: 4px;
+  left: 20px;
+  width: 26px;
+  height: 26px;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  transition: 0.3s;
+}
+section.in-cadre > div.toolsbar > button.btn-type-content:hover {
+  width: auto;
+  height: auto;
+  padding-bottom: 2em;
+  transition: 0.3s;
+}
+section.in-cadre > div.toolsbar > button.btn-type-content > div.type-content {
+  margin-bottom: 0px;
+  clear: both;
+  text-align: left;
+  padding: 4px 24px 4px 16px;
+  vertical-align: middle;
+}
+section.in-cadre > div.toolsbar > button.btn-type-content > div.type-content:hover {
+  background-color: #777;
+  color: white;
+}
+
+section.in-cadre > div.toolsbar > button.btn-type-content > div.type-content > img {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+}
+section.in-cadre > div.toolsbar > button.btn-type-content:not(:hover) > div.type-content > img {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+section.in-cadre > div.toolsbar > button.btn-type-content > div.type-content > span {
+  margin-left: 0.5em;
+  vertical-align: middle;
+}
+/* Quand on glisse la souris sur le type de contenu */
+section.in-cadre > div.toolsbar > button.btn-type-content:hover > div.type-content {
+  display: block!important;
+}
+
+/* --- Modifications de détail --- */
+
+section.console.in-cadre > div.content > textarea {
+  width: calc(100% - 4px);
+  height: inherit;
+  padding: 20px 20px;
+  background-color: #d8d8f9;
+  color: black;
+  font-family: Geneva, Helvetica, Arial;
+  font-size: 16pt;
+  line-height: 24pt;
+  border-width: 2px;
+  border-style: solid;
+  margin: 0;
+}
+section.console.in-cadre > div.content > textarea:not(.active) {
+  border-color: transparent;
+}
+section.console.in-cadre > div.content > textarea.active {
+  border-color: #3838f9;
+}

@@ -1,0 +1,142 @@
+/*
+  Tous les styles pour le scénario
+*/
+section.preview.in-cadre div.content {
+  overflow: auto;
+  background-color: #F6F6FF;
+  width: 180mm!important;
+  max-width: 180mm!important;
+/*  transform: scale(1.5);
+  transform-origin: top left;
+*/}
+
+/* Toutes les lignes du scénario */
+div.sline {
+  position: relative;
+}
+
+div.intitule, div.nom,
+div.action
+ {
+  margin-top: 1em;
+}
+
+div.scene {
+  font-size: 12pt;
+  font-family: Geneva, Helvetica;
+  line-height: 14pt;
+  padding-left: 1em;
+  border-left-width: 8px;
+  border-left-style: solid;
+  cursor: pointer;
+}
+div.scene:not(.selected) {
+  border-color: transparent;
+}
+div.scene.selected {
+  border-color: #b1b1ff;
+}
+
+div.sline div.script-note {
+  position: absolute;
+  top: 0;
+  right: -40px;
+  width: 20px;
+  height: 20px;
+  cursor: context-menu;
+  overflow: hidden;
+  text-align: left;
+}
+div.sline div.script-note:hover span.spine {
+  display: inline-block;
+  font-size: 16pt;
+}
+div.sline div.script-note:hover span.spine {
+  display: none;
+}
+div.sline div.script-note span.content {
+  display: none;
+  width: 200px;
+  font-size: 10pt;
+  text-align: left;
+  position: relative;
+  padding: 1em 1em;
+}
+div.sline div.script-note:hover span.content {
+  display: inline-block;
+}
+
+div.sline div.script-note:hover {
+  width: calc(200px + 2em);
+  transition: width 0.3s;
+  height: auto;
+  background-color: #e8e892;
+  z-index: 1000;
+  border-radius: 0.3em;
+  cursor: text;
+}
+
+div.intitule, 
+div.nom {
+  font-weight: bold;
+}
+
+div.intitule {
+  
+}
+div.nom {
+  margin-left: 10em;
+}
+div.nom, div.note-jeu {
+  margin-left: 10em;
+}
+
+div.action {
+  margin-left: 1em;
+  /*margin-right: 1em;*/
+  width: calc(100% - 5em);
+  text-align: justify;
+}
+
+div.dialog, div.dialog-alt {
+  margin-left: 8em;
+}
+div.dialog-alt {
+  display: none;
+}
+div.note-jeu {
+  font-style: italic;
+}
+div.note-jeu:before {content: '('}
+div.note-jeu:after  {content: ')'}
+
+
+button.btn-add-scene {
+  position: relative;
+  display: inline-block;
+  width: 80px;
+}
+button.btn-add-scene:hover {
+  z-index: 800;
+}
+button.btn-add-scene:hover > div.title {
+  /*display: none;*/
+}
+button.btn-add-scene:hover > div.menus {
+  position: absolute;
+  display: block;
+  width: 160px;
+  background-color: #DDD;
+  bottom: 20px;
+  right: 0;
+  text-align: left;
+}
+button.btn-add-scene:hover > div.menus > div {
+  font-size: 12pt;
+  line-height: 16pt;
+  padding: 4px 0.5em;
+}
+button.btn-add-scene:hover > div.menus > div:hover {
+  background-color: green; /*#CD65FA;*/
+  color: white;
+}

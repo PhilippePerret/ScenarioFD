@@ -1,0 +1,146 @@
+section#timelines {
+  position: relative;
+  width: calc(100% - 40px);
+  height: 121px;
+  padding: 0;
+  margin: 0;
+  background-color: #e8e8e8;
+}
+section#timelines > div.timeline {
+  position: absolute;
+  left: 0;
+  height: 20px;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border-bottom: 1px solid #D5D0F9;
+  transform-origin: top left;
+}
+
+/* 
+  Positions absolues des timelines 
+*/
+div#timeline-beats  { top: 0px }
+div#timeline-seqs   { top: 20px }
+div#timeline-ruler { top: 40px }
+div#timeline-abs    { top: 60px }
+div#timeline-rels   { top: 80px }
+div#timeline-slider { top: 103px }
+
+/* Titre des timelines */
+div#timeline-beats:before {content:'Beats'}
+div#timeline-seqs:before { content: 'Séquences' }
+div#timeline-abs:before { content:'Position absolues' }
+div#timeline-rels:before { content:'Dans le scénario' }
+div.timeline:before { padding-left: 2em; color:#BBB }
+
+/* --- Les scènes dans les timelines --- */
+
+section#timelines > div.timeline div.tlscene {
+  position: absolute;
+  top: 0;
+  height: 10px;
+  border-style: solid;
+  border-width: 2px 1px 8px;
+  border-color: #CCC;
+  cursor: pointer;
+}
+section#timelines > div.timeline div.tlscene:nth-child(odd) {
+  background-color: #EEF;
+  border-bottom-color: #EEF;
+}
+section#timelines > div.timeline div.tlscene:nth-child(even) {
+  background-color: #EFE;
+  border-bottom-color: #EFE;
+}
+section#timelines > div.timeline div.tlscene.selected {
+  border-bottom-color: #5e61ff !important;
+}
+
+div#timeline-ruler {
+  background-color: #EFEFEF;
+  position: relative;
+  height: 20px;
+  width: 100%;
+}
+div#timeline-ruler span.per_ten {
+  position: absolute;
+  bottom: 0px;
+  height: 8px;
+  width: 2px;
+  background-color: #999;
+}
+div#timeline-ruler span.per_unit {
+  position: absolute;
+  bottom: 0;
+  height: 3px;
+  width: 2px;
+  background-color: #999;
+}
+div#timeline-ruler span.chiffre {
+  position: absolute;
+  top: 0;
+  font-size: 14px;
+  color: #999;
+}
+
+/* Le menu des outils  */
+div#timelines-tools {
+  position: absolute;
+  right: -40px;
+  top: 2px;
+  text-align: right;
+}
+div#timelines-tools:not(:hover) {
+  width: 24px;
+  height: 38px;
+}
+div#timelines-tools:hover {
+  width: auto;
+  height: auto;
+  z-index: 1000;
+  background-color: #CCC;
+  border: 1px solid #777;
+  border-radius: 4px;
+}
+/*div#timelines-tools:not(:hover) div.picto { display: block }
+div#timelines-tools:hover div.picto { display: none }
+*/
+
+div#timelines-tools div.menus {
+  text-align: left;
+
+}
+div#timelines-tools:not(:hover) div.menus { display: none }
+div#timelines-tools:hover div.menus { display: block }
+
+div#timelines-tools div.menus > div {
+  /*margin-top: 2px;*/
+  line-height: 14px;
+  padding: 4px 1em;
+}
+div#timelines-tools div.menus > div:hover {
+  background-color: grey;
+  color: white;
+}
+
+
+div#timeline-slider {
+  position: absolute;
+  margin-top: 0;
+  padding-top: 0;
+  width: calc(100% - 30px)!important;
+  margin-left: 8px!important;
+}
+div#timeline-slider div.ui-slider-range {
+  background-color: #9efa9e;
+  top: -2px;
+  height: 18px;
+}
+/* Les poignées jQuery pour le slider */
+span.ui-slider-handle {
+  font-size: 9pt;
+  padding: 2px 4px;
+  width: auto!important;
+  min-width: 10px;
+}

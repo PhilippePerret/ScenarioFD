@@ -1,0 +1,39 @@
+body {
+  margin: 0;
+  padding: 0;
+  color: #555;
+}
+
+section#toolsbar {
+  display: table-cell;
+  position: fixed;
+  right: 5px;
+  bottom: 40px;
+  text-align: center;
+  vertical-align: bottom;
+  background-color: #7c15aa;
+  padding-top: 12px;
+}
+section#toolsbar > button {
+  width: 40px;
+  height: 40px;
+  display: block;
+  margin-bottom: 12px;
+  margin-left: 6px;
+}
+
+section#preview-toolsbar {
+  position: fixed;
+  top: 400px;
+  text-align: right;
+}
+
+section#console,
+section#preview-toolsbar {
+  width: calc(100% - 50px); /* cf. ci-dessous section#toolsbar */
+}
+section#toolsbar { width: 50px; }
+
+div.panneau {
+  font-size: 16pt;
+}

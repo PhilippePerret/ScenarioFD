@@ -1,0 +1,21 @@
+.fright {float: right}
+
+.invisible {
+  visibility: hidden;
+}
+
+.hidden {
+  display: none;
+}
+.right {text-align: right}
+
+.explication, .description {
+  font-style: italic;
+  font-size: 0.85em;
+  opacity: 0.6;
+}
+
+div.buttons {
+  text-align: right;
+}
+

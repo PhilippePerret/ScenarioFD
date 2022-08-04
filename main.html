@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scénario</title>
+  <link rel="stylesheet" type="text/css" href="css/app/main.css">
+  <link rel="stylesheet" type="text/css" href="css/app/preview.css">
+  <link rel="stylesheet" type="text/css" href="css/app/Timeline.css">
+  <link rel="stylesheet" type="text/css" href="css/app/Cadre.css">
+  <link rel="stylesheet" type="text/css" href="css/app/common.css">
+  <link rel="stylesheet" type="text/css" href="css/system/Tooltip.css">
+  <link rel="stylesheet" type="text/css" href="css/system/TableDisplay.css">
+  <link rel="stylesheet" type="text/css" href="js/system/jquery/jquery-ui.min.css">
+  <link rel="stylesheet" type="text/css" href="js/system/jquery/jquery-jquery-ui.structure.min.css">
+  <link rel="stylesheet" type="text/css" href="js/system/jquery/jquery-jquery-ui.theme.min.css">
+
+  <!-- Scripts système -->
+  <script type="text/javascript">
+    const INSIDE_TESTS = true // plus tard, en option de console
+  </script>
+  <script type="text/javascript" src="js/system/jquery/jquery.js"></script>
+  <script type="text/javascript" src="js/system/jquery/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="js/system/jquery/jquery.caretposition.js"></script>
+  <script type="text/javascript" src="js/system/common.js"></script>
+  <script type="text/javascript" src="js/system/Message.js"></script>
+  <script type="text/javascript" src="js/system/WAA.js"></script>
+  <script type="text/javascript" src="js/system/dom.js"></script>
+  <script type="text/javascript" src="js/system/Tooltip.js"></script>
+  <script type="text/javascript" src="js/system/TableDisplay.js"></script>
+  <script type="text/javascript" src="js/system/SelectionManager.js"></script>
+  <script type="text/javascript" src="js/system/ListManager.js"></script>
+  <script type="text/javascript" src="js/system/Textarea.js"></script>
+  <script type="text/javascript" src="js/system/InsideTest.js"></script>
+  <script type="text/javascript" src="js/app/constants.js"></script>
+
+</head>
+<body>
+
+
+<section id="timelines">
+  <div id="timeline-beats" class="timeline"></div>
+  <div id="timeline-seqs" class="timeline"></div>
+  <div id="timeline-ruler" class="timeline"></div>
+  <div id="timeline-abs" class="timeline"></div>
+  <div id="timeline-rels" class="timeline"></div>
+  <div id="timelines-tools">
+    <div class="picto">⚙️</div>
+    <div class="menus">
+      <div class="show-tl" data-tltype="all" data-state="on">   Tout masquer</div>
+      <div class="show-tl" data-tltype="beats" data-state="on">✓ Beats</div>
+      <div class="show-tl" data-tltype="seqs" data-state="on">✓ Séquence</div>
+      <div class="show-tl" data-tltype="ruler" data-state="on">✓ Règle</div>
+      <div class="show-tl" data-tltype="abs" data-state="on">✓ Temps absolus</div>
+      <div class="show-tl" data-tltype="rels" data-state="on">✓ Temps relatifs</div>
+      <div class="show-tl" data-tltype="zoom" data-state="on">✓ Zoom</div>
+      <hr />
+      <div class="tl-show-part" data-partie="whole">Focus sur TOUT</div>
+      <div class="tl-show-part" data-partie="expo">Focus sur EXPOSITION</div>
+      <div class="tl-show-part" data-partie="dev">Focus sur DÉVELOPPEMENT</div>
+      <div class="tl-show-part" data-partie="part1">Focus sur DÉV Part 1</div>
+      <div class="tl-show-part" data-partie="part2">Focus sur DÉV Part 2</div>
+      <div class="tl-show-part" data-partie="denou">Focus sur DÉNOUEMENT</div>
+      <div class="tl-show-part" data-partie="tiers1">Focus sur 1/3</div>
+      <div class="tl-show-part" data-partie="tiers2">Focus sur 2<sup>e</sup> tiers</div>
+      <div class="tl-show-part" data-partie="tiers3">Focus sur 3<sup>e</sup> tiers</div>
+      <hr />
+    </div>
+  </div>
+  <div id="timeline-slider" class="timeline"></div>
+</section>
+
+<section id="cadres_container">
+  <!-- Les cadres vont se trouver ici -->
+</section>
+
+
+<section class="preview in-cadre hidden">
+  <div class="content">[ICI EST AFFICHÉE LA PRÉVISUALISATION]</div>
+  <div class="toolsbar">
+    <button class="btn-zoom-in">🔎+</button>
+    <button class="btn-zoom-out">🔎-</button>
+    <button class="btn-add-scene">
+      <div class="title">➕ scène</div>
+      <div class="menus hidden">
+        <div data-place="beginning">Ajouter au début</div>
+        <div data-place="end">Ajouter à la fin</div>
+        <div data-place="before-selected" class="btn-add-scene-selected hidden">Avant scène <span class="num-scene-selected"></span></div>
+        <div data-place="after-selected" class="btn-add-scene-selected hidden">Après scène <span class="num-scene-selected"></span></div>
+      </div>
+    </button>
+  </div>
+</section>
+
+<section class="console in-cadre hidden">
+  <div class="content plain">
+    <textarea></textarea>
+  </div>
+  <div class="toolsbar">
+    <!-- barre d'outils pour la console -->
+    <button class="btn-refresh">Rafraichir</button>
+  </div>
+</section>
+
+<section class="infos in-cadre hidden">
+  <div class="content plain">
+    <div class="panneau"></div>
+  </div>
+  <div class="toolsbar">
+    <button class="btn-save">Enregistrer</button>    
+  </div>
+</section>
+
+<section class="preferences in-cadre hidden">
+  <div class="content plain">
+    <div class="panneau"></div>
+  </div>
+  <div class="toolsbar">
+    <button class="btn-save">Enregistrer</button>    
+  </div>
+</section>
+
+<!-- PANNEAU RAPPORTS -->
+<section class="report in-cadre hidden">
+  <div class="content">
+      <h2>Rapports</h2>
+      [PRODUCTION DE RAPPORTS]
+  </div>
+  <div class="toolsbar">
+    <button class="btn-export">Exporter…</button>    
+  </div>
+</section>
+
+<!-- PANNEAU FILTRE -->
+<section class="filter in-cadre hidden">
+  <div class="content">
+    <h2>FILTRE</h2>
+  </div>
+  <div class="toolsbar">
+    <button class="btn-export">Exporter…</button>
+  </div>
+</section>
+
+<section class="navigator in-cadre hidden">
+  <div class="content plain">
+    <h2>Navigateur</h2>
+    [LE NAVIGATEUR D'ÉLÉMENT]
+  </div>
+  <div class="toolsbar">
+    <button class="onglet">Notes</button>
+    <button class="onglet">Personnages</button>
+    <button class="onglet">Scènes</button>
+  </div>
+</section>
+
+<section class="console_dev in-cadre hidden">
+  <div class="content">[CONSOLE DE DÉVELOPPEMENT]</div>
+  <div class="toolsbar"></div>
+</section>
+
+<!-- TODO LIST -->
+<section class="todo in-cadre hidden">
+  <div class="content">
+    <h2>Liste de tâches</h2>
+    [TODO LIST DU PROJET]
+  </div>
+  <div class="toolsbar">
+    <button class="btn-save">Enregistrer</button>    
+  </div>  
+</section>
+ 
+
+<!-- TOOLSBAR PRINCIPALE -->
+<section id="toolsbar">
+  <!-- Les boutons de dispositions des cadres -->
+  <button id="cadres-disposition" data-index="1">
+  </button>
+  <button onclick="Scenario.exportCurrent.call(Scenario,'final_draft')" title="Exporter comme document Final Draft">-> FD</button>
+  <button onclick="Scenario.saveCurrent.call(Scenario)" title="Enregistrer le scénario">💾</button>
+</section>
+<!-- 
+  Un bouton disposition type 
+  (à mettre dans button#cadres-disposition pour faire les 
+   différentes dispositions et les choisis)
+-->
+<div id="modele-mini-cadre" class="mini-cadres hidden" data-index="0">
+  <div class="cross-VT mini-cadre-cross hidden"></div>
+  <div class="cross-VB mini-cadre-cross hidden"></div>
+  <div class="cross-HL mini-cadre-cross hidden"></div>
+  <div class="cross-HR mini-cadre-cross hidden"></div>
+</div>
+
+<!-- Modèle de bouton pour le type de contenu dans les cadres -->
+<button class="btn-type-content hidden" data-content="preview">
+  <div class="type-content" data-content="preview"><img src="img/content/preview.png"><span>Scénario</span></div>
+  <div class="type-content hidden" data-content="console"><img src="img/content/console.png"><span>Console</span></div>
+  <div class="type-content hidden" data-content="navigator"><img src="img/content/navigator.png"><span>Navigateur</span></div>
+  <div class="type-content hidden" data-content="report"><img src="img/content/report.png"><span>Rapport</span></div>
+  <div class="type-content hidden" data-content="infos"><img src="img/content/infos.png"><span>Infos</span></div>
+  <div class="type-content hidden" data-content="preferences"><img src="img/content/preferences.png"><span>Préférences</span></div>
+  <div class="type-content hidden" data-content="todo"><img src="img/content/todo.png"><span>Tâches</span></div>
+  <div class="type-content hidden" data-content="filter"><img src="img/content/filter.png"><span>Filtre</span></div>
+</button>
+
+
+<script type="text/javascript" src="js/app/InCadre.js"></script>
+<script type="text/javascript" src="js/app/ScenarioElement.js"></script>
+<script type="text/javascript" src="js/app/Cadre_constantes.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+<script type="text/javascript" src="js/app/ready.js"></script>
+<script type="text/javascript" src="js/app/App.js" defer></script>
+<script type="text/javascript" src="js/app/Cadre.js" defer></script>
+<script type="text/javascript" src="js/app/Disposition.js" defer></script>
+<script type="text/javascript" src="js/app/Scene.js" defer></script>
+<script type="text/javascript" src="js/app/UI.js" defer></script>
+<script type="text/javascript" src="js/app/Scenario.js" defer></script>
+<script type="text/javascript" src="js/app/Timeline.js" defer></script>
+<script type="text/javascript" src="js/app/Console.js" defer></script>
+<script type="text/javascript" src="js/app/ConsoleDev.js" defer></script>
+<script type="text/javascript" src="js/app/Preview.js" defer></script>
+<script type="text/javascript" src="js/app/Navigator.js" defer></script>
+<script type="text/javascript" src="js/app/Preferences.js" defer></script>
+<script type="text/javascript" src="js/app/InfosScenario.js" defer></script>
+<script type="text/javascript" src="js/app/Personnage.js" defer></script>
+<script type="text/javascript" src="js/app/Decor.js" defer></script>
+<script type="text/javascript" src="js/app/ScenarioFilter.js" defer></script>
+<script type="text/javascript" src="js/app/Panneau.js" defer></script>
+<script type="text/javascript" src="js/app/InsideTest_Factory.js" defer></script>
+
+</body>
+</html>
