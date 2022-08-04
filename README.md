@@ -21,28 +21,28 @@
 1. Ruby should be installed on your machine,
 2. clone repository in a `Programms` folder (for instance only),
 3. make command alias: 
-  ~~~bash
-  ln -s ~/Programs/ScenarioFD/scenario.rb /usr/local/bin/scenario
-  ~~~
+    ~~~bash
+    ln -s ~/Programs/ScenarioFD/scenario.rb /usr/local/bin/scenario
+    ~~~
 4. make the program executable:
-  ~~~bash
-  cd ~/Programs/ScenarioFD
-  sudo chmod +x scenario.rb
-  ~~~
+    ~~~bash
+    cd ~/Programs/ScenarioFD
+    sudo chmod +x scenario.rb
+    ~~~
 5. create a folder for your first script:
-  ~~~bash
-  mkdir -p ~/Documents/Scripts/ScenarioFD
-  cd ~/Documents/Scripts/ScenarioFD
-  mkdir firstScenario
-  ~~~
+    ~~~bash
+    mkdir -p ~/Documents/Scripts/ScenarioFD
+    cd ~/Documents/Scripts/ScenarioFD
+    mkdir firstScenario
+    ~~~
 6. open a Terminal at script folder: in Finder right-click on folder and choose "New Terminal at Folder" or:
-  ~~~bash
-  cd firstScenario
-  ~~~
+    ~~~bash
+    cd firstScenario
+    ~~~
 7. run command line:
-  ~~~bash
-  scenario
-  ~~~
+    ~~~bash
+    scenario
+    ~~~
 
 Next times you just have to:
 
