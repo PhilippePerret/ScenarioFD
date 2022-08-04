@@ -98,9 +98,16 @@ const PREFERENCES_DATA = {
 
 class Preferences extends InCadre {
 
+  static get log(){
+    return this._log || (this._log = new LogClass('Preferences'))
+  }
+
+
   constructor(cadre){
     super('preferences', cadre)
   }
+
+  get log(){ return this.constructor.log }
 
   /**
    * @return la préférence de clé +prefId+
@@ -139,7 +146,7 @@ class Preferences extends InCadre {
   }
 
   static setValues(values){
-    console.info("Valeurs à appliquer aux préférences : ", values)
+    this.log.debug("Valeurs à appliquer aux préférences : " + JString(values))
     for(var prefId in values){
       PREFERENCES_DATA[prefId].value = values[prefId]
     }
@@ -151,7 +158,7 @@ class Preferences extends InCadre {
    * 
    */
   static apply(){
-    console.log("-> Preferences::apply")
+    this.log.in('::apply')
     for (var prefId in PREFERENCES_DATA) {    
       const dPref = PREFERENCES_DATA[prefId]
       const value = PREFERENCES_DATA[prefId].value
@@ -160,7 +167,7 @@ class Preferences extends InCadre {
         this[dPref.onChange](value)
       }
     }
-    console.log("<- Preferences::apply")
+    this.log.out('::apply')
   }
 
   // --- MÉTHODES D'APPLICATION DES CHOIX ---

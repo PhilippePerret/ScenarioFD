@@ -16,7 +16,12 @@ class Decor extends ScenarioElement {
   
   constructor(data){
     super(data)
+    // console.log("Initialisation du décor avec : ", data)
   }
+
+  get inspect() {
+    return this._inspect || (this._inspect = `Décor '${this.text}'`)
+  }  
 
   get key()  { return this.decor } // ListManager key
   get text() { return this.decor } // autocomplétion

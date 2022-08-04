@@ -29,6 +29,11 @@ class ListManager {
     }
   }
 
+  get log(){
+    return this._log || (this._log = new LogClass('InsideTest'))
+  }
+
+
   /**
    * @return La liste Array des données à sauvegarder
    * 
@@ -44,18 +49,23 @@ class ListManager {
   }
 
   push(item){
+    // console.log("item : ", item)
     const key_item = item.key
-    if ( this.uniq && this.Map.has(key_item) ){ 
-      console.log("Élément déjà connu du listManager %s", this.name, item)
+    if ( this.uniq && this.contains(key_item) ){ 
+      this.log.debug("Élément déjà connu du listManager " + this.name + ' : ' + JString(item))
       return false
     }
-    console.log("Ajout d'un élément au listManager %s", this.name, item)
+    this.log.debug("Ajout d'un élément au listManager " + this.name + ' : ' + JString(item))
     this.Map.set(key_item, item)
     return true
   }
   add(item){
     this.push(item)
     return this; // chainage
+  }
+
+  contains(key_item){
+    return this.Map.has(key_item)
   }
 
   get count(){return this.Map.size}

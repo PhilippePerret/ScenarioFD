@@ -31,7 +31,11 @@ function JString(foo){
   try {
     return JSON.stringify(foo)
   } catch(err) {
-    console.warn("Impossible de jsonner : ", foo)
+    if ( 'function' == typeof foo.inspect ) {
+      return foo.inspect
+    } else {
+      Log.warn("Impossible de jsonner : ", foo)
+    }
     return foo
   }  
 }

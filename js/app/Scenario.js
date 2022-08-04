@@ -1,6 +1,10 @@
 'use strict';
 class Scenario {
 
+  static get log(){
+    return this._log || (this._log = new LogClass('Scenario'))
+  }
+
   static get appVersion(){ return '0.1' }
 
   /**
@@ -9,7 +13,7 @@ class Scenario {
    * 
    */
   static onLoad(data){
-    console.info("Données scénario reçues : ", data)
+    this.log.debug("Données scénario reçues : " + JString(data))
     this.current = new Scenario(data)
     this.current.dispatchInfos()
     Preferences.setValues(data.preferences) // et les applique
@@ -70,6 +74,8 @@ class Scenario {
     this.options    = data.options
     this.infos      = data.infos || {appVersion: Scenario.appVersion, created_at:null, updated_at:null}
   }
+
+  get log() { return this.constructor.log }
 
   /**
    * Enregistrer le scénario
@@ -376,7 +382,7 @@ class Scenario {
     nomH      && ary.push(nomH)
     if ( ary.length ) {
       const LH = ary.reduce((a,b) => a + b) / ary.length
-      console.info("Hauteur moyenne d'une ligne : %i", LH)
+      this.log.debug("Hauteur moyenne d'une ligne : " + LH)
       return LH
     } else {
       console.error("Impossible de calculer la hauteur des lignes, pas assez de lignes.")

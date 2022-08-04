@@ -60,7 +60,7 @@ class InCadre {
 
 
   constructor(type, cadre){
-    this.log.in('#constructor avec (type = '+type+', cadre = ' + cadre.inspect + ')')
+    this.log.in('#constructor avec (type = '+type+', cadre = ' + (cadre?cadre.inspect:null) + ')')
     this.type   = type
     this.cadre  = cadre
     this.id     = `${this.type}-${new Date().getTime()}`

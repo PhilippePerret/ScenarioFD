@@ -383,7 +383,7 @@ class SceneLine {
     decor.pop()   // pour retirer le 'JOUR' ou autre
     decor.shift() // pour retirer le 'INT.' ou autre
     decor = decor.join(' ').trim()
-    decor = decor.replace(/^([-–—] )?(.*)([-–—] )?$/g,'')
+    decor = decor.replace(/^(?:[-–—] )?([^-–—]+)[-–—]?$/g,'$1').trim()
     this.scenario.decors.add(new Decor({decor:decor, scenario:this.scenario}))
   }
 
