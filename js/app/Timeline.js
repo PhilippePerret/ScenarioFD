@@ -149,9 +149,9 @@ class Timeline {
 
   static calculateRatio(nombre_pages){
     this.NombrePages = nombre_pages || InfosScenario.get('duree_film') || 120
-    this.log.debug("= Nombre de pages = " + this.NombrePages)
+    this.log.debug("Nombre de pages = " + this.NombrePages)
     const UIWidth = UI.Width - 40 // 40 pour les outils timeline
-    this.log.debug("= UIWidth = " + UIWidth)
+    this.log.debug("UIWidth = " + UIWidth)
     this.Ratio  = (UIWidth - 12) / this.NombrePages // 12 parce que le premier trait ne commence pas au bort
     this.log.debug("Ratio = " + this.Ratio)
   }

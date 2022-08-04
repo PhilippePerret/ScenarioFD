@@ -14,8 +14,12 @@ class Disposition {
   constructor(params){
     this.index = params.index
     this.previousDispo = params.previousDispo
-    console.log("Dispo @ previousDispo = ", this.previousDispo)
+    this.log.debug('previousDispo = ' + this.previousDispo)
     this.data  = CADRES_DISPOSITIONS[this.index]
+  }
+
+  get log(){
+    return this._log || (this._log = new LogClass('Disposition'))
   }
 
   build(){
@@ -40,7 +44,6 @@ class Disposition {
       */
       Object.assign(this.contents, {[incadre.type]: incadre})
     })
-    console.log("Dispo.contents = ", this.contents)
   }
 
   /**

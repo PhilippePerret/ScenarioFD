@@ -125,7 +125,7 @@ Inverse de la précédente.
 
 ### .withExpected(sujet, expected)
 
-Fournit le `sujet` à la méthode de test et espère le résultat `expected`. Bien prendre en compte les [problèmes d'égalité](#equality-problems).
+Fournit le `sujet` à la méthode de test et espère qu’elle retournera le résultat `expected`. Bien prendre en compte les [problèmes d'égalité](#equality-problems).
 
 Exemple : 
 
@@ -146,7 +146,7 @@ test.withExpected('Al', 'Au revoir, Al')
 // Obtenu  : "Bonjour, Al !"
 ~~~
 
-
+> **Note** : bien comprendre que la méthode `eval` du test doit retourner la valeur qui sera comparée à `expected`. La méthode ne doit pas retourner quelque chose qui s’apparenterait à `traitement(sujet) == expected`
 
 ### .withExpectedNegate(sujet, expected)
 

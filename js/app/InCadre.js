@@ -3,6 +3,10 @@
 
 class InCadre {
 
+  static get log(){
+    return this._log || (this._log = new LogClass('InCadre'))
+  }
+
   static get(key, cadre) {
     let panneau ;
     switch(key){
@@ -56,11 +60,17 @@ class InCadre {
 
 
   constructor(type, cadre){
-    console.log("Instantiation de InCadre avec (type,cadre) =", type, cadre)
+    this.log.in('#constructor avec (type = '+type+', cadre = ' + cadre.inspect + ')')
     this.type   = type
     this.cadre  = cadre
     this.id     = `${this.type}-${new Date().getTime()}`
     InCadre.add(this)
+  }
+
+  get log(){ return this.constructor.log }
+
+  get inspect(){
+    return this._inspect || ( this._inspect = `InCadre #${this.id} type:${this.type}` )
   }
 
   buildIn(container){
@@ -90,7 +100,6 @@ class InCadre {
       div.classList[div.dataset.content == this.type?'remove':'add']('hidden')
     })
     this.btnTypeContent.classList.remove('hidden')
-    console.log("Bouton de type de contenu : ", this.btnTypeContent)
     this.observeButtonTypeContent()
   }
 
@@ -107,7 +116,6 @@ class InCadre {
    * 
    */
   adjustSize(){
-    console.log('-> InCadre#adjustSize')
     this.setWidth(this.cadre.width - 4)
     this.setHeight(this.cadre.height - 4)
   }
@@ -161,7 +169,6 @@ class InCadre {
 
   }
   observeButtonTypeContent(){
-    console.log("-> observeButtonTypeContent")
     DGetAll('div.type-content', this.btnTypeContent).forEach(div => {
       div.addEventListener('click', this.onClickButtonTypeContent.bind(this, div))
     })

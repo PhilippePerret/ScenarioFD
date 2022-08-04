@@ -3,7 +3,11 @@
 $(document).ready(e => {
   
   // Log.level = null // normal
-  Log.level = LOG_DEBUG|LOG_INFO
+  if ( INSIDE_TESTS ) {
+    Log.level = LOG_INSIDE_TEST|LOG_FATAL_ERROR|LOG_ERROR
+  } else {
+    Log.level = LOG_DEBUG|LOG_INFO|LOG_IOFUNCTION
+  }
 
   UI.prepare()
   Cadre.prepare()

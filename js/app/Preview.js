@@ -59,7 +59,6 @@ get selection(){
  * 
  */
 displayScene(scene){
-  console.log("-> Preview#displayScene(scene)", scene)
   if ( undefined == this.scenes[scene.id] ) {
     Object.assign(this.scenes, {[scene.id]: new ScenePreview(scene) })
   }
@@ -107,7 +106,6 @@ calculateMillimeterEquivalence(){
 }
 
 observe(){
-  console.log("-> Preview#observe")
   super.observe()
   // --- Observation de la toolbar ---
   this.btnZoomIn.addEventListener('click', this.onClickZoomIn.bind(this))
@@ -232,7 +230,6 @@ class ScenePreview {
   get objet(){ return this.obj || this.build() }
   
   build(){
-    // console.log("-> ScenePreview.build()")
     this.obj = DCreate('DIV', {
         id:`scene-${this.scene.id}`
       , class:'scene'

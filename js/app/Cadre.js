@@ -2,12 +2,16 @@
 
 class Cadre {
 
+  static get log(){
+    return this._log || (this._log = new LogClass('Cadre'))
+  }
+
   /**
    * Appelé au démarrage
    * 
    */
   static prepare(){
-    console.info('-> Cadre::prepare')
+    this.log.in('prepare')
     /*
     |  Construction des boutons
     */
@@ -23,6 +27,7 @@ class Cadre {
       picto.addEventListener('click', this.onClickPictoDisposition.bind(this, picto))
     })
 
+    this.log.out('prepare')
   } // prepare
 
 
@@ -78,7 +83,7 @@ class Cadre {
    * 
    */
   static dispose(dispositionIndex){
-    console.info('-> Cadre::dispose(index = %i)', dispositionIndex)
+    this.log.in('::dispose(dispositionIndex = '+dispositionIndex+')')
     
     this.reset()
     this.container.innerHTML = ''
@@ -94,7 +99,7 @@ class Cadre {
     |   Affichage du bouton de la disposition courante
     */
     this.activePictoDispo(dispositionIndex)
-    console.info("= Disposition des cadres effectuée : ", this.Dispo)
+    this.log.debug("= Disposition des cadres effectuée : ", this.Dispo)
   }
 
   static reset(){
@@ -118,7 +123,6 @@ class Cadre {
     this.affineContainerSize()
 
     this.currentDispositionData.cadres.forEach(cadreData => {
-      console.log("Je joue la méthode d'ajustement du cadre ", cadreData.id)
       cadreData.adjust.call()
     })
   }
@@ -215,12 +219,20 @@ constructor(data){
   this.quarts   = data.quarts  // cf. DATA_DISPOSITIONS
 }
 
+get log(){ return this.constructor.log }
+
+/**
+ * Pour connaitre le cadre
+ */
+get inspect(){
+  return this._inspect || (this._inspect = `Cadre #${this.id}`)
+}
 
 /**
  * Construction du cadre
  */
 build(params){
-  console.info("-> Cadre#build(params=)", params)
+  this.log.in('#build(params='+ JString(params) + ')')
   this.obj = DCreate('DIV', {class:'cadre', id:`cadre-${this.id}`})
   // console.log("Fenêtre %s width = %s height = %s", this.content, this.width, this.height)
   Cadre.container.appendChild(this.obj)
@@ -241,7 +253,7 @@ build(params){
  * 
  */
 setContent(typeContent){
-  console.log("-> Cadre#setContent(typeContent=%s)", typeContent)
+  this.log.in('#setContent(typeContent = ' + typeContent + ')')
   /*
   |  On efface le contenu courant
   */
@@ -287,7 +299,7 @@ cleanUp(){
  * 
  */
 buildContent(incadre){
-  console.info("-> Cadre#buildContent(previousContent = )", incadre)
+  this.log.in('#buildContent(incadre = ' + (incadre?incadre.inspect:'null') + ')')
   if ( incadre ) {
     incadre.cadre = this
   } else {
@@ -302,7 +314,6 @@ buildContent(incadre){
 
   incadre.show()
   incadre.adjustSize()
-  console.info("[Cadre#buildContent] incadre =", incadre)
 
   this.content  = incadre
 }
@@ -326,9 +337,9 @@ observe(){
 // }
 
 positionne(){
-  console.log("Position du cadre %i",this.id, {
-    left:this.left, top:this.top, width:this.width, height:this.height
-  })
+  this.log.debug('Position du cadre N°' + this.id + ' ' + JString({
+      left:this.left, top:this.top, width:this.width, height:this.height
+    }))
   this.obj.style.left   = this.expectedLeft
   this.obj.style.top    = this.expectedTop
   this.obj.style.width  = this.expectedWidth
