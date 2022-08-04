@@ -2,11 +2,11 @@
 
 *-- experimental --*
 
-Final Draft sucks (\*)… *ScenarioFFD* comes to import from and export to FinalDraft Format without using Final-Draft.
+“Final Draft sucks (\*)… *ScenarioFFD* comes to import from and export to FinalDraft Format without using Final-Draft.”
 
 "FFD" stands for "Fuck Final Draft" 🤣 (\*).
 
-(\*) a lot of bugs, a lot of limitations, poor tools, no configuration, hegemony.
+(\*) expansive, a lot of bugs, a lot of limitations, poor tools, no configuration, hegemony.
 
 
 ## Technology
