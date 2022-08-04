@@ -1,13 +1,17 @@
 'use strict';
 
 $(document).ready(e => {
+  
+  // Log.level = null // normal
+  Log.level = LOG_DEBUG|LOG_INFO
 
   UI.prepare()
   Cadre.prepare()
-  console.log("Ready!")
+
+  Log.notice("Ready!")
   
   // Jouer les inside-tests (sauf si INSIDE_TESTS est false)
-  InsideTest.run()
+  // InsideTest.run()
 
 
   // WAA.send({class:'Scenario::Document', method:'get_current_scenario'})

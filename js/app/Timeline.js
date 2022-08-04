@@ -25,6 +25,10 @@ const TIMELINES = {
 
 class Timeline {
 
+  static get log(){
+    return this._log || (this._log = new LogClass('Timeline'))
+  }
+
   /**
    * Préparation des lignes de temps au démarrage de l'application
    * (mais pas au chargement d'un scénario — cf. plus bas la méthode
@@ -86,7 +90,7 @@ class Timeline {
     const pctWidth = pctEnd - pctStart
 
     const dureeFilm = InfosScenario.get('duree_film')
-    // console.log("dureeFilm = %s", dureeFilm)
+    this.log.debug("dureeFilm = " + dureeFilm)
 
     /*
     | Si pctWidth = 50 ça veut dire qu'on grossit par 2
@@ -95,7 +99,7 @@ class Timeline {
     | => scale = 100 / pctWidth
     */
     const scale = 100 / pctWidth
-    // console.log("scale = ", scale)
+    this.log.debug('scale = ' + scale)
     // const trans = realStart * this.Ratio
 
 
@@ -145,19 +149,19 @@ class Timeline {
 
   static calculateRatio(nombre_pages){
     this.NombrePages = nombre_pages || InfosScenario.get('duree_film') || 120
-    console.info("= Nombre de pages = %i", this.NombrePages)
+    this.log.debug("= Nombre de pages = " + this.NombrePages)
     const UIWidth = UI.Width - 40 // 40 pour les outils timeline
-    console.info("= UIWidth = %i", UIWidth)
+    this.log.debug("= UIWidth = " + UIWidth)
     this.Ratio  = (UIWidth - 12) / this.NombrePages // 12 parce que le premier trait ne commence pas au bort
-    console.info("Ratio", this.Ratio)
+    this.log.debug("Ratio = " + this.Ratio)
   }
 
   static buildRegleGraduee(){
     if ( this.ratioRegle == this.Ratio ){
-      console.info("Le ratio n'a pas changé, on peut garder la règle graduée.")
+      this.log.info("Le ratio n'a pas changé, on peut garder la règle graduée.")
       return
     } else {
-      console.info("Le ratio à changé (%s -> %s)", this.ratioRegle, this.Ratio)
+      this.log.info('Le ratio a changé (' + this.ratioRegle + ' -> ' + this.Ratio + ')')
     }
 
     this.ratioRegle = 0 + this.Ratio
@@ -400,6 +404,8 @@ class Timeline {
     this.type = data.type
   }
 
+  get log(){ return this.constructor.log }
+
   prepare(top){
     this.obj.style.top = px(top)
   }
@@ -415,7 +421,8 @@ class Timeline {
     if ( this.obj ) {
       this.obj.appendChild(child)
     } else {
-      console.error("Impossible de trouver this.obj de la règle : ", this)
+      this.log.error("Impossible de trouver this.obj de la règle :")
+      console.error(this)
     }
   }
 
@@ -445,8 +452,11 @@ class SceneTimeline {
     this.scene = scene
   }
 
+  get log(){
+    return this._log || (this._log = new LogClass('SceneTimeline'))
+  }
+
   positionne(){
-    console.info('-> SceneTimeline#position', this)
     // Scène absolue
     this.objAbs.style.left  = px(this.leftAbs)
     this.objAbs.style.width = px(this.widthAbs)
@@ -461,11 +471,9 @@ class SceneTimeline {
       this.objRel.style.backgroundColor   = this.scene.color
       this.objRel.style.borderBottomColor = this.scene.color
     }
-    console.log("Nombre de scène portant l'identifiant 3", document.querySelectorAll('#tlscene-abs-3').length)
   }
 
   setSelected(){
-    console.log("-> SceneTimeline#setSelected")
     this.objAbs.classList.add('selected')
     this.objRel.classList.add('selected')
   }
@@ -475,7 +483,6 @@ class SceneTimeline {
   }
 
   build(){
-    console.info('-> SceneTimeline#build', this)
     /*
     | La scène en position absolue
     */
@@ -523,7 +530,6 @@ class SceneTimeline {
    * 
    */
   onDblClickScene(obj, e){
-    console.log("-> onDblClickScene")
     Preview.current.showScene(this.scene)
     this.scene.edit()
   }
@@ -567,8 +573,10 @@ class SceneTimeline {
       if ( this.scene.previousScene) {
         return this.scene.previousScene.timelineScene.rightAbs
       } else {
-        console.warn("Impossible d'obtenir la scène précédente de ", this.scene)
-        console.warn("Pour info, Scenario.current.scenes et l'index recherchés sont : ", Scenario.current.scenes, this.scene.index - 1)
+        this.log.warn("Impossible d'obtenir la scène précédente de :")
+        console.warn(this.scene)
+        this.log.warn("Pour info, Scenario.current.scenes et l'index recherchés sont : ")
+        console.warn(Scenario.current.scenes, this.scene.index - 1)
       }
     }
   }
