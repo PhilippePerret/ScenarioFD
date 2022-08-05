@@ -1,6 +1,15 @@
 'use strict';
 class AppClass {
 
+  JStringEpure(foo){
+    if ( foo.scenario ) {
+      var dupfoo = Object.assign({}, foo)
+      delete dupfoo.scenario
+      return dupfoo
+    } else {
+      return foo
+    }
+  }
 
   /**
    * Les méthodes gérant le clavier, hors contexte comme la console

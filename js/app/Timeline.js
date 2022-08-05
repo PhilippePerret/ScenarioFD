@@ -152,7 +152,7 @@ class Timeline {
     this.log.debug("Nombre de pages = " + this.NombrePages)
     const UIWidth = UI.Width - 40 // 40 pour les outils timeline
     this.log.debug("UIWidth = " + UIWidth)
-    this.Ratio  = (UIWidth - 12) / this.NombrePages // 12 parce que le premier trait ne commence pas au bort
+    this.Ratio  = ((UIWidth - 12) / this.NombrePages).toFixed(4) // 12 parce que le premier trait ne commence pas au bort
     this.log.debug("Ratio = " + this.Ratio)
   }
 

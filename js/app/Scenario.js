@@ -14,7 +14,10 @@ class Scenario {
    */
   static onLoad(data){
     this.log.debug("Données scénario reçues : " + JString(data))
-    this.resetAll()
+    if ( this.current ) {
+      delete this.current
+      this.resetAll()
+    }
     this.current = new Scenario(data)
     this.current.dispatchInfos()
     Preferences.setValues(data.preferences) // et les applique
@@ -57,12 +60,10 @@ class Scenario {
    * 
    */
   static resetAll(){
-    // Vider les cadres mais rester dans la position courante
     Cadre.resetAll()
-    // Les contenus de cadre
     InCadre.resetAll()
-    // Les/la disposition
-    Disposition.resetAll()
+    Preview.resetAll()
+    Scene.resetAll()
   }
 
 //##################################################################
@@ -142,9 +143,19 @@ class Scenario {
     |  Nettoyage du previewer
     */
     this.previewer.cleanUp()
+    
+    /*
+    |  Calcul de la hauteur des lignes (pour longueur de scène)
+    */
+    this.calc_LineHeight()
     /*
     | Affichage (et observation) des scènes
     */
+    // if (this.titre == 'Deuxième') {
+    //   this.forEachScene(scene => console.log("scène", scene))
+    //   return
+    // }
+
     this.forEachScene('display')
     this.forEachScene('displayInTimeline')
   }
@@ -159,8 +170,17 @@ class Scenario {
    * 
    */
   forEachScene(method) {
+    // console.log("this.scenes(method='%s')", method, this.scenes)
     if ( 'string' == typeof method ) {
       this.scenes.forEach( scene => scene[method].call(scene))
+      /* Version debuggage
+      this.scenes.forEach( scene => {
+        if ( this.titre == 'Deuxième') {
+          console.log("Application de %s à la scène", method, scene)
+        }
+        scene[method].call(scene)
+      })
+      //*/
     } else if ( 'function' == typeof method ) {
       this.scenes.forEach( scene => method(scene))
     } else {
@@ -273,9 +293,9 @@ class Scenario {
     Scene._lastId = 0 ;
     var index = 0
     return dscenes.map( dscene => {
-      Object.assign(dscene, {scenario:this, index:index++, previewer:this.previewer||Preview.current})
-      const scene = new Scene(dscene).parse() 
-      if ( scene.id > Scene._lastId ) { Scene._lastId = scene.id }
+      Object.assign(dscene, {scenario:this, index:index++, previewer:this.previewer})
+      const scene = new Scene(dscene).parse()
+      Scene.setLastId(scene.id)
       return scene
     })
   }
@@ -309,8 +329,8 @@ class Scenario {
   }
 
   /**
-   * À l'ouverture, on doit mettre les informations du scénario
-   * dans la fenêtre des infos
+   * Au chargement du scénario, on met les informations du scénario
+   * dans la fenêtre (non affichée) des infos
    * 
    */
   dispatchInfos(){
@@ -357,52 +377,81 @@ class Scenario {
 
 
 
-  get LINE_HEIGHT(){
-    return this._lineheight || ( this._lineheight = this.calcLineHeight() )
-  }
+  get LineHeight() { return this._lineheight }
 
   /**
    * Calcule la hauteur moyenne d'une ligne actuelle
    * (permettra de déterminer la longueur de la scène)
+   * 
+   * Pour la calculer, on écrit, avant d'écrire le scénario, des 
+   * paragraphes fictifs dans la fenêtre de prévisualisation, pour
+   * pouvoir mesurer la longueur.
    */
-  calcLineHeight(){
+  calc_LineHeight(){
     /*
     |  Dans un premier temps, on récupère la hauteur d'une ligne 
     |  d'intitulé, d'action et de nom de personnage
     */
-    // return 19
-    var intituleH, actionH, nomH, maxLineH ;
-    this.scenes.forEach( scene => {
-      if (intituleH && actionH && nomH) return; // pour accélérer
-      scene.lines.forEach( line => {
-        if ( !line.obj) {
-          return console.error("L'obj de la line n'existe pas…", line)
-        }
-        const lineH = line.obj.offsetHeight
-        if ( not(intituleH) && line.type == 'intitule' ) {
-          intituleH = lineH
-          maxLineH = lineH + lineH / 2
-        } else if ( not(actionH) && line.type == 'action' ) {
-          if ( lineH < maxLineH ) { actionH = lineH }
-        } else if ( not(nomH) && line.type == 'nom') {
-          nomH = lineH
-        }
-      })
+    // this._lineheight = 19
+    // return
+    /**
+     |  On construit un extrait fictif de scénario pour pouvoir 
+     |  mesurer les hauteurs des lignes
+     */
+    const linesFictives = [
+        ['INT. SALON - JOUR', 'intitule']
+      , ['Une action courte.', 'action']
+      , ['Une action beaucoup plus longue pour qu’elle puisse '+
+          'exécder la longueur de la ligne normale et passer en '+
+          'dessous si possible', 'action']
+      , ['JOHN', 'nom']
+      , ['Je voudrais bien t’y voir !', 'dialogue']
+      , ['EXT. RUE - NUIT', 'intitule']
+      , ['Encore une action croute.', 'action']
+      , ['Et puis une autre', 'action']
+      , ['JOHN', 'nom']
+      , ['Un dialogue assez long pour qu’il passe lui aussi sur '+
+        'plusieurs lignes en tout cas au moins trois ça serait '+
+        'vraiment pas mal', 'dialogue']
+      , ['VAL', 'nom']
+      , ['Non, il n’y a plus rien à faire', 'dialogue']
+    ]
+    const divScene = DCreate('DIV', {id:'scene-1', class:'scene ASUPPRIMER'})
+    this.previewer.content.appendChild(divScene)
+    var maxLineHeight, lineHeights = [];
+    var iScene = 0, height, parag, span ;
+    linesFictives.forEach(dline => {
+      const [text, ltype] = dline
+      parag = DCreate('DIV', {class:'sline ' + ltype })
+      if ( ltype == 'intitule' ) {
+        const num = DCreate('SPAN', {text:++iScene, class:'scene-number'})
+        parag.appendChild(num)
+      }
+      span = DCreate('SPAN', {text: text})
+      parag.appendChild(span)
+      divScene.appendChild(parag)
+      // Hauteur
+      height = parag.offsetHeight
+      maxLineHeight || (maxLineHeight = height + height / 2)
+      if ( height > 2 * maxLineHeight ) {
+        height = height / 3
+      } else if ( height > maxLineHeight ) {
+        height = height / 2
+      }
+      lineHeights.push(height)
     })
 
-    var ary = []
-    intituleH && ary.push(intituleH)
-    actionH   && ary.push(actionH)
-    nomH      && ary.push(nomH)
-    if ( ary.length ) {
-      const LH = ary.reduce((a,b) => a + b) / ary.length
-      this.log.debug("Hauteur moyenne d'une ligne : " + LH)
-      return LH
-    } else {
-      console.error("Impossible de calculer la hauteur des lignes, pas assez de lignes.")
-    }
+    const LH = (lineHeights.reduce((a,b) => a + b) / lineHeights.length).toFixed(2)
+    this.log.debug("Line Average Height: " + LH)
+    this._lineheight = LH
+    /*
+    |  Détruire la scène fictive
+    */
+    divScene.remove()
   }
 
+
+  get titre(){ return this.infos.titre_scenario }
 }
 
 

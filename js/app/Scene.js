@@ -8,11 +8,24 @@
 
 
 class Scene {
-  
+
+  static get log(){
+    return this._log || (this._log = new LogClass('Scene'))
+  }
+
   // Nouvel Identifiant de scène
   static getNewId(){
     if (undefined == this._lastId ) this.lastId = 0
     return ++ this._lastId
+  }
+
+  // Pour récupérer le dernier ID au chargement du scénario
+  static setLastId(id){
+    if ( id > this._lastId ) { this._lastId = id }    
+  }
+
+  static resetAll(){
+    this._lastId = 0
   }
 
 
@@ -27,17 +40,16 @@ class Scene {
     this.sceneData  = data.sceneData || {}
   }
 
+  get log() { return this.constructor.log }
+
+  get inspect(){ 
+    return this._inspect || (this._inspect = `Scène n°${this.numero} (${this.f_summary.substring(0, 100)})`)
+  }
 
   get numero(){ return this.index + 1 }
 
   /**
    * Affichage de la scène dans la fenêtre de preview
-   * 
-   * Note : auparavant, on demandait aussi l'affichage dans la 
-   * timeline ici, mais ça génère une erreur car pour afficher dans
-   * la timeline, il faut pouvoir calculer la hauteur moyenne d'une
-   * ligne et cette hauteur moyenne ne peut se calculer qu'après 
-   * avoir affiché toutes les scènes.
    * 
    */
   display(){
@@ -58,6 +70,7 @@ class Scene {
   /**
    * Mise en édition de la scène
    * 
+   * Note : toujours dans la console courante.
    */
   edit(){
     console.info("[Scene.edit] Édition de la scène #%i (%s)", this.id, this.extrait)
@@ -94,10 +107,12 @@ class Scene {
       this.resetLiveValues()
       this.display()
       this.timelineScene.positionne()
+      /*
+      |  Si la longueur de la scène a changé, il faut rectifier les
+      |  scène suivantes (dans la timeline relative)
+      */
       if ( oldLinesCount != this.LinesCount ) {
-        // console.log("La longueur de la scène a changé, il faut rectifier les scènes suivantes.")
         Scenario.current.repositionneScenesFromIndex(this.index + 1)
-        // Rectification des scènes suivantes dans la timeline relative.
       }
     }
   }
@@ -282,7 +297,7 @@ class Scene {
 
   // @return la scène précédente
   get previousScene(){
-    return Scenario.current.scenes[this.index - 1]
+    return this.scenario.scenes[this.index - 1]
   }
 
   // --- MÉTHODES DE DONNÉES (RACCOURCIS) ---
@@ -307,15 +322,15 @@ class Scene {
    * 
    */
   get relativeDuree(){
-    this.calcLinesAndPagesCount()
+    this.calc_LinesAndPagesCount()
     return this.PagesCount
   }
 
   get PagesCount(){
-    return this._pagescount || this.calcLinesAndPagesCount().pages
+    return this._pagescount || this.calc_LinesAndPagesCount().pages
   }
   get LinesCount(){
-    return this._linescount || this.calcLinesAndPagesCount().lines
+    return this._linescount || this.calc_LinesAndPagesCount().lines
   }
 
   /**
@@ -324,9 +339,9 @@ class Scene {
    *  this.LinesCount   Nombre de lignes (Integer)
    *  this.PagesCount   Nombre de pages (flottant)
    */
-  calcLinesAndPagesCount(){
+  calc_LinesAndPagesCount(){
     var count = 0
-    var hmoyline = Scenario.current.LINE_HEIGHT
+    var hmoyline = this.scenario.LineHeight
     this.lines.forEach(sline => {
       switch(sline.type){
       case 'intitule':
@@ -346,7 +361,7 @@ class Scene {
     this._linescount = count
     const nbLinesPerPage = Preferences.get('nombre_lignes_per_page')
     this._pagescount = Number.parseFloat(count / nbLinesPerPage).toFixed(2)
-    // console.log("Scène %i, lines = %i, pages = %s", this.index + 1, this.LinesCount, this.PagesCount)
+    this.log.debug('Scène n°'+this.numero+' : lines: ' + this._linescount + ' / pages: ' + this._pagescount)
     
     return {pages:this._pagescount, lines:this._linescount}
   }
@@ -359,8 +374,8 @@ class Scene {
 class SceneLine {
   constructor(data){
     this.data       = data
-    this.scenario   = data.scenario || Scenario.current
     this.scene      = data.scene
+    this.scenario   = data.scenario||this.scene.scenario
     this.type       = data.type
     this.rawContent = data.rawContent
     this.content    = data.content

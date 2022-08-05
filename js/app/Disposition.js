@@ -16,8 +16,11 @@ class Disposition {
   }
 
   /**
-   * Au chargement d'un nouveau scénario, on initialise tout
+   * Destruction de tous les contenus des cadres (*)
    * 
+   * (*) Attention, cette méthode n'est pas encore utilisée et elle
+   *     fait planter l'app au chargement du scénario si elle est 
+   *     utilisée.
    */
   static resetAll(){
     Cadre.Dispo.forEachContent('destroy')

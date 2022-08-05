@@ -13,13 +13,23 @@ class InCadre {
    * 
    */
   static resetAll(){
+    this.log.in('::resetAll')
+    for(var type in this.allByType){
+      this.allByType[type].forEach(incadre => {
+        incadre.section && incadre.section.remove()
+        // incadre._content && (incadre._content.innerHTML = '');
+        // console.log("incadre dans allByType", incadre, incadre._content, incadre._content && incadre._content.innerHTML)
+      })
+    }
     delete this._allbytype
     delete this._panneau_infos
     delete this._panneau_prefs
     delete this._panneau_todo
+    this.log.out('::resetAll')
   }
 
   static get(key, cadre) {
+    this.log.in('::get(key = '+key+', cadre='+(cadre && cadre.inspect)+')')
     let panneau ;
     switch(key){
     case 'console':
@@ -72,7 +82,7 @@ class InCadre {
 
 
   constructor(type, cadre){
-    this.log.in('#constructor avec (type = '+type+', cadre = ' + (cadre?cadre.inspect:null) + ')')
+    this.log.in('#constructor avec (type = ' + type + ', cadre = ' + (cadre?cadre.inspect:null) + ')')
     this.type   = type
     this.cadre  = cadre
     this.id     = `${this.type}-${new Date().getTime()}`
@@ -93,6 +103,14 @@ class InCadre {
     container.appendChild(this.section)
     this.buildTypeContentButton()
     this.observe()
+  }
+
+  /**
+   * Pour détruire l'inCadre
+   * 
+   */
+  destroy(){
+    this.section.remove()
   }
 
   get section() { return this._section || (this._section = DGet(`section#${this.id}`))}
@@ -187,56 +205,3 @@ class InCadre {
   }
 
 }
-
-
-//#######################   TESTS   ################################
-var test, result ;
-
-/**
- * Un test pour voir si le panneau filtre se met bien (suite à un
- * bug qui l'empêche de se construire au bon endroit)
- * 
- */
-test = new InsideTest({
-    error: 'Le filtre %{devrait} se construire au bon endroit (avec la disposition %{sujet})'
-  , eval: function(dispoId){
-        if ( ! Scenario.current ){ 
-          ITFactory.makeCurrentScenario()
-        }
-        // Cadre.dispose(dispoId)
-        /*
-          Voyons ce qu'il y a dans les différents quarts
-        */
-        [TL, TR, BL, BR].forEach(quart => {
-          console.log("quart = %s", quart)
-          console.log("INCADRE dans le quart %s", quart, Cadre.cadre(quart))
-        })
-
-        const incadre   = Cadre.cadre('top_right').content
-        // On simule un choix du panneau filtre
-        incadre.onClickButtonTypeContent(
-            ITFactory.typeContentButton('filter')
-          , InsideTest.FAKE_EVENT
-        )
-        // Le contenu doit être bien placé
-        const newIncadre = Cadre.cadre('top_right').content
-        const cadre2 = DGet('#cadre-2.cadre')
-        const sectionTR = DGet('section.filter', cadre2)
-        // Check : les divs des filtres sont bien placés
-        const divs = DGetAll('div.div-filtre', cadre2)
-        if ( Array.from(divs).length > 3 ) {
-          // Il y a bien les div de filtre
-        } else {
-          InsideTest.current.error = "Ne contient pas les divs"
-          return false
-        }
-        return true
-      }
-})
-
-test.with(1 /* disposition 1 left - 1 right */)
-/*
-test.with(2) // 1 top 1 bottom
-test.with(3) // 1 top 2 bottom
-test.with(6) // 1 left 2 right
-//*/

@@ -24,15 +24,24 @@ function raise(foo) { throw foo }
 
 /**
  * Retourne la version JSON de +foo+
- * Utile car de nombreuses comparaison, comme celle de Array, ne
- * fonctionnent pas simplement
+ * Utile car de nombreuses comparaisons, comme celle de Array, ne
+ * fonctionnent pas simplement.
+ * 
+ * @param foo {Any} La chose à stringifier
+ * @param noCatch {Boolean} Si true, le traitement dans le catch sera
+ *                sauté. Cela est nécessaire pour éviter la boucle 
+ *                infinie dans le cas ou App.JStringEpure est utili-
+ *                sée.
  */
-function JString(foo){
+function JString(foo, noCatch){
   try {
     return JSON.stringify(foo)
   } catch(err) {
-    if ( 'function' == typeof foo.inspect ) {
+    if ( noCatch ) return foo
+    if ( 'string' == typeof foo.inspect ) {
       return foo.inspect
+    } else if ( 'function' == typeof App.JStringEpure ) {
+      return JString(App.JStringEpure(foo), true)
     } else {
       Log.warn("Impossible de jsonner : ", foo)
     }

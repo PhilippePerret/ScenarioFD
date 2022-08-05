@@ -10,12 +10,22 @@
  */
 class Personnage extends ScenarioElement {
 
+  static get log(){
+    return this._log || (this._log = new LogClass('InsideTest'))
+  }
+
   static get PROPS_NOT_SAVED(){
     return this._propsnotesaved || (this._propsnotesaved = ['scenario'])
   }
   
   constructor(data){
     super(data)
+  }
+
+  get log(){ return this.constructor.log }
+
+  get inspect(){
+    return this._inspect || (this._inspect = `${this.pseudo} (perso)`)
   }
 
   get key()     { return this.pseudo } // ListManager key

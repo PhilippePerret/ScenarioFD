@@ -55,6 +55,7 @@ class ListManager {
       this.log.debug("Élément déjà connu du listManager " + this.name + ' : ' + JString(item))
       return false
     }
+    // console.log("item dans push : ", item)
     this.log.debug("Ajout d'un élément au listManager " + this.name + ' : ' + JString(item))
     this.Map.set(key_item, item)
     return true

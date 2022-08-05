@@ -97,11 +97,11 @@ class Cadre {
   }
 
   /**
-   * Méthode qui applique la disposition choisie (dispositionIndex)
+   * Méthode qui applique la disposition choisie (+dispoIndex+)
    * 
    */
-  static dispose(dispositionIndex){
-    this.log.in('::dispose(dispositionIndex = '+dispositionIndex+')')
+  static dispose(dispoIndex){
+    this.log.in('::dispose(dispoIndex = '+dispoIndex+')')
     
     this.reset()
     this.container.innerHTML = ''
@@ -110,13 +110,13 @@ class Cadre {
     /*
     |  On crée une nouvelle disposition
     */
-    this.Dispo = new Disposition({index:dispositionIndex, previousDispo:this.Dispo})
+    this.Dispo = new Disposition({index:dispoIndex, previousDispo:this.Dispo})
     this.Dispo.build()
 
     /*
     |   Affichage du bouton de la disposition courante
     */
-    this.activePictoDispo(dispositionIndex)
+    this.activePictoDispo(dispoIndex)
     this.log.debug("= Disposition des cadres effectuée : ", this.Dispo)
   }
 

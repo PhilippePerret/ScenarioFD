@@ -3,14 +3,15 @@
  * 
  * Class PreviewClass -> Preview
  * ----------------------
- * Gestion de la Preview
+ * Gestion de la Preview, pour visualiser l'affichage d'une scène.
  * 
- * class ScenePreview
- * ------------------
- * Gestion de l'affichage d'une scène
  * 
  */
 class Preview extends InCadre {
+
+static get log(){
+  return this._log || (this._log = new LogClass('Preview'))
+}
 
 static get all(){
   return this._all || []
@@ -26,9 +27,15 @@ static set current(p){
 }
 
 static add(previewer){
-  // console.log("Ajout du previewer ", previewer)
+  this.log.in('::add(previewer='+previewer.inspect+')')
   if (undefined == this._all) this._all = []
   this._all.push(previewer)
+}
+
+static resetAll(){
+  this.log.in('::resetAll')
+  this.all.forEach(pre => pre.cleanUp())
+  this.log.out('::resetAll')
 }
 
 
@@ -41,6 +48,8 @@ constructor(cadre){
   this.scenes = {} ; // table des {ScenePreview}
   Preview.add(this)
 }
+
+get log(){ return this.constructor.log }
 
 cleanUp(){
   this.content.innerHTML = ''
@@ -69,16 +78,16 @@ displayScene(scene){
   if ( curObjetScene ) {
     // On doit la remplacer (actualisation)
     pscene.update()
-    this.content.replaceChild(pscene.objet, curObjetScene)
+    this.content.replaceChild(pscene.obj, curObjetScene)
   } else {
     // On doit la construire
     // console.log("this.content.children", this.content.children, typeof this.content.children)
     // console.log("scene.index et child", scene.index, this.content.children[scene.index])
     const childBefore = this.content.children[scene.index]
     if ( childBefore ) {
-      this.content.insertBefore(pscene.objet, childBefore)
+      this.content.insertBefore(pscene.obj, childBefore)
     } else {
-      this.content.appendChild(pscene.objet)
+      this.content.appendChild(pscene.obj)
     }
   }
   pscene.observe()
@@ -165,87 +174,3 @@ get btnAddScene(){
 }
 
 }// class Preview
-
-
-
-//###################################################################
-
-
-
-class ScenePreview {
-  constructor(scene){
-    this.scene = scene
-    this.scene.previewScene = this
-  }
-
-  edit(e){
-    if ( not(this.scene.isEdited) ) {
-      this.scene.edit(e)
-      this.select()
-    } else {
-      this.previewer.selection.toggle(this, e.shiftKey)
-    }
-    return stopEvent(e)
-  }
-
-  /**
-   * Pour sélectionner la scène
-   */
-  select(){
-    this.previewer.selection.set(this)
-  }
-
-  // Raccourci
-  get previewer(){ return this.scene.previewer }
-
-  setSelected(){
-    this.obj.classList.add('selected')
-    this.scene.timelineScene.setSelected()
-    $('.num-scene-selected').text(this.scene.numero)
-    this.showButtonsAddScene()
-  }
-  unsetSelected(){
-    this.obj.classList.remove('selected')
-    this.scene.timelineScene.unsetSelected()
-    $('.num-scene-selected').text('')
-    this.hideButtonsAddScene()
-  }
-
-  showButtonsAddScene(){ // dans tous les visualisateurs
-    this.toggleButtonsAddScene(true)  
-  }
-  hideButtonsAddScene(){ // dans tous les visualisateurs
-    this.toggleButtonsAddScene(false)  
-  }
-  toggleButtonsAddScene(showThem){
-    const selector = 'section.preview div.btn-add-scene-selected'
-    const method = showThem ? 'remove' : 'add'
-    DGetAll(selector).forEach(div => div.classList[method]('hidden'))
-
-  }
-  update(){
-    this.obj = null
-  }
-
-  get objet(){ return this.obj || this.build() }
-  
-  build(){
-    this.obj = DCreate('DIV', {
-        id:`scene-${this.scene.id}`
-      , class:'scene'
-    })
-    this.scene.lines.forEach( line => {
-      // console.log("Construction de la ligne", line)
-      this.obj.appendChild(line.preview) 
-    })
-
-    return this.obj
-  }
-
-  observe(){
-    this.obj.addEventListener('click', this.edit.bind(this))
-  }
-
-
-
-}//class ScenePreview
