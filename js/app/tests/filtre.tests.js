@@ -27,7 +27,19 @@ var tests = [], test ;
 test = new InsideTest({
     error: 'La page devrait bien afficher le filtre.'
   , eval: function(){
+
+      Scenario.resetAll()
+      /*
+      |  Pour voir l'état des choses après un resetAll
+      */
+      ;[TL, TR, BL, BR].forEach(quart => {
+        console.log("Cadre.cadre(%s) = ", quart, Cadre.cadre(quart))
+        console.log("Cadre.content(%s) = ", quart, Cadre.content(quart))
+        Cadre.content(quart).content.remove()
+      })
+      return
       ITFactory.makeCurrentScenario(DataScenarioForFiltre)
+
       return false
     }
 })
