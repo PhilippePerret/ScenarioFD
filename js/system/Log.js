@@ -32,7 +32,7 @@ const LOG_DEBUG         = 32
 const LOG_INFO          = 64
 const LOG_IOFUNCTION    = 128
 //----------------------------
-const LOG_NONE          = 0
+const LOG_NONE          = -1
 const LOG_ALL = LOG_NOTICE|LOG_WARNING|LOG_ERROR|LOG_FATAL_ERROR|LOG_INSIDE_TEST|LOG_DEBUG|LOG_INFO|LOG_IOFUNCTION
 
 

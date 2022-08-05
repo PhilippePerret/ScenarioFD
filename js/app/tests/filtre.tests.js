@@ -13,7 +13,7 @@ const DataScenarioForFiltre = {
 
     scenes: [
         {sceneId:'3', content:":INT. VALISE - JOUR\nJOHN est caché dans sa valise.\nJOHN:\n  Tu ne me trouveras pas."}
-      , {sceneId:'1', content:":EXT. CHAMBRE - JOUR\nVALENTINE cherche dans la chambre.\nVALENTINE:\n  Mais si je vais te trouverai."}
+      , {sceneId:'1', content:":EXT. CHAMBRE - JOUR\nVALENTINE cherche dans la chambre.\nVALENTINE:\n  Mais si je vais te trouver."}
       , {sceneId:'2', content:":INT. CUISINE - JOUR\nLa MÈRE prépare des cookies avec soin.\nElle cherche un accessoire dans ses tiroirs."}
     ]
   , infos: {
@@ -28,17 +28,19 @@ test = new InsideTest({
     error: 'La page devrait bien afficher le filtre.'
   , eval: function(){
 
-      Scenario.resetAll()
-      /*
-      |  Pour voir l'état des choses après un resetAll
-      */
-      ;[TL, TR, BL, BR].forEach(quart => {
-        console.log("Cadre.cadre(%s) = ", quart, Cadre.cadre(quart))
-        console.log("Cadre.content(%s) = ", quart, Cadre.content(quart))
-        Cadre.content(quart).content.remove()
-      })
-      return
+      // Un scénario est déjà courant, normalement. On prend le
+      // nouveau pour cette partie.
       ITFactory.makeCurrentScenario(DataScenarioForFiltre)
+
+      const consoleCourante = Console.current
+      const btnChangeType = consoleCourante.btnTypeContent
+      // Faire apparaitre les types
+      btnChangeType.classList.remove('hidden')
+      // On choisit l'incadre 'filtre' dans le cadre qui contient 
+      // pour le moment la console.
+      mouse.clickOn('section.console div.toolsbar button.btn-type-content div[data-content="filter"]')
+
+      page.contains('section.filter')
 
       return false
     }

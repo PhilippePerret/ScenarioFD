@@ -5,7 +5,8 @@ $(document).ready(e => {
   // Log.level = null // normal
   if ( INSIDE_TESTS ) {
     // Log.level = LOG_INSIDE_TEST|LOG_FATAL_ERROR|LOG_ERROR
-    Log.level = LOG_ALL
+    // Log.level = LOG_ALL
+    Log.level = LOG_FATAL_ERROR
   } else {
     Log.level = LOG_DEBUG|LOG_INFO|LOG_IOFUNCTION
   }

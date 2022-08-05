@@ -84,8 +84,9 @@ class Scenario {
   constructor(data){
     data = data || {scenes:[]}
     this.data       = data
-    this.scenes     = this.makeInstancesScenes(data.scenes)
     this.previewer  = data.previewer || Preview.current
+    this.previewer.cleanUp()
+    this.scenes     = this.makeInstancesScenes(data.scenes)
     this.options    = data.options
     this.infos      = data.infos || {appVersion: Scenario.appVersion, created_at:null, updated_at:null}
   }

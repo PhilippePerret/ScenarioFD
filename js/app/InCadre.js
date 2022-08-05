@@ -68,6 +68,7 @@ class InCadre {
    * 
    */
   static add(incadre){
+    return
     if (undefined == this._allbytype) this._allbytype = {}
     if (undefined == this._allbytype[incadre.type]) { 
       Object.assign(this._allbytype, {[incadre.type]: []})
@@ -96,12 +97,16 @@ class InCadre {
   }
 
   buildIn(container){
+    console.log("-> buildIn", container)
     container.innerHTML = ''
     this.section  = DGet(`section.${this.type}.in-cadre`).cloneNode(true)
     this.section.id = this.id
     if ( 'function' == typeof this.onBuilding ) this.onBuilding.call(this)
     container.appendChild(this.section)
     this.buildTypeContentButton()
+    if ( 'function' == typeof this.afterBuildIn ) {
+      this.afterBuildIn.call(this)
+    }
     this.observe()
   }
 
@@ -113,7 +118,7 @@ class InCadre {
     this.section.remove()
   }
 
-  get section() { return this._section || (this._section = DGet(`section#${this.id}`))}
+  get section() { return this._section /*|| (this._section = DGet(`section#${this.id}`))*/}
   set section(v){ this._section = v }
   get content() { return this._content   || (this._content  = DGet('div.content', this.section))}
   get toolsbar(){ return this._toolsbar || (this._toolsbar = DGet('div.toolsbar', this.section))}

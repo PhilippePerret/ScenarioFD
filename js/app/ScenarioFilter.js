@@ -8,12 +8,14 @@ class ScenarioFilter extends InCadre {
 
   constructor(cadre){
     super('filter', cadre)
-    this.build().observe()
+    console.log("this.content (à l'instanciation)", this.content)
+    console.log("this.section (à l'instanciation)", this.section)
   }
 
 
-  build(){
+  afterBuildIn(){
     this.isBuilt = false
+    this._content = null
     console.log("-> ScenarioFilter#build dans ", this.content)
     const o = this.content
     Object.values(this.DATA_FILTRE).forEach( dfiltre => {

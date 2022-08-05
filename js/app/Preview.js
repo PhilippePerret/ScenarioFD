@@ -52,13 +52,13 @@ constructor(cadre){
 get log(){ return this.constructor.log }
 
 cleanUp(){
+  this.scenes = {}
   this.content.innerHTML = ''
 }
 
 get selection(){
   return this._selection || (this._selection = new SelectionManager(this))
 }
-
 
 /**
  * Affichage à l'écran de la scène +scene+ {Scene}

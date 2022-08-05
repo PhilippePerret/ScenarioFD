@@ -25,7 +25,9 @@ class HTMLPageClass {
 export const page = new HTMLPageClass()
 
 class MouseClass {
-
+  clickOn(selector){
+    document.querySelector(selector).click()
+  }
 }
 export const mouse = new MouseClass()
 

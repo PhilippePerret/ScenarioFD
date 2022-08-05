@@ -7,6 +7,5 @@ import './filtre.tests.js'
 
 
 $(document).ready(e => {
-  Log.level = LOG_ALL
   InsideTest.run()
 })
