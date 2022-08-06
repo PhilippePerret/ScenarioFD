@@ -33,7 +33,7 @@ $(document).ready(e => {
 
 // Méthode appelée après le chargement du scénario, pour tests et
 // essais divers
-function afterScenarioLoading(){
+function afterScenarioIsLoaded(){
 
 
 }

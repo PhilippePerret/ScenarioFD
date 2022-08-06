@@ -20,7 +20,7 @@ class Scenario {
     Preferences.setValues(data.preferences) // et les applique
     this.current.edit()
     Timeline.onLoadScenario(this.current)
-    afterScenarioLoading()
+    afterScenarioIsLoaded()
   }
 
   /**
