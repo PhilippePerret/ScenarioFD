@@ -19,14 +19,14 @@ Ils sont chacun repérés par deux lettres : **B** pour **bottom**, **T** pour *
 
 ### Hiérarchie
 
-* La **Disposition** est l’instance qui contient la configuration actuelle des cadres. On peut créer une infinité de dispositions.
+* La **Disposition** est l’instance qui contient la configuration actuelle des cadres. On peut créer une infinité de dispositions (instances `DefinedDisposition < Disposition`) à partir des dispositions de base (instances `Disposition`).
   * Caractéristiques :
-    * `id` : identifiant, pour récupérer la disposition
-    * `key` : la clé dans `DATA_DISPOSITION`, qui permet de savoir comment les cadres sont organisés dans la disposition.
+    * `id` : identifiant, pour récupérer la disposition définie (`dispoId` dans le programme)
+    * `key` : la clé dans `DATA_DISPOSITION`, qui permet de savoir comment les cadres sont organisés dans la disposition. (`dispoKey` dans le programme).
     * les contenus de cadre (`{InCadre}`) propres à cette disposition particulière.
   * Données fixes (définies dans `DATA_DISPOSITIONS`)
-    * la position des cadres et leurs interactions.
-  * Données variables : 
+    * la position des cadres et leurs interactions lors du redimensionnement.
+  * Données variables (enregistrées dans la donnée `dispositions` du scénario) : 
     * les contenus de ses cadres,
     * les dimensions de ses cadres.
   * Enfants directs : les Cadres (instances `{Cadre}`.

@@ -17,6 +17,17 @@ class Disposition {
 
   static get items(){return this._items || (this._items = {})}
 
+
+  /**
+   * Raccourci pour obtenir le cadre courant d'un quart
+   * 
+   * "Raccourci" dans le sens où on prend le cadre dans la disposition
+   * courante.
+   */
+  static cadre(quart){
+    return this.current.cadre(quart)
+  }
+
   /**
    * Appelée au tout démarrage de l'application, avant même qu'un
    * scénario soit chargé.
@@ -65,6 +76,11 @@ class Disposition {
     this.log.in('::dispositionApply(dispoKey = '+dispoKey+', dispoId = '+dispoId+')')
     
     this.current && this.current.hide()
+
+    /*
+    |  On affine toujours les dimensions du container principal
+    |  en fonction de la taille de l'interface (fenêtre)
+    */
     this.affineContainerSize()
 
 
@@ -92,8 +108,8 @@ class Disposition {
    * 
    */
   static affineContainerSize(){
-    this.container.style.height = `${UI.Height - UI.TimelineHeight}px`
-    this.container.style.width  = `${UI.Width  - UI.ToolsbarWidth - 12}px`    
+    this.mainContainer.style.height = `${UI.Height - UI.TimelineHeight}px`
+    this.mainContainer.style.width  = `${UI.Width  - UI.ToolsbarWidth - 12}px`    
   }
 
   /**
@@ -142,16 +158,16 @@ class Disposition {
     return this._btndispo || (this._btndispo = DGet('button#cadres-disposition'))
   }
 
-  static get container(){
-    return this._cont || (this._cont = DGet('section#cadres_container'))
+  static get mainContainer(){
+    return this._maincont || (this._maincont = DGet('section#cadres_container'))
   }
 
   // ------------ VOLATILES PROPERTIES ----------------
 
   static get Height() {return UI.Height - UI.TimelineHeight - DOUBLE_BORDER_WIDTH}
   static get Width()  {return UI.Width  - UI.ToolsbarWidth - DOUBLE_BORDER_WIDTH}
-  static get height() {return this.container.offsetHeight}
-  static get width()  {return this.container.offsetWidth}
+  static get height() {return this.mainContainer.offsetHeight}
+  static get width()  {return this.mainContainer.offsetWidth}
 
   // ------- MÉTHODES D'OBSERVATION --------
 
@@ -180,7 +196,42 @@ class Disposition {
     return stopEvent(e)
   }
 
-  // ------ MÉTHODES DE CONSTRUCTION ------
+  // ------ MÉTHODES DE DOM ------
+
+
+  /**
+   * Méthode appelée quand on redimensionne la fenêtre
+   * 
+   */
+  static onResizeWindow(e){
+    if ( !this.Dispo ) return stopEvent(e)
+    let cadreTR = this.Dispo.cadre(TR)
+    let cadreBL = this.Dispo.cadre(BL)
+    let cadreBR = this.Dispo.cadre(BR)
+    // if ( cadreBL == cadreBR ) cadreBR = null ;
+
+    if ( undefined == this.initWidth) {
+      this.initWidth  = UI.Width
+      this.initHeight = UI.Height
+      this.cadreTRInitWidth   = cadreTR.width
+      this.cadreBLInitHeight  = cadreBL.height
+      this.cadreBRInitHeight  = cadreBR.height
+      this.cadreBRInitWidth   = cadreBR.width
+    }
+
+    const diffWidth  = UI.Width - this.initWidth
+    const diffHeight = UI.Height - this.initHeight
+
+    if ( diffWidth ) {
+      cadreTR.setWidth(this.cadreTRInitWidth + diffWidth)
+      cadreBR.setWidth(this.cadreBRInitWidth + diffWidth)
+    }
+    if ( diffHeight ) {
+      cadreBL.setHeight(this.cadreBLInitHeight + diffHeight)
+      cadreBR.setHeight(this.cadreBRInitHeight + diffHeight)
+    }
+
+  }
 
   /**
    * Fabrication des boutons pour les dispositions
@@ -234,6 +285,7 @@ class Disposition {
 
 
   constructor(dispoKey){
+    this.Klass = 'Disposition'
     this.dispoKey = dispoKey
     this.data     = DATA_DISPOSITIONS[dispoKey]
   }
@@ -242,34 +294,26 @@ class Disposition {
 
   build(){
     /*
+    |   Instantiation des cadres
+    */
+    this._cadres || this.instancieCadres()
+    /*
     |  Le container principal de la disposition
     */
     this.container = DCreate('DIV', {class:'disposition', id:this.domId})
-    Disposition.container.appendChild(this.container)
-
+    Disposition.mainContainer.appendChild(this.container)
+    /*
+    |  Construction de ses cadres (see below)
+    */
     this.buildCadres()
-
+    /*
+    |  Building mark
+    */
     this.isBuilt = true
   }
 
   buildCadres(){
-    this.data.cadres.map( dcadre => {
-      const cadre = new Cadre(Object.assign(dcadre, {disposition: this}))
-      cadre.build_and_observe()
-      const incadre = cadre.content
-      /*
-      |  On mémorise le contenu de chaque cadre
-      */
-      dcadre.quarts.forEach( quart => {
-        Object.assign(this.quarts[quart], {cadre:cadre, content:incadre})
-      })
-      /*
-      |  On mémorise les instances de contenus (instance de preview
-      |  ou de console, etc.) pour pouvoir les remettre en cas de
-      |  changement de disposition.
-      */
-      Object.assign(this.contents, {[incadre.type]: incadre})
-    })
+    this.forEachCadre( cadre => cadre.build().observe() )
   }
 
   /**
@@ -286,60 +330,49 @@ class Disposition {
   }
 
   /**
-   * Pour appliquer à chaque contenu défini
-   * (note : donc passe les contenus non définis)
+   * Pour appliquer à chaque cadre de la disposition
    * 
    * @param method  {String} La méthode InCadre à appeler sur chaque contenu
    *                {Function} La fonction à laquelle il faut envoyer le contenu {InCadre}
    */
-  forEachContent(method){
-    Object.values(this.contents).forEach(incadre => {
-      if ( !incadre ) return
+  forEachCadre(method){
+    for(var quart in this.cadres) {
+      const cadre = this.cadres[quart]
       if ( 'string' == typeof method ) {
-        incadre[method].call(incadre)
+        cadre[method].call(cadre)
       } else /* une fonction */ { 
-        method.call(incadre)        
+        method.call(null, cadre)        
       }
-    })
+    }
   }
 
   /**
    * Retourne le cadre {Cadre} qui se trouve sur le quart +quart+ de
    * la disposition.
    */
-  cadre(quart){
-    return this.quarts[quart].cadre
-  }
+  cadre(quart){ return this.cadres[quart] }
 
   /**
    * @return le contenu {InCadre} qui se trouve sur le quart +quart+
    * de la disposition.
    */
-  content(quart){
-    return this.quarts[quart].content
+  incadre(quart){
+    return this.cadres[quart].incadre
   }
 
-  get quarts(){
-    return this._quarts || (this._quarts = {
-        [TL]: {cadre:null, content:null}
-      , [TR]: {cadre:null, content:null}
-      , [BL]: {cadre:null, content:null}
-      , [BR]: {cadre:null, content:null}
-    })
-  }
-
-  get contents(){
-    return this._contents || (this._contents = {
-        'preview':    null
-      , 'console':    null
-      , 'navigator':  null
-      , 'panneau':    null
-    })
-  }
-
+  get cadres(){ return this._cadres }
 
   get domId(){
     return this._domId || (this._domId = `disposition-${this.dispoKey}`)
+  }
+
+
+  instancieCadres(){
+    this._cadres = {}
+    this.data.cadres.map( dcadre => {
+      const cadre = new Cadre(Object.assign(dcadre, {disposition: this}))
+      Object.assign(this._cadres, {[dcadre.id]: cadre})
+    })
   }
 
 }//class Disposition
@@ -361,6 +394,7 @@ class DefinedDisposition extends Disposition {
    */
   constructor(dispoData){
     super(dispoData.dispoKey)
+    this.Klass = 'DefinedDisposition'
     this.dispoId = dispoData.dispoId
   }
 
@@ -370,3 +404,6 @@ class DefinedDisposition extends Disposition {
   }
 
 }
+
+window.onresize = Disposition.onResizeWindow.bind(Cadre)
+

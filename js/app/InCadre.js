@@ -184,7 +184,7 @@ class InCadre {
    * 
    */
   onClickButtonTypeContent(div, e) {
-    this.cadre.setInCadre(div.dataset.content)
+    this.cadre.setIncadre(div.dataset.content)
     return stopEvent(e)
   }
 

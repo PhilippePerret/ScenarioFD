@@ -35,46 +35,13 @@ class Cadre {
 
 
 
-  /**
-   * Méthode appelée quand on redimensionne la fenêtre
-   * 
-   */
-  static onResizeWindow(e){
-    if ( !this.Dispo ) return stopEvent(e)
-    let cadreTR = this.Dispo.cadre(TR)
-    let cadreBL = this.Dispo.cadre(BL)
-    let cadreBR = this.Dispo.cadre(BR)
-    // if ( cadreBL == cadreBR ) cadreBR = null ;
-
-    if ( undefined == this.initWidth) {
-      this.initWidth  = UI.Width
-      this.initHeight = UI.Height
-      this.cadreTRInitWidth   = cadreTR.width
-      this.cadreBLInitHeight  = cadreBL.height
-      this.cadreBRInitHeight  = cadreBR.height
-      this.cadreBRInitWidth   = cadreBR.width
-    }
-
-    const diffWidth  = UI.Width - this.initWidth
-    const diffHeight = UI.Height - this.initHeight
-
-    if ( diffWidth ) {
-      cadreTR.setWidth(this.cadreTRInitWidth + diffWidth)
-      cadreBR.setWidth(this.cadreBRInitWidth + diffWidth)
-    }
-    if ( diffHeight ) {
-      cadreBL.setHeight(this.cadreBLInitHeight + diffHeight)
-      cadreBR.setHeight(this.cadreBRInitHeight + diffHeight)
-    }
-
-  }
-
 
 //###################################################################
 
 
 
 constructor(data){
+  this.Klass        = 'Cadre'
   this.data         = data
   this.disposition  = data.disposition
   this.dispoId      = this.disposition.dispoId || this.disposition.dispoKey
@@ -107,7 +74,8 @@ build(params){
   */
   this.disposition.container.appendChild(this.obj)
   this.positionne()
-  this.buildInCadre()
+  this.buildIncadre()
+  return this // chainage
 }
 
 /**
@@ -122,8 +90,8 @@ build(params){
  * - si le type de contenu n'ex
  * 
  */
-setInCadre(typeContent){
-  this.log.in('#setInCadre(typeContent = ' + typeContent + ')')
+setIncadre(typeContent){
+  this.log.in('#setIncadre(typeContent = ' + typeContent + ')')
   /*
   |  On efface le contenu courant
   */
@@ -148,7 +116,7 @@ setInCadre(typeContent){
   /*
   |  On peut mettre ce contenu dans le cadre et le régler
   */
-  this.buildInCadre(incadre)
+  this.buildIncadre(incadre)
   /*
   |  Observation (notamment pour changer la taille)
   */
@@ -168,8 +136,8 @@ cleanUp(){
  * ou un nouveau contenu)
  * 
  */
-buildInCadre(incadre){
-  this.log.in('#buildInCadre(incadre = ' + (incadre?incadre.inspect:'null') + ')')
+buildIncadre(incadre){
+  this.log.in('#buildIncadre(incadre = ' + (incadre?incadre.inspect:'null') + ')')
   if ( incadre ) {
     incadre.cadre = this
   } else {
@@ -256,22 +224,22 @@ get expectedWidth(){
   if ( this.isOnTheLeft || this.isOnTheRight ) {
     return px(this.demiContainerWidth)
   } else {
-    return px(Cadre.Width)
+    return px(Disposition.Width)
   }
 }
 get expectedHeight(){
   if ( this.isOnTheTop || this.isOnTheBottom ){
     return px(this.demiContainerHeight)
   } else {
-    return px(Cadre.Height)
+    return px(Disposition.Height)
   }
 }
 
 get demiContainerWidth(){
-  return parseInt(Cadre.Width / 2 ,10)
+  return parseInt(Disposition.Width / 2 ,10)
 }
 get demiContainerHeight(){
-  return parseInt(Cadre.Height / 2 ,10)
+  return parseInt(Disposition.Height / 2 ,10)
 }
 
 get left(){ return this.obj.offsetLeft }
@@ -344,7 +312,5 @@ build_and_observe(params){this.build(params);this.observe()}
 
 // Raccourci (pour les fonctions d'ajustement)
 function cadre(key){
-  return Disposition.current.cadre(key)
+  return Disposition.cadre(key)
 }
-
-window.onresize = Cadre.onResizeWindow.bind(Cadre)

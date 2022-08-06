@@ -4,6 +4,14 @@
 section#cadres_container {
   position: relative;
 }
+section#cadres_container > div.disposition {
+  position: relative;
+  height: inherit;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
 section#cadres_container > div.disposition > div.cadre {
   position: absolute;
   border: 2px solid #CCC;

@@ -1,7 +1,6 @@
 ## EN COURS
 
-* Implémenter la méthode destroy (de InCadre je pense)
-* Implémenter Log pour les messages (système)
+* Au redimensionnement de la fenêtre, il faut calculer le ratio des fenêtres et le conserver (au lieu d'augmenter seulement la dimension du cadre au bord)
 * CORRIGER LES BUGS
 * Faire des tests
   - importation FinalDraft -> Scenario

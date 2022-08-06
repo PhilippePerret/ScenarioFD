@@ -7,14 +7,11 @@ import { InsideTest, page, mouse } from '../../system/inside-test.lib.js'
 
 var tests = [], test ;
 
-
+/*
 test = new InsideTest({
     error: 'Le cadre %{sujet} %{doit} posséder le bon contenu.'
-  , eval:function(quart, expected){
-      // Log.test("Le cadre '" + quart + "' est le " + Cadre.cadre(quart).inspect )
-      // Log.test("Son contenu est " + Cadre.cadre(quart).content.inspect )
-      // console.log("Cadre.cadre(quart).content.type = '%s':%s / expected = '%s':%s", Cadre.cadre(quart).content.type, typeof Cadre.cadre(quart).content.type,  expected, typeof expected)
-      return cadre(quart).content.type
+  , eval:function(quart){
+      return cadre(quart).incadre.type
     }
 })
 tests.push(test)
@@ -22,11 +19,13 @@ test.withExpected('top_left'      , 'preview')
 test.withExpected('top_right'     , 'console')
 test.withExpected('bottom_left'   , 'preview')
 test.withExpected('bottom_right'  , 'console')
+//*/
 
 /*
 |  On simule le chargement d'un scénario et on vérifie qu'il s'affiche
 |  correctement.
 */
+/*
 test = new InsideTest({
     error: 'Le scénario %{devrait} s’afficher correctement.'
   , eval:function(){
@@ -71,3 +70,4 @@ test = new InsideTest({
 })
 tests.push(test)
 test.exec()
+//*/
