@@ -7,7 +7,7 @@
   <link rel="stylesheet" type="text/css" href="css/app/main.css">
   <link rel="stylesheet" type="text/css" href="css/app/preview.css">
   <link rel="stylesheet" type="text/css" href="css/app/Timeline.css">
-  <link rel="stylesheet" type="text/css" href="css/app/Cadre.css">
+  <link rel="stylesheet" type="text/css" href="css/app/Dispositions.css">
   <link rel="stylesheet" type="text/css" href="css/app/common.css">
   <link rel="stylesheet" type="text/css" href="css/system/Tooltip.css">
   <link rel="stylesheet" type="text/css" href="css/system/TableDisplay.css">
@@ -35,6 +35,8 @@
   <script type="module" src="js/app/tests/inside-test.module.js"></script>
   <script type="text/javascript" src="js/system/InsideTest.js"></script>
   <script type="text/javascript" src="js/app/constants.js"></script>
+  <script type="text/javascript" src="js/app/errors_and_messages.fr.js"></script>
+
 
 </head>
 <body>
@@ -77,7 +79,7 @@
 </section>
 
 
-<section class="preview in-cadre hidden">
+<section class="preview incadre hidden">
   <div class="content">[ICI EST AFFICHÉE LA PRÉVISUALISATION]</div>
   <div class="toolsbar">
     <button class="btn-zoom-in">🔎+</button>
@@ -94,7 +96,7 @@
   </div>
 </section>
 
-<section class="console in-cadre hidden">
+<section class="console incadre hidden">
   <div class="content plain">
     <textarea></textarea>
   </div>
@@ -104,7 +106,7 @@
   </div>
 </section>
 
-<section class="infos in-cadre hidden">
+<section class="infos incadre hidden">
   <div class="content plain">
     <div class="panneau"></div>
   </div>
@@ -113,7 +115,7 @@
   </div>
 </section>
 
-<section class="preferences in-cadre hidden">
+<section class="preferences incadre hidden">
   <div class="content plain">
     <div class="panneau"></div>
   </div>
@@ -123,7 +125,7 @@
 </section>
 
 <!-- PANNEAU RAPPORTS -->
-<section class="report in-cadre hidden">
+<section class="report incadre hidden">
   <div class="content">
       <h2>Rapports</h2>
       [PRODUCTION DE RAPPORTS]
@@ -134,7 +136,7 @@
 </section>
 
 <!-- PANNEAU FILTRE -->
-<section class="filter in-cadre hidden">
+<section class="filter incadre hidden">
   <div class="content">
     <h2>FILTRE</h2>
   </div>
@@ -143,7 +145,7 @@
   </div>
 </section>
 
-<section class="navigator in-cadre hidden">
+<section class="navigator incadre hidden">
   <div class="content plain">
     <h2>Navigateur</h2>
     [LE NAVIGATEUR D'ÉLÉMENT]
@@ -155,13 +157,13 @@
   </div>
 </section>
 
-<section class="console_dev in-cadre hidden">
+<section class="console_dev incadre hidden">
   <div class="content">[CONSOLE DE DÉVELOPPEMENT]</div>
   <div class="toolsbar"></div>
 </section>
 
 <!-- TODO LIST -->
-<section class="todo in-cadre hidden">
+<section class="todo incadre hidden">
   <div class="content">
     <h2>Liste de tâches</h2>
     [TODO LIST DU PROJET]
@@ -185,7 +187,7 @@
   (à mettre dans button#cadres-disposition pour faire les 
    différentes dispositions et les choisis)
 -->
-<div id="modele-mini-cadre" class="mini-cadres hidden" data-index="0">
+<div id="modele-mini-cadre" class="mini-cadres hidden" data-dispoKey="" data-dispoId="">
   <div class="cross-VT mini-cadre-cross hidden"></div>
   <div class="cross-VB mini-cadre-cross hidden"></div>
   <div class="cross-HL mini-cadre-cross hidden"></div>
@@ -207,7 +209,7 @@
 
 <script type="text/javascript" src="js/app/InCadre.js"></script>
 <script type="text/javascript" src="js/app/ScenarioElement.js"></script>
-<script type="text/javascript" src="js/app/Cadre_constantes.js"></script>
+<script type="text/javascript" src="js/app/Data_Dispositions.js"></script>
 <script type="text/javascript" src="js/config.js"></script>
 <script type="text/javascript" src="js/app/ready.js"></script>
 <script type="text/javascript" src="js/app/App.js" defer></script>

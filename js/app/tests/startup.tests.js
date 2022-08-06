@@ -14,7 +14,7 @@ test = new InsideTest({
       // Log.test("Le cadre '" + quart + "' est le " + Cadre.cadre(quart).inspect )
       // Log.test("Son contenu est " + Cadre.cadre(quart).content.inspect )
       // console.log("Cadre.cadre(quart).content.type = '%s':%s / expected = '%s':%s", Cadre.cadre(quart).content.type, typeof Cadre.cadre(quart).content.type,  expected, typeof expected)
-      return Cadre.cadre(quart).content.type
+      return cadre(quart).content.type
     }
 })
 tests.push(test)

@@ -14,17 +14,7 @@ class InCadre {
    */
   static resetAll(){
     this.log.in('::resetAll')
-    for(var type in this.allByType){
-      this.allByType[type].forEach(incadre => {
-        incadre.section && incadre.section.remove()
-        // incadre._content && (incadre._content.innerHTML = '');
-        // console.log("incadre dans allByType", incadre, incadre._content, incadre._content && incadre._content.innerHTML)
-      })
-    }
-    delete this._allbytype
-    delete this._panneau_infos
-    delete this._panneau_prefs
-    delete this._panneau_todo
+
     this.log.out('::resetAll')
   }
 
@@ -68,7 +58,6 @@ class InCadre {
    * 
    */
   static add(incadre){
-    return
     if (undefined == this._allbytype) this._allbytype = {}
     if (undefined == this._allbytype[incadre.type]) { 
       Object.assign(this._allbytype, {[incadre.type]: []})
@@ -97,9 +86,8 @@ class InCadre {
   }
 
   buildIn(container){
-    console.log("-> buildIn", container)
     container.innerHTML = ''
-    this.section  = DGet(`section.${this.type}.in-cadre`).cloneNode(true)
+    this.section  = DGet(`section.${this.type}.incadre`).cloneNode(true)
     this.section.id = this.id
     if ( 'function' == typeof this.onBuilding ) this.onBuilding.call(this)
     container.appendChild(this.section)
@@ -196,7 +184,7 @@ class InCadre {
    * 
    */
   onClickButtonTypeContent(div, e) {
-    this.cadre.setContent(div.dataset.content)
+    this.cadre.setInCadre(div.dataset.content)
     return stopEvent(e)
   }
 

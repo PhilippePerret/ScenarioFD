@@ -1,8 +1,6 @@
 'use strict';
 /**
- * class Cadre
- * -----------
- * Gestion complète de l'interface utilisateur
+ * Constantes pour les dispositions et les cadres
  * 
  */
 
@@ -14,29 +12,27 @@ const BR = 'bottom_right'
 const CADRE_BORDER_WIDTH  = 2;
 const DOUBLE_BORDER_WIDTH = 2 * CADRE_BORDER_WIDTH
 
-const CADRES_DISPOSITIONS = {
+const DATA_DISPOSITIONS = {
     1: {
         name: '1-left-1-right'
       , cadres:[
             {
-                id:1
-              , cadre: null // l'instance Cadre
+                id:       TL
+              , quarts:   [TL, BL]
+              , handles:  'e'
+              , cadre:    undefined
               , defaultContent: 'preview'
-              , quarts:[TL, BL]
-              , handles:'e'
               , resizing:function(){
                   cadre(TL).adjustContent()
                   Cadre.alignVerticalBord(TL,TR)
                 }
-              // ,  contres:[TR,BR]
-              // , adjust:()=>{cadre(TL).setRight(cadre(TR).left)}
             }
           , {
-                id:2
-              , cadre: null
+                id:       TR
+              , quarts:   [TR, BR]
+              , handles:  null
+              , cadre:    undefined
               , defaultContent: 'console'
-              , quarts:[TR, BR]
-              , handles:null
               , resizing:function(){
                   cadre(TR).setRight(Cadre.Width)}
                 }
@@ -46,25 +42,21 @@ const CADRES_DISPOSITIONS = {
         name:   '1-top-1-bottom'
       , cadres:[
             {
-                id:1
-              , cadre: null
+                id:       TL
+              , quarts:   [TL, TR]
+              , handles:  's'
+              , cadre:    undefined
               , defaultContent: 'preview'
-              , quarts:[TL, TR]
-              , handles:'s'
               , resizing:function(){
                   cadre(TL).adjustContent()
                   Cadre.alignHorizontalBord(TL, BL)
-                  // cadre(BL).setTop(this.bottom).setBottom(Cadre.Height)
                 }
-              // , contres:[BL,BR], adjust: ()=>{cadre(TL).setBottom(cadre(BL).top)}
             }
           , {
-                id:2
-              , cadre: null
+                id:       BL
+              , quarts:   [BL, BR]
+              , cadre:    undefined
               , defaultContent: 'console'
-              , quarts:[BL, BR]
-              // , contres:[TL,TR]
-              // , adjust: ()=>{cadre(BL).setBottom(Cadre.Height)}
             }
         ]
     }
@@ -72,11 +64,11 @@ const CADRES_DISPOSITIONS = {
         name:   '1-top-2-bottom'
       , cadres:[
             {
-                id:1
-              , cadre: null
+                id:       TL
+              , quarts:   [TL, TR]
+              , cadre:    undefined
+              , handles:  's'
               , defaultContent: 'preview'
-              , quarts:[TL, TR]
-              , handles:'s'
               , resizing:function(){
                   cadre(TL).adjustContent()
                   Cadre.alignHorizontalBord(TL, BL)
@@ -84,21 +76,21 @@ const CADRES_DISPOSITIONS = {
                 }
             }
           , {
-                id:2
-              , cadre: null
+                id:       BL
+              , quarts:   [BL]
+              , handles:  'e'
+              , cadre:    undefined
               , defaultContent: 'navigator'
-              , quarts:[BL]
-              , handles:'e'
               , resizing:function(){
                   cadre(BL).adjustContent()
                   Cadre.alignVerticalBord(BL,BR)
               }
             }
           , {
-                id:3
-              , cadre: null
+                id:       BR
+              , quarts:   [BR]
+              , cadre:    undefined
               , defaultContent: 'console'
-              , quarts:[BR]
             }
         ]
     }
@@ -106,29 +98,29 @@ const CADRES_DISPOSITIONS = {
         name: '2-top-1-bottom'
       , cadres:[
             {
-                id:1
-              , cadre: null
+                id:       TL
+              , quarts:   [TL]
+              , handles:  'e'
+              , cadre:    undefined
               , defaultContent: 'preview'
-              , quarts:[TL]
-              , handles:'e'
               , resizing:function(){
                   cadre(TL).adjustContent()
                   Cadre.alignVerticalBord(TL, TR)
                 }
             }
           , {
-                id:2
-              , cadre: null
+                id:       TR
+              , quarts:   [TR]
+              , handles:  null
+              , cadre:    undefined
               , defaultContent: 'console'
-              , handles:null
-              , quarts:[TR]
             }
           , {
-                id:3
-              , cadre: null
+                id:       BL
+              , quarts:   [BL, BR]
+              , handles:  'n'
+              , cadre:    undefined
               , defaultContent: 'navigator'
-              , quarts:[BL, BR]
-              , handles:'n'
               , resizing:function(){
                   cadre(BL).adjustContent()
                   cadre(TL).setBottom(this.top)
@@ -141,11 +133,11 @@ const CADRES_DISPOSITIONS = {
         name:'2-top-2-bottom'
       , cadres:[
             {
-                id:1
-              , quarts:[TL]
-              , cadre: null
+                id:       TL
+              , quarts:   [TL]
+              , handles:  's,e'
+              , cadre:    undefined
               , defaultContent: 'preview'
-              , handles:'s,e'
               , resizing:function(){
                   cadre(TL).adjustContent()
                   Cadre.alignVerticalBord(TL, TR)
@@ -155,11 +147,11 @@ const CADRES_DISPOSITIONS = {
                 }
             }
           , {
-                id:2
-              , quarts:[TR]
-              , cadre: null
+                id:       TR
+              , quarts:   [TR]
+              , handles:  's'
+              , cadre:    undefined
               , defaultContent: 'console'
-              , handles:'s'
               , resizing:function(){
                   cadre(TR).adjustContent()
                   cadre(TL).setBottom(this.bottom)
@@ -168,22 +160,22 @@ const CADRES_DISPOSITIONS = {
                 }
             }
           , {
-                id:3
-              , quarts:[BL]
-              , cadre: null
+                id:       BL
+              , quarts:   [BL]
+              , handles:  'e'
+              , cadre:    undefined
               , defaultContent: 'infos'
-              , handles:'e'
               , resizing:function(){
                   cadre(BL).adjustContent()
                   Cadre.alignVerticalBord(BL, BR)
                 }
             }
           , {
-                id:4
-              , quarts:[BR]
-              , cadre: null
+                id:       BR
+              , quarts:   [BR]
+              , handles:  null
+              , cadre:    undefined
               , defaultContent: 'navigator'
-              , handles:null
             }
         ]
     }
@@ -191,10 +183,11 @@ const CADRES_DISPOSITIONS = {
         name: '1-left-2-right'
       , cadres: [
           {
-              id:1
-            , quarts:[TL,BL]
+              id:       TL
+            , quarts:   [TL,BL]
+            , handles:  'e'
+            , cadre:    undefined
             , defaultContent:'preview'
-            , handles:'e'
             , resizing:function(){
                 cadre(TL).adjustContent()
                 Cadre.alignVerticalBord(TL,TR)
@@ -202,20 +195,22 @@ const CADRES_DISPOSITIONS = {
               }
           }
         , {
-              id:2
-            , quarts:[TR]
+              id:       TR
+            , quarts:   [TR]
+            , handles:  's'
+            , cadre:    undefined
             , defaultContent:'navigator'
-            , handles:'s'
             , resizing:function(){
                 cadre(TR).adjustContent()
                 Cadre.alignHorizontalBord(TR,BR)
               }
           }
         , {
-              id:3
-            , quarts:[BR]
+              id:       BR
+            , quarts:   [BR]
+            , handles:  null
+            , cadre:    undefined
             , defaultContent:'console'
-            , handles:null
           }
         ]
 
@@ -224,10 +219,11 @@ const CADRES_DISPOSITIONS = {
         name: '2-left-1-right'
       , cadres: [
           {
-              id:1
-            , quarts:[TL]
+              id:       TL
+            , quarts:   [TL]
+            , handles:  'e,s'
+            , cadre:    undefined
             , defaultContent:'navigator'
-            , handles: 'e,s'
             , resizing: function(){
                 cadre(TL).adjustContent()
                 Cadre.alignHorizontalBord(TL,BL)
@@ -235,18 +231,21 @@ const CADRES_DISPOSITIONS = {
             }
           }
         , {
-              id:2
-            , quarts:[BL]
+              id:       BL
+            , quarts:   [BL]
+            , handles:  'e'
+            , cadre:    undefined
             , defaultContent:'filter'
-            , handles: 'e'
             , resizing: function(){
                 cadre(BL).adjustContent()
                 Cadre.alignVerticalBord(BL,TR)              
             }
           }
         , {
-              id:3
-            , quarts:[TR,BR]
+              id:       TR
+            , quarts:   [TR,BR]
+            , handles:  null
+            , cadre:    undefined
             , defaultContent:'preview'
           }
       ] 
@@ -255,14 +254,14 @@ const CADRES_DISPOSITIONS = {
         name: '1-only'
       , cadres: [
           {
-              id:1
-            , quarts:[TL,TR,BL,BR]
-            , cadre: null
+              id:       TL
+            , quarts:   [TL,TR,BL,BR]
+            , handles:  null
+            , cadre:    undefined
             , defaultContent: 'preview'
-            , handles:null
           }
         ]
     }
 }
 // Dernier index possible (calculé dynamiquement donc toujours à jour)
-const MAX_DISPO_INDEX = Math.max(Object.keys(CADRES_DISPOSITIONS))
+const MAX_DISPO_INDEX = Math.max(Object.keys(DATA_DISPOSITIONS))

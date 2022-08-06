@@ -14,10 +14,7 @@ class Scenario {
    */
   static onLoad(data){
     this.log.debug("Données scénario reçues : " + JString(data))
-    if ( this.current ) {
-      delete this.current
-      this.resetAll()
-    }
+    this.current && this.resetAll()
     this.current = new Scenario(data)
     this.current.dispatchInfos()
     Preferences.setValues(data.preferences) // et les applique
@@ -60,10 +57,10 @@ class Scenario {
    * 
    */
   static resetAll(){
-    Cadre.resetAll()
     InCadre.resetAll()
     Preview.resetAll()
     Scene.resetAll()
+    delete this.current
   }
 
 //##################################################################

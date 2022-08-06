@@ -11,8 +11,14 @@ $(document).ready(e => {
     Log.level = LOG_DEBUG|LOG_INFO|LOG_IOFUNCTION
   }
 
+  /*
+  |  Préparation générale de l'UI
+  */
   UI.prepare()
-  Cadre.prepare()
+  /*
+  | Préparation de la disposition de l'écran
+   */
+  Disposition.prepare()
 
   Log.notice("Ready!")
   

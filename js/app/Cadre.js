@@ -7,129 +7,6 @@ class Cadre {
   }
 
   /**
-   * Appelé au chargement d'un nouveau scénario, avant de charger
-   * ses données. On part du principe qu'il y a peut-être des incadres
-   * et autres panneaux instanciés.
-   * 
-   */
-  static resetAll(){
-    this.log.in('::resetAll')
-    
-    this.log.out('::resetAll')
-  }
-
-  /**
-   * Appelé au démarrage
-   * 
-   */
-  static prepare(){
-    this.log.in('::prepare')
-
-    if ( this.isPrepared ) { 
-      this.log.out('::prepare (sans rien faire, déjà préparé)')
-      return this
-    }
-    /*
-    |  Construction des boutons
-    */
-    this.buildButtonsDispositions()
-    /*
-    | Disposition des "cadres" dans l'interface
-    */
-    this.dispose(CONFIG.disposition.index)
-    /*
-    |  Observation des boutons pour changer de disposition
-    */
-    DGetAll('.mini-cadres', this.btnDispo).forEach( picto => {
-      picto.addEventListener('click', this.onClickPictoDisposition.bind(this, picto))
-    })
-    this.isPrepared = true
-    this.log.out('::prepare')
-    return this
-  } // prepare
-
-
-  /**
-   * Méthode qui fabrique les boutons pour les dispositions
-   * 
-   */
-  static buildButtonsDispositions(){
-    const mainBtn = DGet('button#cadres-disposition')
-    const modele = DGet('#modele-mini-cadre.mini-cadres')
-    for (var idispo in CADRES_DISPOSITIONS ) {
-      const dDispo = CADRES_DISPOSITIONS[idispo]
-      const name   = dDispo.name
-      const btn = modele.cloneNode(true)
-      btn.id = `btn-mini-cadre-${idispo}`
-      btn.dataset.index = idispo
-      mainBtn.appendChild(btn)
-
-      dDispo.cadres.forEach( dCadre => {
-        const VT = DGet('div.cross-VT', btn)
-        const VB = DGet('div.cross-VB', btn)
-        const HL = DGet('div.cross-HL', btn)
-        const HR = DGet('div.cross-HR', btn)
-
-        switch(dCadre.quarts.join('')) {
-        case TL:
-          this.showCross([VT, HL])
-          break
-        case TL+TR:
-          this.showCross([HL, HR])
-          break
-        case TR:
-          this.showCross(HR)
-          break
-        case TL + BL:
-          this.showCross([VT, VB])
-          break
-        case BL:
-          this.showCross(VB)
-          break
-        }
-      })
-    }
-  }
-
-  static showCross(liste){
-    if ( not(liste.length) ) liste = [liste]
-    liste.forEach(cross => cross.classList.remove('hidden'))
-  }
-
-  /**
-   * Méthode qui applique la disposition choisie (+dispoIndex+)
-   * 
-   */
-  static dispose(dispoIndex){
-    this.log.in('::dispose(dispoIndex = '+dispoIndex+')')
-    
-    this.reset()
-    this.container.innerHTML = ''
-    this.affineContainerSize()
-
-    /*
-    |  On crée une nouvelle disposition
-    */
-    this.Dispo = new Disposition({index:dispoIndex, previousDispo:this.Dispo})
-    this.Dispo.build()
-
-    /*
-    |   Affichage du bouton de la disposition courante
-    */
-    this.activePictoDispo(dispoIndex)
-    this.log.debug("= Disposition des cadres effectuée : ", this.Dispo)
-  }
-
-  static reset(){
-    // Masquer tous les contenus éventuels
-    this.Dispo && this.Dispo.hideContents()
-  }
-
-  static affineContainerSize(){
-    this.container.style.height = `${UI.Height - UI.TimelineHeight}px`
-    this.container.style.width  = `${UI.Width  - UI.ToolsbarWidth - 12}px`    
-  }
-  /**
    * Méthode appelée après un redimensionnement pour affiner le
    * positionnement des cadres
    * 
@@ -156,14 +33,6 @@ class Cadre {
     this.cadre(dst).setTop(this.cadre(ref).bottom).setBottom(this.Height)
   }
 
-  /**
-   * Quand on clique sur un bouton de disposition pour la choisir
-   * 
-   */
-  static onClickPictoDisposition(picto, e){
-    this.dispose(picto.dataset.index)
-    return stopEvent(e)
-  }
 
 
   /**
@@ -200,41 +69,16 @@ class Cadre {
 
   }
 
-  static activePictoDispo(dispoIndex){
-    DGetAll('.picto-dispo',this.btnDispo).forEach(s => s.classList.add('hidden'))
-    DGet(`div[data-index="${dispoIndex}"]`, this.btnDispo).classList.remove('hidden')
-  }
-
-  // Bouton pour changer la disposition des cadres
-  static get btnDispo(){
-    return this._btndispo || (this._btndispo = DGet('button#cadres-disposition'))
-  }
-
-  // Retourne le cadre voulu.
-  // Par exemple this.cadre(BR) pour retourner le cadre bottom-right
-  static cadre(quart)   { return this.Dispo.cadre(quart)   }
-
-  // Retourne le contenu d'un cadre (console, preview, etc.)
-  // Par exemple this.content(BL) pour le contenu du bottom-left
-  static content(quart) { return this.Dispo.content(quart) }
-  
-  static get container(){
-    return this._cont || (this._cont = DGet('section#cadres_container'))
-  }
-  static get Height() {return UI.Height - UI.TimelineHeight - DOUBLE_BORDER_WIDTH}
-  static get Width()  {return UI.Width  - UI.ToolsbarWidth - DOUBLE_BORDER_WIDTH}
-  static get height() {return this.container.offsetHeight}
-  static get width()  {return this.container.offsetWidth}
-
-
 
 //###################################################################
 
 
 
 constructor(data){
-  this.data     = data
-  this.quarts   = data.quarts  // cf. DATA_DISPOSITIONS
+  this.data         = data
+  this.disposition  = data.disposition
+  this.dispoId      = this.disposition.dispoId || this.disposition.dispoKey
+  this.quarts       = data.quarts  // cf. DATA_DISPOSITIONS
 }
 
 get log(){ return this.constructor.log }
@@ -243,7 +87,11 @@ get log(){ return this.constructor.log }
  * Pour connaitre le cadre
  */
 get inspect(){
-  return this._inspect || (this._inspect = `Cadre #${this.id}`)
+  return this._inspect || (this._inspect = `Cadre #${this.id} de Dispo #${this.dispoId}`)
+}
+
+get domId(){
+  return this._domId || (this._domId = `cadre-${this.dispoId}-${this.id}`)
 }
 
 /**
@@ -251,11 +99,15 @@ get inspect(){
  */
 build(params){
   this.log.in('#build(params='+ JString(params) + ')')
-  this.obj = DCreate('DIV', {class:'cadre', id:`cadre-${this.id}`})
+  this.obj = DCreate('DIV', {class:'cadre', id:this.domId})
   // console.log("Fenêtre %s width = %s height = %s", this.content, this.width, this.height)
-  Cadre.container.appendChild(this.obj)
+  /*
+  |  On met ce cadre dans le container principal des cadres et on
+  |  le positionne.
+  */
+  this.disposition.container.appendChild(this.obj)
   this.positionne()
-  this.buildContent(params.previousContent)
+  this.buildInCadre()
 }
 
 /**
@@ -270,8 +122,8 @@ build(params){
  * - si le type de contenu n'ex
  * 
  */
-setContent(typeContent){
-  this.log.in('#setContent(typeContent = ' + typeContent + ')')
+setInCadre(typeContent){
+  this.log.in('#setInCadre(typeContent = ' + typeContent + ')')
   /*
   |  On efface le contenu courant
   */
@@ -296,7 +148,7 @@ setContent(typeContent){
   /*
   |  On peut mettre ce contenu dans le cadre et le régler
   */
-  this.buildContent(incadre)
+  this.buildInCadre(incadre)
   /*
   |  Observation (notamment pour changer la taille)
   */
@@ -307,7 +159,7 @@ setContent(typeContent){
 cleanUp(){
   // this.unobserve()
   this.obj.innerHTML = ''
-  this.content.cadre = null // dissocier le contenu InCadre du Cadre
+  this.incadre.cadre = null // dissocier le contenu InCadre du Cadre
 }
 
 /**
@@ -316,8 +168,8 @@ cleanUp(){
  * ou un nouveau contenu)
  * 
  */
-buildContent(incadre){
-  this.log.in('#buildContent(incadre = ' + (incadre?incadre.inspect:'null') + ')')
+buildInCadre(incadre){
+  this.log.in('#buildInCadre(incadre = ' + (incadre?incadre.inspect:'null') + ')')
   if ( incadre ) {
     incadre.cadre = this
   } else {
@@ -348,11 +200,6 @@ observe(){
     })
   }
 }
-// unobserve(){
-//   if ( this.data.resizing ) {
-//     this.obj && $(this.obj).resizable( "option", "disabled", true );
-//   }
-// }
 
 positionne(){
   this.log.debug('Position du cadre N°' + this.id + ' ' + JString({
@@ -496,6 +343,8 @@ build_and_observe(params){this.build(params);this.observe()}
 
 
 // Raccourci (pour les fonctions d'ajustement)
-function cadre(key){return Cadre.cadre(key)}
+function cadre(key){
+  return Disposition.current.cadre(key)
+}
 
 window.onresize = Cadre.onResizeWindow.bind(Cadre)

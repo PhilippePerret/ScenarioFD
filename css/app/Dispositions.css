@@ -4,23 +4,23 @@
 section#cadres_container {
   position: relative;
 }
-section#cadres_container div.cadre {
+section#cadres_container > div.disposition > div.cadre {
   position: absolute;
   border: 2px solid #CCC;
   padding: 0;
   margin:  0;
 }
-section#cadres_container > div.cadre > section.in-cadre > div.content {
+section#cadres_container > div.disposition > div.cadre > section.incadre > div.content {
   transform-origin: top left;
   height: calc(100% - 40px);
   width:  inherit;
   position: relative;
 }
-section#cadres_container > div.cadre > section.in-cadre > div.content:not(.plain){
+section#cadres_container > div.disposition > div.cadre > section.incadre > div.content:not(.plain){
   padding: 1em;
   overflow_y: auto;
 }
-section#cadres_container > div.cadre > section.in-cadre > div.toolsbar {
+section#cadres_container > div.disposition > div.cadre > section.incadre > div.toolsbar {
   width: 100%;
   height:  30px;
   padding-top: 4px;
@@ -104,17 +104,17 @@ button#cadres-disposition div.mini-cadres > div.BR {
 
 /* --- Pour les contenus --- */
 
-section.in-cadre {
+section.incadre {
   width: 100%;
   height: calc(100%);
   position: relative;
   overflow: hidden;
 }
-section.in-cadre > div.content {
+section.incadre > div.content {
   width: 100%;
   height: calc(100% - 50px);
 }
-section.in-cadre > div.toolsbar {
+section.incadre > div.toolsbar {
   height: 50px;
   width: 100%;
   position: absolute;
@@ -123,11 +123,11 @@ section.in-cadre > div.toolsbar {
   text-align: right;
 }
 
-section.in-cadre > div.toolsbar > * {
+section.incadre > div.toolsbar > * {
   margin-right: 0.5em;
 }
 
-section.in-cadre > div.toolsbar > button.btn-type-content {
+section.incadre > div.toolsbar > button.btn-type-content {
   position: absolute;
   bottom: 4px;
   left: 20px;
@@ -138,46 +138,46 @@ section.in-cadre > div.toolsbar > button.btn-type-content {
   margin: 0;
   transition: 0.3s;
 }
-section.in-cadre > div.toolsbar > button.btn-type-content:hover {
+section.incadre > div.toolsbar > button.btn-type-content:hover {
   width: auto;
   height: auto;
   padding-bottom: 2em;
   transition: 0.3s;
 }
-section.in-cadre > div.toolsbar > button.btn-type-content > div.type-content {
+section.incadre > div.toolsbar > button.btn-type-content > div.type-content {
   margin-bottom: 0px;
   clear: both;
   text-align: left;
   padding: 4px 24px 4px 16px;
   vertical-align: middle;
 }
-section.in-cadre > div.toolsbar > button.btn-type-content > div.type-content:hover {
+section.incadre > div.toolsbar > button.btn-type-content > div.type-content:hover {
   background-color: #777;
   color: white;
 }
 
-section.in-cadre > div.toolsbar > button.btn-type-content > div.type-content > img {
+section.incadre > div.toolsbar > button.btn-type-content > div.type-content > img {
   width: 24px;
   height: 24px;
   vertical-align: middle;
 }
-section.in-cadre > div.toolsbar > button.btn-type-content:not(:hover) > div.type-content > img {
+section.incadre > div.toolsbar > button.btn-type-content:not(:hover) > div.type-content > img {
   position: absolute;
   top: 0;
   left: 0;
 }
-section.in-cadre > div.toolsbar > button.btn-type-content > div.type-content > span {
+section.incadre > div.toolsbar > button.btn-type-content > div.type-content > span {
   margin-left: 0.5em;
   vertical-align: middle;
 }
 /* Quand on glisse la souris sur le type de contenu */
-section.in-cadre > div.toolsbar > button.btn-type-content:hover > div.type-content {
+section.incadre > div.toolsbar > button.btn-type-content:hover > div.type-content {
   display: block!important;
 }
 
 /* --- Modifications de détail --- */
 
-section.console.in-cadre > div.content > textarea {
+section.console.incadre > div.content > textarea {
   width: calc(100% - 4px);
   height: inherit;
   padding: 20px 20px;
@@ -190,9 +190,9 @@ section.console.in-cadre > div.content > textarea {
   border-style: solid;
   margin: 0;
 }
-section.console.in-cadre > div.content > textarea:not(.active) {
+section.console.incadre > div.content > textarea:not(.active) {
   border-color: transparent;
 }
-section.console.in-cadre > div.content > textarea.active {
+section.console.incadre > div.content > textarea.active {
   border-color: #3838f9;
 }

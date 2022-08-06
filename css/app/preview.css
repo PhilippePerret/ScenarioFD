@@ -1,7 +1,7 @@
 /*
   Tous les styles pour le scénario
 */
-section.preview.in-cadre div.content {
+section.preview.incadre div.content {
   overflow: auto;
   background-color: #F6F6FF;
   width: 180mm!important;
