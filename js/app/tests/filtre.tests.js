@@ -1,4 +1,6 @@
 import { InsideTest, page, mouse } from '../../system/inside-test.lib.js'
+import { ITFactory } from './Factory.js'
+import * as Check from './Checkers.js'
 
 /**
  * Tests de l'affichage et du fonctionnement correct de la page
@@ -26,19 +28,21 @@ var tests = [], test ;
 
 test = new InsideTest({
     error: 'La page devrait bien afficher le filtre.'
-  , eval: function(){
+  , eval: async function(){
 
       // Un scénario est déjà courant, normalement. On prend le
       // nouveau pour cette partie.
       ITFactory.makeCurrentScenario(DataScenarioForFiltre)
 
       const consoleCourante = Console.current
-      const btnChangeType = consoleCourante.btnTypeContent
+      console.log("Console courante : ", consoleCourante)
+
       // Faire apparaitre les types
-      btnChangeType.classList.remove('hidden')
+      consoleCourante.btnTypeContent.classList.remove('hidden')
+      await wait(5)
       // On choisit l'incadre 'filtre' dans le cadre qui contient 
       // pour le moment la console.
-      mouse.clickOn('section.console div.toolsbar button.btn-type-content div[data-content="filter"]')
+      mouse.clickOn(DGet('div[data-content="filter"]', consoleCourante.btnTypeContent))
 
       page.contains('section.filter')
 
@@ -47,3 +51,9 @@ test = new InsideTest({
 })
 tests.push(test)
 test.exec()
+
+function wait(seconds){
+  return new Promise((ok,ko) => {
+    setTimeout(ok, seconds * 1000)
+  })
+}

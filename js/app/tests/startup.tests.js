@@ -1,6 +1,6 @@
 import { InsideTest, page, mouse } from '../../system/inside-test.lib.js'
 import { ITFactory } from './Factory.js'
-import * as Check from './Check.js'
+import * as Check from './Checkers.js'
 
 /**
  * Test du démarrage de l'application

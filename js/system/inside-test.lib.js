@@ -25,8 +25,17 @@ class HTMLPageClass {
 export const page = new HTMLPageClass()
 
 class MouseClass {
+  /**
+   * Simuler un click sur +selector+
+   * 
+   * @param {String|DOM Element} Le string du selector ou l'élément
+   * 
+   */
   clickOn(selector){
-    document.querySelector(selector).click()
+    if ( 'string' == typeof selector ) {
+      selector = document.querySelector(selector)
+    }
+    selector.click()
   }
 }
 export const mouse = new MouseClass()

@@ -1,7 +1,7 @@
 ## EN COURS
 
+* Poursuivre les tests
 * Au redimensionnement de la fenêtre, il faut calculer le ratio des fenêtres et le conserver (au lieu d'augmenter seulement la dimension du cadre au bord)
-* CORRIGER LES BUGS
 * Faire des tests
   - importation FinalDraft -> Scenario
   - exportation Scenario -> FinalDraft
@@ -15,6 +15,10 @@
 * [bug] Quand on construit le panneau de filtre, les labels se mettent au bout de la fenêtre de preview (c'est la fenêtre preview qui est le this.content dans le panneau Filter). Normalement, ça a dû être corrigé
 * [bug] Certaines scènes contiennent en résumé leur $page… (ou alors c'est par que l'extrait se sert des premières lignes et qu'on a ça dedans ? — ça m'étonnerait)
 * [bug] La donnée 'FD-scene-properties' contient des retours chariot inutiles
+
+## TESTS 
+
+* Vérifier que le bouton du type de contenu soit bien réglé (son data-content doit être au type de contenu, par exemple 'console' si c'est la console qui est affichée — pour le moment, ça n'est pas le cas dans les premiers tests)
 
 ## PROCHAINES ÉTAPES 
 
