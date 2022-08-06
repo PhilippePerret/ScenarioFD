@@ -46,6 +46,17 @@ class InCadre {
     }    
   }
 
+  /**
+   * @return un clone du Node InCadre de type +incadreType+
+   * 
+   * @param {String} incadreType  Le type ('preview', 'console', etc.)
+   * 
+   */
+  static clone(incadreType){
+    return DGet(`section.${incadreType}.incadre`).cloneNode(true)
+  }
+
+
   static getPanneau(panokey, Classe, cadre) {
     const kthis = `_panneau_${panokey}`
     const panneau = this[kthis] || ( this[kthis] = new Classe(cadre) )
@@ -72,7 +83,8 @@ class InCadre {
 
 
   constructor(type, cadre){
-    this.log.in('#constructor avec (type = ' + type + ', cadre = ' + (cadre?cadre.inspect:null) + ')')
+    this.Klass  = 'InCadre'
+    // this.log.in('#constructor avec (type = ' + type + ', cadre = ' + (cadre?cadre.inspect:null) + ')')
     this.type   = type
     this.cadre  = cadre
     this.id     = `${this.type}-${new Date().getTime()}`
@@ -85,17 +97,47 @@ class InCadre {
     return this._inspect || ( this._inspect = `InCadre #${this.id} type:${this.type}` )
   }
 
-  buildIn(container){
+  build(){
+    const container = this.cadre.obj
+    /*
+    |   S'il existe une méthode à appeler avant la construction, on
+    |   l'appelle.
+    */
+    this.beforeBuild && this.beforeBuild.call(this)
     container.innerHTML = ''
-    this.section  = DGet(`section.${this.type}.incadre`).cloneNode(true)
+    /*
+    |   Clonage du modèle de section
+    */
+    this.section  = InCadre.clone(this.type)
     this.section.id = this.id
-    if ( 'function' == typeof this.onBuilding ) this.onBuilding.call(this)
     container.appendChild(this.section)
+    /*
+    |   Construction du bouton de type de contenu
+    |   (note: ce bouton pourrait être dans le cadre plutôt, mais
+    |    c'est plus pratique comme ça)
+    */
     this.buildTypeContentButton()
-    if ( 'function' == typeof this.afterBuildIn ) {
-      this.afterBuildIn.call(this)
-    }
-    this.observe()
+    /*
+    |   S'il existe une méthode à appeler après la construction, on
+    |   l'appelle.
+    */
+    this.afterBuild && this.afterBuild.call(this)
+    /*
+    |  Chainage
+    */
+    return this
+  }
+
+  observe(){
+    /*
+    |   Observation du (des) bouton de changement de type de 
+    |   contenu
+    */
+    this.observeButtonTypeContent()
+    /*
+    |   Chainage
+    */
+    return this
   }
 
   /**
@@ -123,7 +165,6 @@ class InCadre {
       div.classList[div.dataset.content == this.type?'remove':'add']('hidden')
     })
     this.btnTypeContent.classList.remove('hidden')
-    this.observeButtonTypeContent()
   }
 
   show(){
@@ -188,9 +229,6 @@ class InCadre {
     return stopEvent(e)
   }
 
-  observe(){
-
-  }
   observeButtonTypeContent(){
     DGetAll('div.type-content', this.btnTypeContent).forEach(div => {
       div.addEventListener('click', this.onClickButtonTypeContent.bind(this, div))

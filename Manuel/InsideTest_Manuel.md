@@ -8,6 +8,7 @@ Le fonctionnement est cependant assez différent des autres modules de test, il 
 Par exemple :
 
 ~~~javascript
+import { InsideTest, page, mouse } from '../../system/inside-test.lib.js'
 
 // Un test qui doit vérifier que les valeurs sont bien égales à 4
 var test = new InsideTest({
@@ -54,16 +55,16 @@ var test = new InsideTest({
   , eval: function(){
     	var une_erreur = false
     	if (page.not.contains('Marion')) {
-        InsideTest.current.error = "Marion devrait être dans la liste"
+        InsideTest.error = "Marion devrait être dans la liste"
         // note error= est une méthode cumulative
         une_erreur = true
       }
     	if (page.not.contains('Philippe')){
-        InsideTest.current.error = "Philippe devrait être dans la liste"
+        InsideTest.error = "Philippe devrait être dans la liste"
         une_erreur = true
       }
     	if (page.not.contains('Élie')){
-        InsideTest.current.error = "Élie devrait être dans la liste"
+        InsideTest.error = "Élie devrait être dans la liste"
         une_erreur = true
       }
     

@@ -10,18 +10,6 @@
  * 
  */
 
-// Classe utilisée lorsque const INSIDE_TESTS est false
-// class NoInsideTest {
-//   with(){return this}
-//   withNegate(){return this}
-//   withExpected(){return this}
-//   withExpectedNegate(){return this}
-//   equal(){return this}
-//   equalNegate(){return this}
-//   exec(){return this}
-//   execNegate(){return this}
-// }
-
 class InsideTest {
 
   /**
@@ -29,6 +17,10 @@ class InsideTest {
    */
   static get current()  { return this._current }
   static set current(t) { this._current = t    }
+
+  static set error(err){
+    this.current.error = err
+  }
 
   /**
    * Pour jouer tous les tests

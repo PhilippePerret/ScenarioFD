@@ -32,6 +32,7 @@ class MouseClass {
 export const mouse = new MouseClass()
 
 
+
 export class InsideTest {
 
   static get log(){
@@ -42,6 +43,10 @@ export class InsideTest {
    */
   static get current()  { return this._current }
   static set current(t) { this._current = t    }
+
+  static set error(err){
+    this.current.error = err
+  }
 
   /**
    * Pour jouer tous les tests
@@ -120,12 +125,17 @@ export class InsideTest {
 
   runStack(){
     this.stack.forEach( dtest => {
-      this.constructor.nombreTests += 1
-      const [test, args] = dtest
-      if ( args ) {
-        test.call(null, ...args)
-      } else {
-        test.call(null)
+      try {      
+        const [test, args] = dtest
+        if ( args ) {
+          test.call(null, ...args)
+        } else {
+          test.call(null)
+        }
+        this.constructor.nombreTests += 1
+      } catch (err) {
+        console.error("ERREUR SYSTÈME : ", err)
+        this.throwError("ERREUR SYSTÈME")
       }
     })
   }

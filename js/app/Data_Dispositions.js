@@ -21,7 +21,7 @@ const DATA_DISPOSITIONS = {
               , quarts:   [TL, BL]
               , handles:  'e'
               , cadre:    undefined
-              , defaultContent: 'preview'
+              , defaultInCadre: 'preview'
               , resizing:function(){
                   cadre(TL).adjustContent()
                   Cadre.alignVerticalBord(TL,TR)
@@ -32,7 +32,7 @@ const DATA_DISPOSITIONS = {
               , quarts:   [TR, BR]
               , handles:  null
               , cadre:    undefined
-              , defaultContent: 'console'
+              , defaultInCadre: 'console'
               , resizing:function(){
                   cadre(TR).setRight(Cadre.Width)}
                 }
@@ -46,7 +46,7 @@ const DATA_DISPOSITIONS = {
               , quarts:   [TL, TR]
               , handles:  's'
               , cadre:    undefined
-              , defaultContent: 'preview'
+              , defaultInCadre: 'preview'
               , resizing:function(){
                   cadre(TL).adjustContent()
                   Cadre.alignHorizontalBord(TL, BL)
@@ -56,7 +56,7 @@ const DATA_DISPOSITIONS = {
                 id:       BL
               , quarts:   [BL, BR]
               , cadre:    undefined
-              , defaultContent: 'console'
+              , defaultInCadre: 'console'
             }
         ]
     }
@@ -68,7 +68,7 @@ const DATA_DISPOSITIONS = {
               , quarts:   [TL, TR]
               , cadre:    undefined
               , handles:  's'
-              , defaultContent: 'preview'
+              , defaultInCadre: 'preview'
               , resizing:function(){
                   cadre(TL).adjustContent()
                   Cadre.alignHorizontalBord(TL, BL)
@@ -80,7 +80,7 @@ const DATA_DISPOSITIONS = {
               , quarts:   [BL]
               , handles:  'e'
               , cadre:    undefined
-              , defaultContent: 'navigator'
+              , defaultInCadre: 'navigator'
               , resizing:function(){
                   cadre(BL).adjustContent()
                   Cadre.alignVerticalBord(BL,BR)
@@ -90,7 +90,7 @@ const DATA_DISPOSITIONS = {
                 id:       BR
               , quarts:   [BR]
               , cadre:    undefined
-              , defaultContent: 'console'
+              , defaultInCadre: 'console'
             }
         ]
     }
@@ -102,7 +102,7 @@ const DATA_DISPOSITIONS = {
               , quarts:   [TL]
               , handles:  'e'
               , cadre:    undefined
-              , defaultContent: 'preview'
+              , defaultInCadre: 'preview'
               , resizing:function(){
                   cadre(TL).adjustContent()
                   Cadre.alignVerticalBord(TL, TR)
@@ -113,14 +113,14 @@ const DATA_DISPOSITIONS = {
               , quarts:   [TR]
               , handles:  null
               , cadre:    undefined
-              , defaultContent: 'console'
+              , defaultInCadre: 'console'
             }
           , {
                 id:       BL
               , quarts:   [BL, BR]
               , handles:  'n'
               , cadre:    undefined
-              , defaultContent: 'navigator'
+              , defaultInCadre: 'navigator'
               , resizing:function(){
                   cadre(BL).adjustContent()
                   cadre(TL).setBottom(this.top)
@@ -137,7 +137,7 @@ const DATA_DISPOSITIONS = {
               , quarts:   [TL]
               , handles:  's,e'
               , cadre:    undefined
-              , defaultContent: 'preview'
+              , defaultInCadre: 'preview'
               , resizing:function(){
                   cadre(TL).adjustContent()
                   Cadre.alignVerticalBord(TL, TR)
@@ -151,7 +151,7 @@ const DATA_DISPOSITIONS = {
               , quarts:   [TR]
               , handles:  's'
               , cadre:    undefined
-              , defaultContent: 'console'
+              , defaultInCadre: 'console'
               , resizing:function(){
                   cadre(TR).adjustContent()
                   cadre(TL).setBottom(this.bottom)
@@ -164,7 +164,7 @@ const DATA_DISPOSITIONS = {
               , quarts:   [BL]
               , handles:  'e'
               , cadre:    undefined
-              , defaultContent: 'infos'
+              , defaultInCadre: 'infos'
               , resizing:function(){
                   cadre(BL).adjustContent()
                   Cadre.alignVerticalBord(BL, BR)
@@ -175,7 +175,7 @@ const DATA_DISPOSITIONS = {
               , quarts:   [BR]
               , handles:  null
               , cadre:    undefined
-              , defaultContent: 'navigator'
+              , defaultInCadre: 'navigator'
             }
         ]
     }
@@ -187,7 +187,7 @@ const DATA_DISPOSITIONS = {
             , quarts:   [TL,BL]
             , handles:  'e'
             , cadre:    undefined
-            , defaultContent:'preview'
+            , defaultInCadre:'preview'
             , resizing:function(){
                 cadre(TL).adjustContent()
                 Cadre.alignVerticalBord(TL,TR)
@@ -199,7 +199,7 @@ const DATA_DISPOSITIONS = {
             , quarts:   [TR]
             , handles:  's'
             , cadre:    undefined
-            , defaultContent:'navigator'
+            , defaultInCadre:'navigator'
             , resizing:function(){
                 cadre(TR).adjustContent()
                 Cadre.alignHorizontalBord(TR,BR)
@@ -210,7 +210,7 @@ const DATA_DISPOSITIONS = {
             , quarts:   [BR]
             , handles:  null
             , cadre:    undefined
-            , defaultContent:'console'
+            , defaultInCadre:'console'
           }
         ]
 
@@ -223,7 +223,7 @@ const DATA_DISPOSITIONS = {
             , quarts:   [TL]
             , handles:  'e,s'
             , cadre:    undefined
-            , defaultContent:'navigator'
+            , defaultInCadre:'navigator'
             , resizing: function(){
                 cadre(TL).adjustContent()
                 Cadre.alignHorizontalBord(TL,BL)
@@ -235,7 +235,7 @@ const DATA_DISPOSITIONS = {
             , quarts:   [BL]
             , handles:  'e'
             , cadre:    undefined
-            , defaultContent:'filter'
+            , defaultInCadre:'filter'
             , resizing: function(){
                 cadre(BL).adjustContent()
                 Cadre.alignVerticalBord(BL,TR)              
@@ -246,7 +246,7 @@ const DATA_DISPOSITIONS = {
             , quarts:   [TR,BR]
             , handles:  null
             , cadre:    undefined
-            , defaultContent:'preview'
+            , defaultInCadre:'preview'
           }
       ] 
     }
@@ -258,7 +258,7 @@ const DATA_DISPOSITIONS = {
             , quarts:   [TL,TR,BL,BR]
             , handles:  null
             , cadre:    undefined
-            , defaultContent: 'preview'
+            , defaultInCadre: 'preview'
           }
         ]
     }

@@ -7,7 +7,33 @@ import { InsideTest, page, mouse } from '../../system/inside-test.lib.js'
 
 var tests = [], test ;
 
-/*
+//* 
+test = new InsideTest({
+    error: 'La disposition %{devrait} être celle de départ (#1)'
+  , eval:function(){
+      try {
+        const conts = ['section#cadres_container']
+        page.contains(conts.join(' > ')) || raise("On devrait trouver le container disposition général")
+        conts.push('div#disposition-1')
+        page.contains(conts.join(' > ')) || raise("On devrait trouver le div de la disposition #1")
+        let sconts = Array.from(conts)
+        sconts.push('div#cadre-1-top_left')
+        page.contains(sconts.join(' > ')) || raise("On devrait trouver le div du cadre gauche")
+        sconts = Array.from(conts)
+        sconts.push('div#cadre-1-top_right')
+        page.contains(sconts.join(' > ')) || raise("On devrait trouver le div du cadre droite")
+        return true
+      } catch(err) {
+        InsideTest.error = err
+        return false
+      }
+    }
+})
+tests.push(test)
+test.exec()
+//*/
+
+//*
 test = new InsideTest({
     error: 'Le cadre %{sujet} %{doit} posséder le bon contenu.'
   , eval:function(quart){
@@ -17,15 +43,13 @@ test = new InsideTest({
 tests.push(test)
 test.withExpected('top_left'      , 'preview')
 test.withExpected('top_right'     , 'console')
-test.withExpected('bottom_left'   , 'preview')
-test.withExpected('bottom_right'  , 'console')
 //*/
 
 /*
 |  On simule le chargement d'un scénario et on vérifie qu'il s'affiche
 |  correctement.
 */
-/*
+//*
 test = new InsideTest({
     error: 'Le scénario %{devrait} s’afficher correctement.'
   , eval:function(){

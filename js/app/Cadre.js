@@ -62,20 +62,46 @@ get domId(){
 }
 
 /**
+ * @return  l'InCadre de ce cadre. Soit celui défini la disposition
+ *          (donc l'utilisateur) soit celui défini par défaut.
+ * 
+ */
+get incadre(){
+  return this._incadre || (this._incadre || this.getInCadre() )
+}
+getInCadre(){
+  this.incadreType = this.data.incadreType || this.data.defaultInCadre
+  return new InCadre(this.incadreType, this)
+}
+
+/**
  * Construction du cadre
+ * ----------------------
+ * Il s'agit du div.cadre qui va contenir le contenu de l'inCadre
+ * (preview, console, fiter, etc.)
+ * 
  */
 build(params){
   this.log.in('#build(params='+ JString(params) + ')')
   this.obj = DCreate('DIV', {class:'cadre', id:this.domId})
-  // console.log("Fenêtre %s width = %s height = %s", this.content, this.width, this.height)
   /*
   |  On met ce cadre dans le container principal des cadres et on
   |  le positionne.
   */
   this.disposition.container.appendChild(this.obj)
+  /*
+  |  On positionne le cadre (par défaut ou en fonction des derniers
+  |  réglages définis par l'utilisateur)
+  */
   this.positionne()
-  this.buildIncadre()
-  return this // chainage
+  /*
+  |  Construction de son contenu, donc de son incadre
+  */
+  this.incadre.build().observe()
+  /*
+  |  Pour chainage
+  */
+  return this
 }
 
 /**
@@ -301,8 +327,6 @@ get firstQuart(){
 get lastQuart(){
   return this._lastq || (this._lastq = this.quarts[this.quarts.length-1])
 }
-
-build_and_observe(params){this.build(params);this.observe()}
 
 }//class Cadre
 
