@@ -134,8 +134,8 @@ export class InsideTest {
         }
         this.constructor.nombreTests += 1
       } catch (err) {
-        console.error("ERREUR SYSTÈME : ", err)
-        this.throwError("ERREUR SYSTÈME")
+        console.error("ERREUR APPLICATION : ", err)
+        this.throwError("ERREUR APPLICATION")
       }
     })
   }

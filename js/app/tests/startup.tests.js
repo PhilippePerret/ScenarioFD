@@ -9,19 +9,53 @@ var tests = [], test ;
 
 //* 
 test = new InsideTest({
-    error: 'La disposition %{devrait} être celle de départ (#1)'
+    error: 'Au lance (avant scénario) l’UI se présente conformément aux attentes.'
   , eval:function(){
       try {
         const conts = ['section#cadres_container']
         page.contains(conts.join(' > ')) || raise("On devrait trouver le container disposition général")
         conts.push('div#disposition-1')
         page.contains(conts.join(' > ')) || raise("On devrait trouver le div de la disposition #1")
+        // --- Cadre 1 ---
         let sconts = Array.from(conts)
         sconts.push('div#cadre-1-top_left')
         page.contains(sconts.join(' > ')) || raise("On devrait trouver le div du cadre gauche")
+        sconts.push('section.preview')
+        page.contains(sconts.join(' > ')) || raise("On devrait trouver l'incadre preview dans le cadre gauche")
+        // --- Cadre 2 ---
         sconts = Array.from(conts)
         sconts.push('div#cadre-1-top_right')
         page.contains(sconts.join(' > ')) || raise("On devrait trouver le div du cadre droite")
+        sconts.push('section.console')
+        page.contains(sconts.join(' > ')) || raise("On devrait trouver l'incadre console dans le cadre droit")
+        
+        // Boutons
+        buttonDispositionIs() || raise("Le bouton des dispositions devrait afficher le bon bouton.")
+
+        return true
+      } catch(err) {
+        InsideTest.error = err
+        return false
+      }
+    }
+})
+tests.push(test)
+test.exec()
+//*/
+
+
+//* 
+test = new InsideTest({
+    error: 'La disposition (#1) par défaut %{devrait} être appliquée au lancement de l’application.'
+  , eval:function(){
+      try {
+        Disposition.current.dispoKey == 1 || raise("La clé dispoKey de la disposition courante devrait être la 1, c'est la " + Disposition.current.dispoKey)
+        const cadreLeft = Disposition.current.cadre('top_left')
+        cadreLeft instanceof Cadre || raise("Le cadre gauche devrait être une instance Cadre.")
+        cadreLeft.incadre.type == 'preview' || raise("L'incadre du cadre gauche devrait être un prévisualiseur (type 'preview') hors son type est '%s'", [cadreLeft.incadre.type])
+        const cadreRight = Disposition.current.cadre('top_right')
+        cadreRight instanceof Cadre || raise("Le cadre droit devrait être une instance Cadre.")
+        cadreRight.incadre.type == 'console' || raise("L'incadre du cadre droit devrait être une console (type = 'console') hors son type est '%s'…", [cadreRight.incadre.type])
         return true
       } catch(err) {
         InsideTest.error = err
@@ -64,14 +98,14 @@ test = new InsideTest({
       try {      
         // Les scènes doivent être affichées
         page.contains('div#scene-2.scene') || raise("La scène d'identifiant 2 est introuvable")
-        page.contains('div#cadre-1 > section.preview > div.content > div#scene-2') || raise(
+        page.contains('div#cadre-1-top_left > section.preview > div.content > div#scene-2') || raise(
           "La scène #2 n'est pas affichée dans le bon cadre."
         )
         page.contains('div#scene-2.scene div.sline.intitule', 'INT. SALON - JOUR') || raise(
           "L'intitulé de la scène #2 est mauvais"
         )
         page.contains('div#scene-1.scene') || raise("La scène #1 est introuvable")
-        page.contains('div#cadre-1 > section.preview > div.content > div#scene-1') || raise(
+        page.contains('div#cadre-1-top_left > section.preview > div.content > div#scene-1') || raise(
           "La scène #1 n'est pas affichée dans le bon cadre."
         )
         page.contains('div#scene-1.scene div.sline.intitule', 'EXT. RUE - JOUR') || raise(

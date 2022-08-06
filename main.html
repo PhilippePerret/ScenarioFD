@@ -74,107 +74,13 @@
   <div id="timeline-slider" class="timeline"></div>
 </section>
 
+<!---------- CADRES DES DISPOSITIONS ------------->
 <section id="cadres_container">
-  <!-- Les cadres vont se trouver ici -->
+  
 </section>
 
 
-<section class="preview incadre hidden">
-  <div class="content">[ICI EST AFFICHÉE LA PRÉVISUALISATION]</div>
-  <div class="toolsbar">
-    <button class="btn-zoom-in">🔎+</button>
-    <button class="btn-zoom-out">🔎-</button>
-    <button class="btn-add-scene">
-      <div class="title">➕ scène</div>
-      <div class="menus hidden">
-        <div data-place="beginning">Ajouter au début</div>
-        <div data-place="end">Ajouter à la fin</div>
-        <div data-place="before-selected" class="btn-add-scene-selected hidden">Avant scène <span class="num-scene-selected"></span></div>
-        <div data-place="after-selected" class="btn-add-scene-selected hidden">Après scène <span class="num-scene-selected"></span></div>
-      </div>
-    </button>
-  </div>
-</section>
-
-<section class="console incadre hidden">
-  <div class="content plain">
-    <textarea></textarea>
-  </div>
-  <div class="toolsbar">
-    <!-- barre d'outils pour la console -->
-    <button class="btn-refresh">Rafraichir</button>
-  </div>
-</section>
-
-<section class="infos incadre hidden">
-  <div class="content plain">
-    <div class="panneau"></div>
-  </div>
-  <div class="toolsbar">
-    <button class="btn-save">Enregistrer</button>    
-  </div>
-</section>
-
-<section class="preferences incadre hidden">
-  <div class="content plain">
-    <div class="panneau"></div>
-  </div>
-  <div class="toolsbar">
-    <button class="btn-save">Enregistrer</button>    
-  </div>
-</section>
-
-<!-- PANNEAU RAPPORTS -->
-<section class="report incadre hidden">
-  <div class="content">
-      <h2>Rapports</h2>
-      [PRODUCTION DE RAPPORTS]
-  </div>
-  <div class="toolsbar">
-    <button class="btn-export">Exporter…</button>    
-  </div>
-</section>
-
-<!-- PANNEAU FILTRE -->
-<section class="filter incadre hidden">
-  <div class="content">
-    <h2>FILTRE</h2>
-  </div>
-  <div class="toolsbar">
-    <button class="btn-export">Exporter…</button>
-  </div>
-</section>
-
-<section class="navigator incadre hidden">
-  <div class="content plain">
-    <h2>Navigateur</h2>
-    [LE NAVIGATEUR D'ÉLÉMENT]
-  </div>
-  <div class="toolsbar">
-    <button class="onglet">Notes</button>
-    <button class="onglet">Personnages</button>
-    <button class="onglet">Scènes</button>
-  </div>
-</section>
-
-<section class="console_dev incadre hidden">
-  <div class="content">[CONSOLE DE DÉVELOPPEMENT]</div>
-  <div class="toolsbar"></div>
-</section>
-
-<!-- TODO LIST -->
-<section class="todo incadre hidden">
-  <div class="content">
-    <h2>Liste de tâches</h2>
-    [TODO LIST DU PROJET]
-  </div>
-  <div class="toolsbar">
-    <button class="btn-save">Enregistrer</button>    
-  </div>  
-</section>
- 
-
-<!-- TOOLSBAR PRINCIPALE -->
+<!------------ TOOLSBAR PRINCIPALE ---------------->
 <section id="toolsbar">
   <!-- Les boutons de dispositions des cadres -->
   <button id="cadres-disposition" data-index="1">
@@ -194,8 +100,107 @@
   <div class="cross-HR mini-cadre-cross hidden"></div>
 </div>
 
+
+
+<!----------- GRAND DIV HIDDEN POUR MODÈLES ----------->
+<div class="hidden">
+  
+<section class="preview incadre">
+  <div class="content">[ICI EST AFFICHÉE LA PRÉVISUALISATION]</div>
+  <div class="toolsbar">
+    <button class="btn-zoom-in">🔎+</button>
+    <button class="btn-zoom-out">🔎-</button>
+    <button class="btn-add-scene">
+      <div class="title">➕ scène</div>
+      <div class="menus hidden">
+        <div data-place="beginning">Ajouter au début</div>
+        <div data-place="end">Ajouter à la fin</div>
+        <div data-place="before-selected" class="btn-add-scene-selected hidden">Avant scène <span class="num-scene-selected"></span></div>
+        <div data-place="after-selected" class="btn-add-scene-selected hidden">Après scène <span class="num-scene-selected"></span></div>
+      </div>
+    </button>
+  </div>
+</section>
+
+<section class="console incadre">
+  <div class="content plain">
+    <textarea></textarea>
+  </div>
+  <div class="toolsbar">
+    <!-- barre d'outils pour la console -->
+    <button class="btn-refresh">Rafraichir</button>
+  </div>
+</section>
+
+<section class="infos incadre">
+  <div class="content plain">
+    <div class="panneau"></div>
+  </div>
+  <div class="toolsbar">
+    <button class="btn-save">Enregistrer</button>    
+  </div>
+</section>
+
+<section class="preferences incadre">
+  <div class="content plain">
+    <div class="panneau"></div>
+  </div>
+  <div class="toolsbar">
+    <button class="btn-save">Enregistrer</button>    
+  </div>
+</section>
+
+<!-- PANNEAU RAPPORTS -->
+<section class="report incadre">
+  <div class="content">
+      <h2>Rapports</h2>
+      [PRODUCTION DE RAPPORTS]
+  </div>
+  <div class="toolsbar">
+    <button class="btn-export">Exporter…</button>    
+  </div>
+</section>
+
+<!-- PANNEAU FILTRE -->
+<section class="filter incadre">
+  <div class="content">
+    <h2>FILTRE</h2>
+  </div>
+  <div class="toolsbar">
+    <button class="btn-export">Exporter…</button>
+  </div>
+</section>
+
+<section class="navigator incadre">
+  <div class="content plain">
+    <h2>Navigateur</h2>
+    [LE NAVIGATEUR D'ÉLÉMENT]
+  </div>
+  <div class="toolsbar">
+    <button class="onglet">Notes</button>
+    <button class="onglet">Personnages</button>
+    <button class="onglet">Scènes</button>
+  </div>
+</section>
+
+<section class="console_dev incadre">
+  <div class="content">[CONSOLE DE DÉVELOPPEMENT]</div>
+  <div class="toolsbar"></div>
+</section>
+
+<!-- TODO LIST -->
+<section class="todo incadre">
+  <div class="content">
+    <h2>Liste de tâches</h2>
+    [TODO LIST DU PROJET]
+  </div>
+  <div class="toolsbar">
+    <button class="btn-save">Enregistrer</button>    
+  </div>  
+</section>
+
 <!-- Modèle de bouton pour le type de contenu dans les cadres -->
-<button class="btn-type-content hidden" data-content="preview">
+<button class="btn-type-content" data-content="preview">
   <div class="type-content" data-content="preview"><img src="img/content/preview.png"><span>Scénario</span></div>
   <div class="type-content hidden" data-content="console"><img src="img/content/console.png"><span>Console</span></div>
   <div class="type-content hidden" data-content="navigator"><img src="img/content/navigator.png"><span>Navigateur</span></div>
@@ -206,10 +211,15 @@
   <div class="type-content hidden" data-content="filter"><img src="img/content/filter.png"><span>Filtre</span></div>
 </button>
 
+</div>
+<!-- GRAND DIV hidden -->
+
+
+
 
 <script type="text/javascript" src="js/app/InCadre.js"></script>
 <script type="text/javascript" src="js/app/ScenarioElement.js"></script>
-<script type="text/javascript" src="js/app/Data_Dispositions.js"></script>
+<script type="text/javascript" src="js/app/Dispositions_Data.js"></script>
 <script type="text/javascript" src="js/config.js"></script>
 <script type="text/javascript" src="js/app/ready.js"></script>
 <script type="text/javascript" src="js/app/App.js" defer></script>

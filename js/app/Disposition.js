@@ -281,11 +281,13 @@ class Disposition {
   }
 
 
+
 //###################################################################
 
 
+
   constructor(dispoKey){
-    this.Klass = 'Disposition'
+    this.Klass    = 'Disposition'
     this.dispoKey = dispoKey
     this.data     = DATA_DISPOSITIONS[dispoKey]
   }
@@ -307,7 +309,7 @@ class Disposition {
     */
     this.buildCadres()
     /*
-    |  Building mark
+    |  Building is done
     */
     this.isBuilt = true
   }
@@ -366,7 +368,6 @@ class Disposition {
     return this._domId || (this._domId = `disposition-${this.dispoKey}`)
   }
 
-
   instancieCadres(){
     this._cadres = {}
     this.data.cadres.map( dcadre => {
@@ -407,3 +408,7 @@ class DefinedDisposition extends Disposition {
 
 window.onresize = Disposition.onResizeWindow.bind(Cadre)
 
+// Raccourci (pour les fonctions d'ajustement des dimensions)
+function cadre(key){
+  return Disposition.cadre(key)
+}

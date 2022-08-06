@@ -71,14 +71,14 @@ get incadre(){
 }
 getInCadre(){
   this.incadreType = this.data.incadreType || this.data.defaultInCadre
-  return new InCadre(this.incadreType, this)
+  return InCadre.get(this.incadreType, this)
 }
 
 /**
  * Construction du cadre
  * ----------------------
  * Il s'agit du div.cadre qui va contenir le contenu de l'inCadre
- * (preview, console, fiter, etc.)
+ * (section.preview, section.console, fiter, etc.)
  * 
  */
 build(params){
@@ -97,11 +97,22 @@ build(params){
   /*
   |  Construction de son contenu, donc de son incadre
   */
-  this.incadre.build().observe()
+  this.buildOwnInCadre()
   /*
   |  Pour chainage
   */
   return this
+}
+
+/**
+ * Construction du {InCadre} courant du cadre
+ * 
+ * Cela consiste principalement à ajouter une section.<type incadre>
+ * dans le div.cadre de ce cadre (p.e. section.preview)
+ * 
+ */
+buildOwnInCadre(){
+  this.incadre.build().observe()  
 }
 
 /**
@@ -116,44 +127,47 @@ build(params){
  * - si le type de contenu n'ex
  * 
  */
-setIncadre(typeContent){
-  this.log.in('#setIncadre(typeContent = ' + typeContent + ')')
-  /*
-  |  On efface le contenu courant
-  */
-  this.cleanUp()
-  /*
-  |  Existe-t-il un content de ce type non utilisé par un cadre ?
-  */
-  var incadre ;
-  ;(InCadre.allByType[typeContent]||[]).forEach(content => {
-    if ( incadre /* on l'a trouvé */) return 
-    if ( ! content.cadre ) { incadre = content }
-  })
+// setIncadre(typeContent){
+//   this.log.in('#setIncadre(typeContent = ' + typeContent + ')')
+//   /*
+//   |  On efface le contenu courant
+//   */
+//   this.cleanUp()
+//   /*
+//   |  Existe-t-il un content de ce type non utilisé par un cadre ?
+//   */
+//   var incadre ;
+//   ;(InCadre.allByType[typeContent]||[]).forEach(content => {
+//     if ( incadre /* on l'a trouvé */) return 
+//     if ( ! content.cadre ) { incadre = content }
+//   })
 
-  /*
-  |  S'il n'existe pas de contenu non utilisé de ce type, j'en
-  |  instancie un nouveau
-  */
-  if ( !incadre ) {
-    incadre = InCadre.get(typeContent, this)
-  }
-  console.log("incadre =", incadre)
-  /*
-  |  On peut mettre ce contenu dans le cadre et le régler
-  */
-  this.buildIncadre(incadre)
-  /*
-  |  Observation (notamment pour changer la taille)
-  */
-  this.observe()
+//   /*
+//   |  S'il n'existe pas de contenu non utilisé de ce type, j'en
+//   |  instancie un nouveau
+//   */
+//   if ( !incadre ) {
+//     incadre = InCadre.get(typeContent, this)
+//   }
+//   console.log("incadre =", incadre)
+//   /*
+//   |  On peut mettre ce contenu dans le cadre et le régler
+//   */
+//   this.buildIncadre(incadre)
+//   /*
+//   |  Observation (notamment pour changer la taille)
+//   */
+//   this.observe()
 
-}
+// }
 
+/**
+ * Pour nettoyer complètement le contenu du cadre (supprime la
+ * section.<type incadre> du div.cadre de ce {Cadre})
+ * 
+ */
 cleanUp(){
-  // this.unobserve()
   this.obj.innerHTML = ''
-  this.incadre.cadre = null // dissocier le contenu InCadre du Cadre
 }
 
 /**
@@ -162,30 +176,36 @@ cleanUp(){
  * ou un nouveau contenu)
  * 
  */
-buildIncadre(incadre){
-  this.log.in('#buildIncadre(incadre = ' + (incadre?incadre.inspect:'null') + ')')
-  if ( incadre ) {
-    incadre.cadre = this
-  } else {
-    incadre = InCadre.get(this.data.defaultContent, this)
-  }
-  if ( incadre.section ) {
-    console.log("Section ajoutée au cadre (incadre.section) : ", incadre.section)
-    this.obj.appendChild(incadre.section)
-  } else {
-    incadre.buildIn(this.obj)
-  }
+// buildIncadre(incadre){
+//   this.log.in('#buildIncadre(incadre = ' + (incadre?incadre.inspect:'null') + ')')
+//   if ( incadre ) {
+//     incadre.cadre = this
+//   } else {
+//     incadre = InCadre.get(this.data.defaultContent, this)
+//   }
+//   if ( incadre.section ) {
+//     console.log("Section ajoutée au cadre (incadre.section) : ", incadre.section)
+//     this.obj.appendChild(incadre.section)
+//   } else {
+//     incadre.buildIn(this.obj)
+//   }
 
-  incadre.show()
-  incadre.adjustSize()
+//   incadre.show()
+//   incadre.adjustSize()
 
-  this.content  = incadre
-}
+//   this.content  = incadre
+// }
 
 adjustContent(){
   this.content && this.content.adjustSize()
 }
 
+/**
+ * Observation du cadre
+ * --------------------
+ * Principalement pour gérer son redimensionnement
+ * 
+ */
 observe(){
   if ( this.data.resizing ) {  
     $(this.obj).resizable({
@@ -317,7 +337,7 @@ get isOnTheBottom()   {
 }
 
 
-// -- Méthodes de données --
+// -- Méthodes de données (raccourcis et volatiles) --
 
 get id() { return this.data.id }
 
@@ -330,11 +350,3 @@ get lastQuart(){
 
 }//class Cadre
 
-
-//###################################################################
-
-
-// Raccourci (pour les fonctions d'ajustement)
-function cadre(key){
-  return Disposition.cadre(key)
-}

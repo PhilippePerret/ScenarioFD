@@ -15,12 +15,19 @@ function not(v){ return ! v }
  * try {
  * 
  *   condition || raise("C'est une erreur")
+ * 
+ *   condition || raise("La valeur devrait être %s", [valeur])
+ * 
+ *   condition || raise("Son nom devrait être %{nom} !", {nom: 'Personne'})
  *
  * } catch (err) {
  * 
  * }
  */
-function raise(foo) { throw foo }
+function raise(foo, remp) { 
+  if ( remp ) foo = tp(foo, remp)
+  throw foo 
+}
 
 /**
  * Retourne la version JSON de +foo+

@@ -18,32 +18,60 @@ class InCadre {
     this.log.out('::resetAll')
   }
 
+  /**
+   * Méthode principale appelée par {Cadre} pour obtenir une instance
+   * ou l'instance de son contenu (incadre).
+   * Il y a deux types de InCadre :
+   *    - les incadres qui doivent être chaque fois une nouvelle
+   *      instance vierge. Il peut y avoir plusieurs preview indépen-
+   *      dantes par exemple, pour afficher différentes choses.
+   *      cf. ci-dessous types "instances autonomes"
+   *    - les incadres qui sont uniques et ne doivent être instanciés
+   *      qu'une seule fois. C'est le cas par exemple des infos du
+   *      scénario, qui doivent être semblables partout.
+   *      cf. ci-dessous types "instances uniques"
+   * 
+   */
   static get(key, cadre) {
     this.log.in('::get(key = '+key+', cadre='+(cadre && cadre.inspect)+')')
     let panneau ;
     switch(key){
+    // --- Les types "instances autonomes" ---
     case 'console':
       return new Console(cadre)
     case 'preview':
       return new Preview(cadre)
     case 'navigator':
       return new Navigator(cadre)
-    case 'todo':
-      return this.getPanneau('todo', TodoScenario, cadre)
     case 'filter':
       return new ScenarioFilter(cadre)
-    case 'infos':
-      // Un seul panneau infos, qu'on mémorise, contrairement
-      // aux autres
-      return this.getPanneau('infos', InfosScenario, cadre)
-    case 'preferences':
-      // Un seul panneau préférences, qu'on mémorise
-      return this.getPanneau('prefs', Preferences, cadre)
     case 'report':
       return new Panneau('report', cadre)
     case 'console_dev':
       return new ConsoleDev(cadre)
+    // --- Les types "instances uniques" ---
+    case 'todo':
+      return this.getInCadreUnique(key, TodoScenario, cadre)
+    case 'infos':
+      return this.getInCadreUnique(key, InfosScenario, cadre)
+    case 'preferences':
+      // Un seul panneau préférences, qu'on mémorise
+      return this.getInCadreUnique(key, Preferences, cadre)
     }    
+  }
+
+  /**
+   * @return l'instance {InCadre} unique de clé +incadreKey+
+   *          en l'instanciant si nécessaire.
+   * 
+   */
+  static getInCadreUnique(incadreKey, Classe, cadre) {
+    if ( undefined == this.InCadreUniques) { this.InCadreUniques = {} }
+    if ( undefined == this.InCadreUniques[incadreKey] ) {
+      Object.assign(this.InCadreUniques, {[incadreKey]: new Classe(cadre)})
+    }
+    this.InCadreUniques[incadreKey].cadre = cadre
+    return this.InCadreUniques[incadreKey]
   }
 
   /**
@@ -54,14 +82,6 @@ class InCadre {
    */
   static clone(incadreType){
     return DGet(`section.${incadreType}.incadre`).cloneNode(true)
-  }
-
-
-  static getPanneau(panokey, Classe, cadre) {
-    const kthis = `_panneau_${panokey}`
-    const panneau = this[kthis] || ( this[kthis] = new Classe(cadre) )
-    if ( cadre ) { panneau.cadre = cadre }
-    return panneau
   }
 
   /**

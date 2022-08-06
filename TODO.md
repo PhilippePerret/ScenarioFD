@@ -9,6 +9,7 @@
 
 ## BUGS
 
+* [bug] On ne peut plus redimensionner les cadres (depuis la nouvelle disposition)
 * [bug] Les dialogues (lignes commençant par deux espaces) ne sont pas identifiés par le parsing de la scène
 * [bug] Le bouton de la disposition courante n'est pas celui affiché
 * [bug] Quand on construit le panneau de filtre, les labels se mettent au bout de la fenêtre de preview (c'est la fenêtre preview qui est le this.content dans le panneau Filter). Normalement, ça a dû être corrigé
