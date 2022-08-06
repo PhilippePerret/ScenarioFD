@@ -1,4 +1,6 @@
 import { InsideTest, page, mouse } from '../../system/inside-test.lib.js'
+import { ITFactory } from './Factory.js'
+import * as Check from './Check.js'
 
 /**
  * Test du démarrage de l'application
@@ -30,7 +32,7 @@ test = new InsideTest({
         page.contains(sconts.join(' > ')) || raise("On devrait trouver l'incadre console dans le cadre droit")
         
         // Boutons
-        buttonDispositionIs() || raise("Le bouton des dispositions devrait afficher le bon bouton.")
+        Check.buttonDispositionIs('1') || raise("Le bouton des dispositions devrait afficher le bon bouton (1).")
 
         return true
       } catch(err) {
@@ -117,13 +119,16 @@ test = new InsideTest({
         scenario.decors.contains('SALON') || raise("Le scénario devrait posséder le décor 'SALON'")
         scenario.decors.contains('RUE') || raise("Le scénario devrait posséder le décor 'RUE'")
 
+        return true
+
       } catch(err) {
+  
         InsideTest.current.error = err
         return false
+  
       }
 
 
-      return true
     }
 })
 tests.push(test)

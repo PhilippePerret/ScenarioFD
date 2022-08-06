@@ -42,4 +42,4 @@ class ITFactoryClass {
    }
 
 }
-const ITFactory = new ITFactoryClass()
+export const ITFactory = new ITFactoryClass()
