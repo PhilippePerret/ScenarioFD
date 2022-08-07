@@ -3,7 +3,11 @@
 
 
 const ERRORS = {
-  disposition: {
-    unknown: 'La disposition %s est inconnue.'
-  }
+    disposition: {
+        unknown: 'La disposition %s est inconnue.'
+    }
+  , listManager: {
+        noNameValueForItem: 'Impossible de trouver une valeur :name pour un item de %s…'
+      , noValueForItem:  'Impossible de trouver la valeur pour un item de %s…'
+    }
 }

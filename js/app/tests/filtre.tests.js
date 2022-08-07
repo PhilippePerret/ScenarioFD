@@ -41,10 +41,29 @@ test = new InsideTest({
       // 
       ITAction.chooseInCadreIn('filter', Console.current)
 
+      try {
+        
+        /*
+        | On trouve tous les sélecteurs de filtre attendus
+        |
+        */
+        const selectors = {
+            'section.filter': 'une section.filter'
+          , 'div.maindiv-filter-scenes_range'     : 'le div pour le filtre des scènes par numéro'
+          , 'div.maindiv-filter-personnage'       : 'le div pour le filtre des personnages'
+          , 'div.maindiv-filter-decor_et_effet'   : 'le div pour le filtre des décors et effets'
+          , 'div.maindiv-filter-type_element'     : 'le div pour le filtre par type d’élément'
+          , 'div.maindiv-filter-words'            : 'le div pour la recherche par mots'
+        }
+        for(var selector in selectors) {
+          page.contains(selector) || raise("Le page devrait contenir " + selectors[selector])
+        }
 
-      page.contains('section.filter')
-
-      return false
+        return true
+      } catch(err) {
+        InsideTest.error = err
+        return false
+      }
     }
 })
 tests.push(test)

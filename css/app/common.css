@@ -19,3 +19,8 @@ div.buttons {
   text-align: right;
 }
 
+.center {text-align: center}
+
+input[type="text"].short {
+  width: 40px;
+}

@@ -28,7 +28,8 @@ class Personnage extends ScenarioElement {
     return this._inspect || (this._inspect = `${this.pseudo} (perso)`)
   }
 
-  get key()     { return this.pseudo } // ListManager key
+  get key()     { return this.pseudo } // ListManager key et valeur Filtre
+  get name()    { return this.pseudo } // affichage filtre
   get text()    { return this.pseudo } // autocompletion
   get pseudo()  { return this.data.pseudo }
   get prenom()  { return this._prenom || (this._prenom = this.data.prenom || this.splitName().prenom)}

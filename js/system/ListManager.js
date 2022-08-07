@@ -33,6 +33,10 @@ class ListManager {
     return this._log || (this._log = new LogClass('InsideTest'))
   }
 
+  get inspect(){
+    return this._inspect || (this._inspect = `ListManager «${this.name}»`)
+  }
+
 
   /**
    * @return La liste Array des données à sauvegarder
@@ -68,6 +72,20 @@ class ListManager {
   contains(key_item){
     return this.Map.has(key_item)
   }
+
+  /**
+   * @return une version Array pour MultiSelect ({:name, :value})
+   * (cf. le filtre par exemple)
+   **/
+  get itemsForMultiSelect(){
+    return this.items.map( item => {
+      return {
+        name:   item.text||item.key||item.value||raise(ERRORS.listManager.noNameValueForItem, this.inspect)
+      , value:  item.value||item.key}||raise(ERRORS.listManager.noValueForItem, this.inspect)
+    })
+  }
+
+  get items(){ return Array.from(this.Map.values())}
 
   get count(){return this.Map.size}
 

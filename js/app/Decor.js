@@ -23,7 +23,8 @@ class Decor extends ScenarioElement {
     return this._inspect || (this._inspect = `Décor '${this.text}'`)
   }  
 
-  get key()  { return this.decor } // ListManager key
+  get key()  { return this.decor } // ListManager key et valeur filtre
+  get name() { return this.decor } // affichage filtre
   get text() { return this.decor } // autocomplétion
   get decor(){ return this._decor || ( this._decor = this.data.decor )}
   get mainDecor() {

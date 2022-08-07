@@ -118,7 +118,7 @@ class InCadre {
   }
 
   build(){
-    this.log.in('#build', this)
+    this.log.in('#build', this.inspect)
     const container = this.cadre.obj
     /*
     |   S'il existe une méthode à appeler avant la construction, on

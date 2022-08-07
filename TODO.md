@@ -1,6 +1,9 @@
 ## EN COURS
 
 * Poursuivre les tests
+* Poursuivre le filtre
+  - traiter le filtrage du scénario
+  - mettre des boutons pour tout déselectionner/tout sélectionner
 * Au redimensionnement de la fenêtre, il faut calculer le ratio des fenêtres et le conserver (au lieu d'augmenter seulement la dimension du cadre au bord)
 * Faire des tests
   - importation FinalDraft -> Scenario
@@ -25,6 +28,7 @@
 * CONVERSION FINAL-DRAFT -> SCENARIO
   - Ajouter les données dollar dans le content (couleur->color, résumé->summary, titre-> ?)
 
+* Autocomplétion pour les données de scène (avec le caractère $)
 * À la création d'une scène, il faut éditer son intitulé (autocompletion)
 * Enregistrer l'état des timesline, disposition, etc. régulièrement pour pouvoir les remettre au démarrage
   - Bien penser à le faire APRÈS avoir appliquer les préférences
@@ -55,6 +59,7 @@
 
 ## AMÉLIORATION
 
+* Des styles de notes à ajouter dans le scénario même (les ajouter au filtre)
 * Comment définir toutes les données des script-notes qui ne sont pas consignées ici (title, color, updated_at, created_at — cf. fichier export/ScriptNote.rb)
 * Poursuivre les tests (inside-tests)
 * Quand on CMD-click droit sur la scène de la timeline, ça la met aussi en édition
