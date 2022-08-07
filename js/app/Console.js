@@ -57,6 +57,7 @@ edit(scene){
 
 
 observe(){
+  super.observe()
   this.field.addEventListener('blur',   this.onBlur.bind(this))
   this.field.addEventListener('change', this.onChange.bind(this))
   this.field.addEventListener('focus',  this.onFocus.bind(this))

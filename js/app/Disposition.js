@@ -83,9 +83,11 @@ class Disposition {
     */
     this.affineContainerSize()
 
-
     /*
     |  On prend la disposition créée ou on en crée une nouvelle.
+    |
+    |  Si cette disposition existe déjà, on la prend (par 'get')
+    |  sinon on l'instancie.
     */
     if ( this.get(dispoId, dispoKey) ) {
       this.current = this.get(dispoId, dispoKey)
@@ -338,14 +340,14 @@ class Disposition {
    *                {Function} La fonction à laquelle il faut envoyer le contenu {InCadre}
    */
   forEachCadre(method){
-    for(var quart in this.cadres) {
-      const cadre = this.cadres[quart]
+    Object.values(this.cadres).forEach( cadre => {
+      console.log("Traitement de cadre ", cadre)
       if ( 'string' == typeof method ) {
         cadre[method].call(cadre)
       } else /* une fonction */ { 
-        method.call(null, cadre)        
+        method.call(null, cadre)
       }
-    }
+    })
   }
 
   /**

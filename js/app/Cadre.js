@@ -43,6 +43,7 @@ class Cadre {
 constructor(data){
   this.Klass        = 'Cadre'
   this.data         = data
+  this.id           = data.id
   this.disposition  = data.disposition
   this.dispoId      = this.disposition.dispoId || this.disposition.dispoKey
   this.quarts       = data.quarts  // cf. DATA_DISPOSITIONS
@@ -112,6 +113,7 @@ build(params){
  * 
  */
 buildOwnInCadre(){
+  this.log.in('#buildOwnInCadre')
   this.incadre.build().observe()  
 }
 
@@ -338,8 +340,6 @@ get isOnTheBottom()   {
 
 
 // -- Méthodes de données (raccourcis et volatiles) --
-
-get id() { return this.data.id }
 
 get firstQuart(){
   return this._firstq || (this._firstq = this.quarts[0])

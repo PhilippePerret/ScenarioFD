@@ -107,7 +107,18 @@ class LogClass {
    */
   w(str, type, flag, extraData){
     if ( flag & this.level ) {
-      if ( extraData ) str += '↘︎'
+      if ( extraData ) {
+        /*
+        |  Traitement avec une donnée supplémentaire
+        |  (en fonction du fait que c'est un string ou un objet)
+        */
+        if ( 'string' == typeof extraData ) {
+          str += `   [${extraData}]`
+          extraData = null
+        } else {
+          str += '↘︎'
+        }
+      }
       this.log(str, type)
       extraData && console.log(extraData)
     }

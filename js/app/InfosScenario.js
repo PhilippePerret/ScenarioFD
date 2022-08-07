@@ -163,8 +163,8 @@ class InfosScenario extends InCadre {
     return SCENARIO_DATA[infoId].value || SCENARIO_DATA[infoId].defaultValue
   }
 
-  onBuilding(){
-    console.log("-> InfosScenario#onBuilding")
+  afterBuild(){
+    this.log.in('#afterBuild', this.inspect)
     const options = {
         container: DGet('div.panneau', this.content)
       , header: ['INFORMATIONS SUR LE SCÉNARIO/FILM', 'Valeur', '']

@@ -28,18 +28,18 @@ var tests = [], test ;
 
 test = new InsideTest({
     error: 'La page devrait bien afficher le filtre.'
-  , eval: async function(){
+  , eval: function(){
 
       // Un scénario est déjà courant, normalement. On prend le
       // nouveau pour cette partie.
       ITFactory.makeCurrentScenario(DataScenarioForFiltre)
 
       const consoleCourante = Console.current
-      console.log("Console courante : ", consoleCourante)
+      // console.log("Console courante : ", consoleCourante)
 
       // Faire apparaitre les types
       consoleCourante.btnTypeContent.classList.remove('hidden')
-      await wait(5)
+
       // On choisit l'incadre 'filtre' dans le cadre qui contient 
       // pour le moment la console.
       mouse.clickOn(DGet('div[data-content="filter"]', consoleCourante.btnTypeContent))
@@ -51,9 +51,3 @@ test = new InsideTest({
 })
 tests.push(test)
 test.exec()
-
-function wait(seconds){
-  return new Promise((ok,ko) => {
-    setTimeout(ok, seconds * 1000)
-  })
-}

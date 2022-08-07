@@ -118,6 +118,7 @@ class InCadre {
   }
 
   build(){
+    this.log.in('#build', this)
     const container = this.cadre.obj
     /*
     |   S'il existe une méthode à appeler avant la construction, on
@@ -149,6 +150,7 @@ class InCadre {
   }
 
   observe(){
+    this.log.in('#observe', this.inspect)
     /*
     |   Observation du (des) bouton de changement de type de 
     |   contenu
@@ -238,21 +240,28 @@ class InCadre {
     return this._istypeplain
   }
   
-  // --- MÉTHODES D'ÉVÈNEMENT ---
+  // --- MÉTHODES D'ÉVÈNEMENT/D'OBSERVATION ---
+
+  /**
+   * Pour observer les boutons de la barre d'outils qui permetten
+   * de changer le contenu du cadre
+   * 
+   */
+  observeButtonTypeContent(){
+    console.log("-> observeButtonTypeContent")
+    DGetAll('div.type-content', this.btnTypeContent).forEach(div => {
+      div.addEventListener('click', this.onClickButtonTypeContent.bind(this, div))
+    })
+  }
 
   /**
    * Quand on choisit un type de contenu pour le cadre
    * 
    */
   onClickButtonTypeContent(div, e) {
+    console.log("-> onClickButtonTypeContent div = ", div)
     this.cadre.setIncadre(div.dataset.content)
     return stopEvent(e)
-  }
-
-  observeButtonTypeContent(){
-    DGetAll('div.type-content', this.btnTypeContent).forEach(div => {
-      div.addEventListener('click', this.onClickButtonTypeContent.bind(this, div))
-    })
   }
 
 }
