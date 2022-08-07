@@ -10,4 +10,7 @@ const ERRORS = {
         noNameValueForItem: 'Impossible de trouver une valeur :name pour un item de %s…'
       , noValueForItem:  'Impossible de trouver la valeur pour un item de %s…'
     }
+  , filter: {
+        noPreviewer: 'Aucun visualisateur de scénario. Je ne peux pas filtrer.'
+    }
 }

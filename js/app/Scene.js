@@ -422,7 +422,7 @@ class SceneLine {
     if ( this.type == 'intitule' ) {
       text = `<span class="scene-number">${this.scene.index + 1}.</span> ${text.toUpperCase()}`
     }
-    const p = DCreate('DIV', {class:`sline ${this.type}`, text:text})
+    const p = DCreate('DIV', {class:`sline ${this.type}`, 'data-eltype':this.type, text:text})
     if ( this.notes.length ) {
       this.notes = this.notes.map( note => {
         return '<span class="content">' + note + '</span>'

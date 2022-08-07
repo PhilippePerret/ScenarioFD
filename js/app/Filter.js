@@ -55,8 +55,74 @@ class ScenarioFilter extends InCadre {
    */
   filtreScenario(){
     const dataFiltrage = this.getStateOfEachFiltre()
+    Preview.current || raise(ERRORS.filter.noPreviewer)
+
+    if ( dataFiltrage.personnagesOn ) {
+      Object.assign(dataFiltrage, {regPersosOn: new RegExp(`(${dataFiltrage.personnagesOn.join('|')})`) })
+    }
+
     console.log("On va filtrer le scénario avec ", dataFiltrage)
+    /**
+     * Boucle sur tous les paragraphes pour les filtrer
+     * 
+     */
+    var currentSceneNum = null
+    const fromSceneNum  = 2
+        , toSceneNum    = 2
+    Preview.current.mapParagraph( oparag => {
+      const iparag = new FilterParagrah(oparag, currentSceneNum)
+      currentSceneNum = iparag.sceneNum
+      if ( fromSceneNum && currentSceneNum < fromSceneNum) {
+        iparag.hide()
+        return false
+      } else if ( toSceneNum && currentSceneNum > toSceneNum ) {
+        iparag.hide()
+        return false
+      } else {
+        iparag.show()
+        return iparag
+      }
+    }).map( iparag => {
+      if ( iparag.isNotElementStyleOn(dataFiltrage.styleOn) ) {
+        iparag.hide()
+        return null
+      }
+      if ( iparag.isNotPersonnageOn(dataFiltrage.regPersosOn) ){ 
+        iparag.hide()
+        return null
+      }
+      return iparag
+    }).map(iparag => { 
+      console.log("iparag restant", iparag)
+    })
   }
+
+  /**
+   * @return TRUE si le paragraph +parag+ {DOM Element} passe le
+   * filtre défini par dataFiltrage
+   * 
+   */
+  passeLeFiltre(parag, dataFiltrage){
+    /*
+    |  Plutôt que faire la boucle ci-dessous, il faut fonctionner
+    |  par ordre de clé. Par exemple, si un rang de scènes est choisi
+    |  il faut commencer par le prendre
+    */
+    for(var propFiltre in dataFiltrage) {
+      const value = dataFiltrage[propFiltre]
+      switch(propFiltre){
+      case 'styleOn':
+        if ( not(value.includes(parag.dataset.eltype)) ) return false
+      }
+    }
+
+    /*
+    | Réduction par le rang de scène
+    */
+
+    return true
+  }
+
 
   /**
    * Méthode qui rassemble les données en fonction de tous les 
@@ -64,7 +130,7 @@ class ScenarioFilter extends InCadre {
    * 
    */
   getStateOfEachFiltre(){
-    const dataFiltrage = []
+    const dataFiltrage = {}
     this.content.querySelectorAll('button.btn-apply[data-state="on"]').forEach( btn => {
       const filtreId = btn.dataset.id
       this.getStateOfFiltre(filtreId, dataFiltrage)
@@ -106,6 +172,11 @@ class ScenarioFilter extends InCadre {
   }
   getStatePersonnage(dataFiltrage){
     console.warn("Je dois apprendre à filtrer par personnage")
+    const personnagesOn = []
+    this.content.querySelectorAll('.cb-personnage').forEach(cb => {
+      cb.checked && personnagesOn.push(cb.dataset.value)
+    })
+    Object.assign(dataFiltrage, {personnagesOn: personnagesOn})
     return dataFiltrage
   }
   getStateDecorEtEffet(dataFiltrage){
@@ -122,7 +193,7 @@ class ScenarioFilter extends InCadre {
       cb.checked && stylesOn.push(cb.dataset.value)
     })
     this.log.debug("Styles à filtrer (voir) : " + JString(stylesOn))
-    dataFiltrage.push({styleOn: stylesOn})
+    Object.assign(dataFiltrage, {styleOn: stylesOn})
     return dataFiltrage
   }
   getStateSearch(dataFiltrage){
@@ -187,91 +258,16 @@ class ScenarioFilter extends InCadre {
    */
   observe(){
     super.observe()
-
+    /*
+    |  Observation du bouton pour rafraichir
+    */
+    DGet('button.btn-refresh',this.toolsbar).addEventListener('click', this.filtreScenario.bind(this))
     /*
     |  Chainage
     */
     return this
   }
-
-
-  get DATA_FILTRE(){
-      return {
-      // --- De scène x avec scène y ---
-      'scenes_range': {
-          name: 'Rang de scènes'
-        , id:   'scenes_range'
-        , fields:[
-              {type:'div', values: [
-                  {id:'from_scene', label:'De scène', type:'input-text', disp:'inline', css:'short center'}
-                , {id:'to_scene',   label:'à scène',  type:'input-text', disp:'inline', css:'short center'}
-                ]}
-            , {id:'zone',       label:'Zones',    type:'multi-select', values: this.ZONES }
-          ]
-      }
-    , 'personnages': {
-          name: 'Les personnages'
-        , id:   'personnage'
-        , fields: [
-              {id:'personnage', type:'multi-select', values: Scenario.current.personnages.items}
-          ]
-      }
-    , 'decors': {
-          name: 'Les décors'
-        , id:   'decor_et_effet'
-        , fields: [
-              {id:'decor', type:'multi-select', label: 'Lieux', values: Scenario.current.decors.items}
-            , {id:'effet', type:'multi-select', label: 'Effet', values: this.EFFETS}
-          ]
-      }
-    , 'types_element':{
-          name: 'Les éléments'
-        , id:   'type_element'
-        , fields: [
-            {id:'type_element', type:'multi-select', values: this.TYPES_ELEMENTS}
-          ] 
-      }
-    , 'words': {
-          name: 'Recherche par mots'
-        , id:   'words'
-        , fields: [
-              {id:'words',  label:'Rechercher', type:'input-text', disp:'block'}
-            , {id:'words_as', label:'comme…', type:'select', values:[{label:'Expression régulière', value:'regexp'}, {label:'Littéral',value:'exact'}, {label:'Insensible à la casse', value:'uncase'}]}
-          ]
-      }
-    }
-  } // DATA_FILTRE
-
-  get EFFETS(){
-    return {
-        'e':  {name:'Extérieur', value:'EXT.'}
-      , 'i':  {name:'Intérieur', value:'INT.'}
-      , 'n':  {name:'Noir',      value:'NOIR'}
-      , 'ei': {name:'Int./ext.', value:'INT./EXT.'}
-    }
-  }
-
-  get TYPES_ELEMENTS(){
-    return {
-        'intitule':   {name:'Intitulé', value:'intitule'}
-      , 'action':     {name:'Action/descript°', value:'action'}
-      , 'nom':        {name:'Nom qui parle', value:'nom'}
-      , 'dialogue':   {name:'Dialogue', value:'dialogue'}
-      , 'note-jeu':   {name:'Note de jeu', value:'note-jeu'}
-      , 'transition': {name:'Transition', value:'transition'}
-    }
-  }
-
-  get ZONES(){
-    return {
-        'expo':   {name:'Exposition'      ,value:'expo'}
-      , 'dev':    {name:'Développement'   ,value:'deve'}
-      , 'dev1':   {name:'Part 1 de Dév.'  ,value:'dev1'}
-      , 'dev2':   {name:'Part 2 de Dév.'  ,value:'dev2'}
-      , 'deno':   {name:'Dénouement'      ,value:'deno'}
-      }
-  }
-} // classe ScenarioFilter < InCadre
+} // ScenarioFilter
 
 
 /**
@@ -412,5 +408,61 @@ class FilterFieldBuilder {
 
   get domId(){
     return this._domid || (this._domid = `filter_field-${this.id}`)
+  }
+}
+
+
+class FilterParagrah {
+  constructor(oparag, sceneNum) {
+    this.obj      = oparag
+    if ( this.isIntitule ) {
+      this.sceneNum = (sceneNum || 0) + 1
+      this.numero   = this.sceneNum
+    } else {
+      this.sceneNum = sceneNum
+    }
+  }
+
+  /**
+   * Méthodes de filtre
+   * 
+   */
+
+  /**
+   *  @return TRUE si le paragraphe n'est pas d'un bon style
+   */
+  isNotElementStyleOn(stylesOn){
+    if ( not(stylesOn) ) return false
+    return not(stylesOn.includes(this.eltype))
+  }
+
+  /**
+   * @return TRUE si le paragraphe ne concerne pas les personnages
+   * à considérer
+   * 
+   */
+  isNotPersonnageOn(regPersosOn){
+    if ( not(regPersosOn) ) return false
+    return not(this.text.match(regPersosOn))
+  }
+
+
+   // ---/fin des méthodes de filtre
+
+  hide(){this.obj.classList.add('hidden')}
+  show(){this.obj.classList.remove('hidden')}
+
+  get isIntitule(){
+    if ( undefined === this._isintitule ) {
+      this._isintitule = this.eltype == 'intitule'
+    }
+    return this._isintitule
+  }
+
+  get text(){
+    return this._text || (this._text = this.obj.innerHTML)
+  }
+  get eltype(){
+    return this._eltype || (this._eltype = this.obj.dataset.eltype)
   }
 }

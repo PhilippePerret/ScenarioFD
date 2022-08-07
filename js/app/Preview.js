@@ -61,6 +61,28 @@ get selection(){
 }
 
 /**
+ * Boucle sur tous les paragraphes affichés
+ * 
+ */
+forEachParagraph(method){
+  this.content.querySelectorAll('div.scene').forEach( scene => {
+    scene.querySelectorAll('div.sline').forEach( parag => {
+      method.call(null, parag)
+    })
+  })    
+}
+
+mapParagraph(method){
+  const ary = []
+  var res
+  this.content.querySelectorAll('div.scene').forEach( scene => {
+    scene.querySelectorAll('div.sline').forEach( parag => {
+      if ( (res = method.call(null, parag)) ) ary.push(res)
+    })
+  })    
+  return ary
+}
+/**
  * Affichage à l'écran de la scène +scene+ {Scene}
  * 
  * Note : à ne pas confondre avec la méthode showScene (plus bas),
