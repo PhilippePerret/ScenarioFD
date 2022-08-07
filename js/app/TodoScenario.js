@@ -9,5 +9,11 @@ class TodoScenario {
   }
   get log() { return this.constructor.log }
 
-
+  afterBuild(){
+    this.log.in('#afterBuild', this.inspect)
+  }
+  
+  observe(){
+    super.observe()
+  }
 }

@@ -70,6 +70,10 @@ get domId(){
 get incadre(){
   return this._incadre || (this._incadre || this.getInCadre() )
 }
+set incadre(ic){
+  this._incadre = ic
+  this.data.incadreType = ic.type
+}
 getInCadre(){
   this.incadreType = this.data.incadreType || this.data.defaultInCadre
   return InCadre.get(this.incadreType, this)
@@ -83,7 +87,7 @@ getInCadre(){
  * 
  */
 build(params){
-  this.log.in('#build(params='+ JString(params) + ')')
+  this.log.in('#build(params='+ JString(params) + ')', this.inspect)
   this.obj = DCreate('DIV', {class:'cadre', id:this.domId})
   /*
   |  On met ce cadre dans le container principal des cadres et on
@@ -120,48 +124,40 @@ buildOwnInCadre(){
 /**
  * 
  * Définir le contenu du cadre (appelée par les boutons de type
- * de contenu dans la barre d'outil de chaque contenu (*))
- * (*) Pas très logique/sémantique, mais bon… Plus tard, ces 
- * boutons pourront être plutôt attachés au cadre qu'au contenu
+ * de contenu dans la barre d'outil de chaque contenu(1) )
+ * (1)  Bien noter que ce bouton pourrait être attaché plutôt au cadre
+ *      mais qu'il est attaché à chaque InCadre (pour simplifier les
+ *      choses au niveau des contenus.)
  * 
  * Principes
  * ---------
- * - si le type de contenu n'ex
+ *  - SI le type de contenu est de type "instance unique", on la 
+ *    prend et on la met, sinon, on en prend une nouvelle.
+ *  - SI c'est une disposition enregistrées, on doit l'actualiser.
+ * 
+ * @param {String} incadreType Type de InCadre à mettre dans le cadre
  * 
  */
-// setIncadre(typeContent){
-//   this.log.in('#setIncadre(typeContent = ' + typeContent + ')')
-//   /*
-//   |  On efface le contenu courant
-//   */
-//   this.cleanUp()
-//   /*
-//   |  Existe-t-il un content de ce type non utilisé par un cadre ?
-//   */
-//   var incadre ;
-//   ;(InCadre.allByType[typeContent]||[]).forEach(content => {
-//     if ( incadre /* on l'a trouvé */) return 
-//     if ( ! content.cadre ) { incadre = content }
-//   })
-
-//   /*
-//   |  S'il n'existe pas de contenu non utilisé de ce type, j'en
-//   |  instancie un nouveau
-//   */
-//   if ( !incadre ) {
-//     incadre = InCadre.get(typeContent, this)
-//   }
-//   console.log("incadre =", incadre)
-//   /*
-//   |  On peut mettre ce contenu dans le cadre et le régler
-//   */
-//   this.buildIncadre(incadre)
-//   /*
-//   |  Observation (notamment pour changer la taille)
-//   */
-//   this.observe()
-
-// }
+changeInCadre(incadreType){
+  this.log.in('#changeInCadre(incadreType = ' + incadreType + ')', this.inspect)
+  /*
+  |  On efface le contenu courant
+  */
+  this.cleanUp()
+  /*
+  |  On prend l'incadre voulu (instance unique ou nouvelle)
+  */
+  this.incadre = InCadre.get(incadreType, this)
+  /*
+  |  Construire et observe l'InCadre
+  */
+  this.buildOwnInCadre()
+  /*
+  |  Observation (notamment pour changer la taille)
+  */
+  this.observe()
+  this.log.out('#changeInCadre')
+}
 
 /**
  * Pour nettoyer complètement le contenu du cadre (supprime la

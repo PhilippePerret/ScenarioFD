@@ -1,6 +1,7 @@
 import { InsideTest, page, mouse } from '../../system/inside-test.lib.js'
-import { ITFactory } from './Factory.js'
-import * as Check from './Checkers.js'
+import { ITFactory } from './utils/Factory.js'
+import * as Check from './utils/Checkers.js'
+import { ITAction } from './utils/Actions.js'
 
 /**
  * Tests de l'affichage et du fonctionnement correct de la page
@@ -30,19 +31,16 @@ test = new InsideTest({
     error: 'La page devrait bien afficher le filtre.'
   , eval: function(){
 
+      // 
       // Un scénario est déjà courant, normalement. On prend le
       // nouveau pour cette partie.
+      // 
       ITFactory.makeCurrentScenario(DataScenarioForFiltre)
+      // 
+      // Afficher le contenu 'filtre'
+      // 
+      ITAction.chooseInCadreIn('filter', Console.current)
 
-      const consoleCourante = Console.current
-      // console.log("Console courante : ", consoleCourante)
-
-      // Faire apparaitre les types
-      consoleCourante.btnTypeContent.classList.remove('hidden')
-
-      // On choisit l'incadre 'filtre' dans le cadre qui contient 
-      // pour le moment la console.
-      mouse.clickOn(DGet('div[data-content="filter"]', consoleCourante.btnTypeContent))
 
       page.contains('section.filter')
 
@@ -51,3 +49,5 @@ test = new InsideTest({
 })
 tests.push(test)
 test.exec()
+
+// TODO : vérifier que la disposition a été actualisée (elle doit être mémorisée avec le nouveau contenu)

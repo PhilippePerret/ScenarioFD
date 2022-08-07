@@ -215,7 +215,7 @@ class Preferences extends InCadre {
   // --- FIN DES MÉTHODES DE CHECK ---
 
 
-  onBuilding(){
+  afterBuild(){
     console.log("-> Preferences#onBuilding")
     const options = {
         container: DGet('div.panneau', this.content)

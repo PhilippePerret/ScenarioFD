@@ -248,7 +248,6 @@ class InCadre {
    * 
    */
   observeButtonTypeContent(){
-    console.log("-> observeButtonTypeContent")
     DGetAll('div.type-content', this.btnTypeContent).forEach(div => {
       div.addEventListener('click', this.onClickButtonTypeContent.bind(this, div))
     })
@@ -259,8 +258,8 @@ class InCadre {
    * 
    */
   onClickButtonTypeContent(div, e) {
-    console.log("-> onClickButtonTypeContent div = ", div)
-    this.cadre.setIncadre(div.dataset.content)
+    this.log.in('#onClickButtonTypeContent', this.inspect)
+    this.cadre.changeInCadre(div.dataset.content)
     return stopEvent(e)
   }
 

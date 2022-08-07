@@ -8,30 +8,33 @@ class ScenarioFilter extends InCadre {
 
   constructor(cadre){
     super('filter', cadre)
-    console.log("this.content (à l'instanciation)", this.content)
-    console.log("this.section (à l'instanciation)", this.section)
   }
 
-
-  afterBuildIn(){
+  /**
+   * Construction complète du filtre, en fonction des données
+   * 
+   */
+  afterBuild(){
+    this.log.in('#afterBuild', this.inspect)
     this.isBuilt = false
     this._content = null
-    console.log("-> ScenarioFilter#build dans ", this.content)
     const o = this.content
     Object.values(this.DATA_FILTRE).forEach( dfiltre => {
-      console.log("ÉCRIRE LE FILTRE", dfiltre)
       const divfiltre = DCreate('DIV', {id:`div-filtre-${dfiltre.id}`, class:'div-filtre'})
       const label = DCreate('LABEL', {text:dfiltre.name, class:'fitre-name'})
       divfiltre.appendChild(label)
-      console.log("label", label)
       o.appendChild(divfiltre)
     })
     this.isBuilt = true
     return this // chainage
   }
 
+  /**
+   * Observation complète du filtre, pour réactions en direct en
+   * fonction des choix.
+   */
   observe(){
-    console.log("Observation du panneau filtre")
+    super.observe()
     return this // chainage
   }
 
