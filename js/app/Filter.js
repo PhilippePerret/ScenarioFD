@@ -18,7 +18,7 @@ class ScenarioFilter extends InCadre {
     this.log.in('#afterBuild', this.inspect)
     this.isBuilt = false
     this._content = null
-    Object.values(this.DATA_FILTRE).forEach( dfiltre => {
+    Object.values(FILTRE.DATA_FILTRE).forEach( dfiltre => {
       /*
       |   On construit cet élément de filtre
       */
@@ -70,6 +70,9 @@ class ScenarioFilter extends InCadre {
     const fromSceneNum  = 2
         , toSceneNum    = 2
     Preview.current.mapParagraph( oparag => {
+      /*
+      |  Ne prendre que les scènes qui nous intéressent
+      */
       const iparag = new FilterParagrah(oparag, currentSceneNum)
       currentSceneNum = iparag.sceneNum
       if ( fromSceneNum && currentSceneNum < fromSceneNum) {
@@ -83,6 +86,10 @@ class ScenarioFilter extends InCadre {
         return iparag
       }
     }).map( iparag => {
+      /*
+      |   Tous les autres filtrages
+      */
+      if ( iparag.isIntitule && dataFiltrage.options_always_heading) { return iparag }
       if ( iparag.isNotElementStyleOn(dataFiltrage.styleOn) ) {
         iparag.hide()
         return null
@@ -156,8 +163,10 @@ class ScenarioFilter extends InCadre {
       return this.getStateTypeElement(dataFiltrage)
     case 'words':
       return this.getStateSearch(dataFiltrage)
+    case 'options':
+      return this.getStateOptions(dataFiltrage)
     default:
-      erreur("Le filtre #"+idFiltre+" n'est pas traité…")
+      erreur("Le filtre #"+filtreId+" n'est pas traité…")
     }
     return dataFiltrage
   }
@@ -166,12 +175,19 @@ class ScenarioFilter extends InCadre {
    * Relève de l'état de chaque filtre
    * 
    */
+  getStateOptions(dataFiltrage) {
+    this.content
+      .querySelector('div.maindiv-filter-options')
+      .querySelectorAll('.cb-options').forEach( cb => {
+        if ( cb.checked ) { Object.assign(dataFiltrage, {[`options_${cb.dataset.value}`]: true}) }
+      })
+    return dataFiltrage
+  }
   getStateSceneRange(dataFiltrage){
     console.log("Changement du rang de scène")
     return dataFiltrage
   }
   getStatePersonnage(dataFiltrage){
-    console.warn("Je dois apprendre à filtrer par personnage")
     const personnagesOn = []
     this.content.querySelectorAll('.cb-personnage').forEach(cb => {
       cb.checked && personnagesOn.push(cb.dataset.value)
@@ -310,7 +326,7 @@ class FilterElementBuilder {
     this.fieldsContainer = DCreate('DIV', {class:'filter-fields-container'})
     this.obj.appendChild(this.fieldsContainer)
     this.fields.forEach( dfield => {
-      const field = new FilterFieldBuilder(dfield)
+      const field = new FilterFieldBuilder(dfield, this)
       field.buildIn(this.fieldsContainer)
     })
     const btnApply = DCreate('BUTTON', {text:'ON', class:'btn-apply', 'data-id':this.id, 'data-state':'off'})
@@ -329,12 +345,17 @@ class FilterElementBuilder {
 
 
 class FilterFieldBuilder {
-  constructor(data){
-    this.data   = data
-    this.id     = data.id
-    this.type   = data.type
-    this.label  = data.label
-    this.values = data.values
+  constructor(data, mainElement){
+    this.data         = data
+    this.id           = data.id
+    this.type         = data.type
+    this.label        = data.label
+    this.values       = data.values
+    this.mainElement  = mainElement
+
+    if ( 'function' == typeof this.values ) {
+      this.values = this.values.call(null)
+    }
   }  
 
   buildIn(container){
@@ -350,6 +371,8 @@ class FilterFieldBuilder {
       return this.buildAsMultiSelect()
     case 'select':
       return this.buildAsSelect()
+    case 'checkbox':
+      return this.buildAsCheckbox()
     case 'button':
       return this.buildAsButton()
     }
@@ -398,6 +421,16 @@ class FilterFieldBuilder {
       o.appendChild(span)
     })
     return o
+  }
+  buildAsCheckbox(){
+    const css = ['cb-container', this.data.disp]
+    const span  = DCreate('SPAN', {class:css.join(' ')})
+    const cbid  = `cb-${this.id}-${new Date().getTime()}`
+    const cb    = DCreate('INPUT',{class:`cb-${this.mainElement.id} cb-${this.id}`, id:cbid, type:'checkbox', 'data-value':this.id})
+    span.appendChild(cb)
+    cb.checked = true
+    span.appendChild(DCreate('LABEL', {for:cbid, text:this.label}))
+    return span
   }
   buildAsSelect(){
     return DCreate('SELECT', {values: this.values})

@@ -29,7 +29,14 @@ FILTRE.ZONES = {
 
 FILTRE.DATA_FILTRE = {
   // --- De scène x avec scène y ---
-  'scenes_range': {
+  'options': {
+      name: 'Options'
+    , id:   'options'
+    , fields: [
+          {id:'always_heading', label:'Toujours afficher les intitulés de scène', type:'checkbox', disp:'block'}
+      ]
+  }
+, 'scenes_range': {
       name: 'Rang de scènes'
     , id:   'scenes_range'
     , fields:[
@@ -37,29 +44,29 @@ FILTRE.DATA_FILTRE = {
               {id:'from_scene', label:'De scène', type:'input-text', disp:'inline', css:'short center'}
             , {id:'to_scene',   label:'à scène',  type:'input-text', disp:'inline', css:'short center'}
             ]}
-        , {id:'zone',       label:'Zones',    type:'multi-select', values: this.ZONES }
+        , {id:'zone',       label:'Zones',    type:'multi-select', values: FILTRE.ZONES }
       ]
   }
 , 'personnages': {
       name: 'Les personnages'
     , id:   'personnage'
     , fields: [
-          {id:'personnage', type:'multi-select', values: Scenario.current.personnages.items}
+          {id:'personnage', type:'multi-select', values: function(){return Scenario.current.personnages.items}}
       ]
   }
 , 'decors': {
       name: 'Les décors'
     , id:   'decor_et_effet'
     , fields: [
-          {id:'decor', type:'multi-select', label: 'Lieux', values: Scenario.current.decors.items}
-        , {id:'effet', type:'multi-select', label: 'Effet', values: this.EFFETS}
+          {id:'decor', type:'multi-select', label: 'Lieux', values: function(){return Scenario.current.decors.items}}
+        , {id:'effet', type:'multi-select', label: 'Effet', values: FILTRE.EFFETS}
       ]
   }
 , 'types_element':{
       name: 'Les éléments'
     , id:   'type_element'
     , fields: [
-        {id:'type_element', type:'multi-select', values: this.TYPES_ELEMENTS}
+        {id:'type_element', type:'multi-select', values: FILTRE.TYPES_ELEMENTS}
       ] 
   }
 , 'words': {

@@ -7,6 +7,7 @@ section.filter {
 section.filter div.maindiv-filter {
   border: 1px solid #CCC;
   border-radius: 1em;
+  width: calc(100% - 8em);
 }
 section.filter div.maindiv-filter label.filter-name {
   display: block;
