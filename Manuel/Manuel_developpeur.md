@@ -53,19 +53,24 @@ Ils sont chacun repérés par deux lettres : **B** pour **bottom**, **T** pour *
 ## Principe de fonctionnement des contenus
 
 ~~~
-La DISPOSITION définit des zones dans la fenêtre, suivant ses 4 quarts
+La *DISPOSITION* définit des zones dans la fenêtre, suivant ses 4 quarts
 
-Dans chaque QUART défini, on met un CADRE qui peut être redimensionné.
+Dans chaque *QUART* défini, on met un CADRE qui peut être redimensionné.
 Le CADRE est définitivement associé à la disposition choisie.
 Ce CADRE peut-être obtenu par 'Disposition.current.cadre(quart)' ou avec
 la méthode générale 'cadre(quart)' qui va chercher dans la disposition 
 courante.
 
-Dans chaque CADRE on met un INCADRE, c'est-à-dire un contenu qui peut
+Dans chaque *CADRE* on met un INCADRE, c'est-à-dire un contenu qui peut
 avoir le type 'preview', 'console', 'navigator', etc.
 Ce contenu INCADRE peut être changé à la volée.
 
-Ce INCADRE possède un div CONTENU (this.content) pour son contenu et un
-div TOOLSBAR (this toolsbar) pour ses boutons.
+Ce *INCADRE* possède un type de contenu, dans div CONTENT (this.content) pour
+son contenu et un div TOOLSBAR (this toolsbar) pour ses boutons propres.
+La toolsbar contient toujours un bouton pour changer le type de contenu du 
+cadre. Noter que lorsqu'on change le contenu, c'est l'INCADRE courant qui 
+change, pas seulement son contenu.
+Chaque INCADRE instancié est conservé [où ?] pour pouvoir être réutilisé au
+besoin.
 ~~~
 
