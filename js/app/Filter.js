@@ -94,11 +94,14 @@ class ScenarioFilter extends InCadre {
      * 
      */
     var currentSceneNum = null
+    var fluxOpened      = false // pour les temps par exemple
     const fromSceneNum  = dataFiltrage.fromScene
         , toSceneNum    = dataFiltrage.toScene
     Preview.current.mapParagraph( oparag => {
       /*
+      |
       |  Ne prendre que les scènes qui nous intéressent
+      |
       */
       const iparag = new FilterParagrah(oparag, currentSceneNum)
       currentSceneNum = iparag.sceneNum
@@ -113,17 +116,42 @@ class ScenarioFilter extends InCadre {
         return iparag
       }
     }).map( iparag => {
-      
+      /*
+      |
+      |   Filtre par zone de structure (PFA)
+      |
+      */
+      if ( iparag == null ) return
+      if ( not(dataFiltrage.zonesOn) ) return iparag
+      /*
+      | Si c'est un intitulé, on vérifie que la scène soit dans une
+      | zone attendue. Si oui, on ouvre le flux pour les paragraphes
+      | suivant, si non, on le ferme
+      */
+      if ( iparag.isIntitule ) {
+        fluxOpened = iparag.isInZones(dataFiltrage.zonesOn)
+      }
+      if ( fluxOpened ) {
+        return iparag
+      } else {
+        iparag.hide()
+        return
+      }
+
+    }).map( iparag => {
       /*
       |
       |   === Tous les autres filtrages ===
       |
       */
-
+      if ( !iparag ) return
       /*
       | Option 'always_heading' (toujours afficher l'intitulé)
       */
-      if ( iparag.isIntitule && dataFiltrage.option_always_heading) { return iparag }
+      if ( iparag.isIntitule && dataFiltrage.option_always_heading) { 
+        iparag.show()
+        return iparag 
+      }
       if ( iparag.isNotElementStyleOn(dataFiltrage.styleOn) ) {
         iparag.hide()
         return null
@@ -249,13 +277,13 @@ class ScenarioFilter extends InCadre {
       const moitieFilm = Math.ceil(dureeFilm / 2)
       const quartFilm  = Math.ceil(dureeFilm / 4)
       const zonesPages = {expo:null,deve:null,deno:null,dev1:null,dev2:null}
-      zonesPages.expo = [1, quartFilm]
+      zonesPages.expo = [0, quartFilm]
       zonesPages.deve = [quartFilm - 1, 3 * quartFilm]
       zonesPages.deno = [3 * quartFilm - 1, dureeFilm]
       zonesPages.dev1 = [quartFilm - 1, moitieFilm]
       zonesPages.dev2 = [moitieFilm - 1, 3 * moitieFilm]
       zonesOn = Object.keys(zonesOn).map(z => {return zonesPages[z]})
-      ObjectAssign(dataFiltrage, {zonesOn: zonesOn})
+      Object.assign(dataFiltrage, {zonesOn: zonesOn})
     }
   }
   getStatePersonnage(dataFiltrage){
@@ -312,8 +340,8 @@ class ScenarioFilter extends InCadre {
           div.parentNode.insertBefore(div, $(div).prev()[0])
         }      
       } catch(err){
-        console.log("Problème avec ", div.previousSibling)
-        console.log(err)
+        console.error("Problème avec ", div.previousSibling)
+        console.error(err)
       }
     } else {
       while($(div).next()[0] && $(div).next()[0].classList.contains('open')){
@@ -589,16 +617,37 @@ class FilterParagrah {
     return not(this.text.match(regPersosOn) || (this.owner && this.owner.match(regPersosOn)))
   }
 
+  /**
+   * @return TRUE si le paragraphe (donc sa scène) se trouve dans
+   * les temps définis par les zones de +zones+.
+   * 
+   * @param +zones+ {Array} de paires définissant le premier et le
+   *                dernier temps de chaque zone.
+   */
+  isInZones(zones){
+    for (var zone of zones ) {
+      if ( this.scene.page >= zone[0] && this.scene.page <= zone[1]){
+        return true
+      }
+    }
+    return false
+  }
 
-   // ---/fin des méthodes de filtre
+
+  // ---/fin des méthodes de filtre
+
+
+
 
   hide(){
-    if (FilterParagrah.HideMode != 'hidden') {this.obj.classList.remove('hidden')}
+    if (FilterParagrah.HideMode != 'hidden') {
+      this.obj.classList.remove('hidden')
+    }
     this.obj.classList.add(FilterParagrah.HideMode)
   }
   show(){
-    this.obj.classList.remove(FilterParagrah.HideMode)
-    if (FilterParagrah.HideMode != 'hidden') {this.obj.classList.remove('hidden')}
+    this.obj.classList.remove('hidden')
+    this.obj.classList.remove('grised')
   }
 
   get isIntitule(){
@@ -610,6 +659,9 @@ class FilterParagrah {
 
   get text(){
     return this._text || (this._text = this.obj.innerHTML)
+  }
+  get scene(){
+    return this._scene || (this._scene = Scenario.current.sceneByNumero(this.sceneNum))
   }
   // Le propriétaire du paragraphe (pour les dialogues et note de jeu)
   get owner(){

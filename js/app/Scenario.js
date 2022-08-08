@@ -166,7 +166,9 @@ class Scenario {
     this.forEachScene('displayInTimeline')
   }
 
+
   // ---- MÉTHODES SUR LES SCÈNES ----
+
 
   /**
    * @return la scène d'identifiant +sceneId+
@@ -236,6 +238,20 @@ class Scenario {
       erreur(errmsg)
       console.error(errmsg)
     }
+  }
+
+  /**
+   * Pour calculer la position (en page, donc en minutes) de toutes
+   * les scènes du scénario
+   * La valeur est mise dans chaque <scene>.sceneData.page
+   * 
+   */
+  calc_positionScenes(){
+    var currentPage = 0.0
+    this.forEachScene( scene => {
+      scene._page  = currentPage
+      currentPage += scene.duree
+    })
   }
 
   /**
@@ -489,7 +505,7 @@ class Scenario {
       lineHeights.push(height)
     })
 
-    const LH = (lineHeights.reduce((a,b) => a + b) / lineHeights.length).toFixed(2)
+    const LH = parseFloat((lineHeights.reduce((a,b) => a + b) / lineHeights.length).toFixed(2))
     this.log.debug("Line Average Height: " + LH)
     this._lineheight = LH
     /*

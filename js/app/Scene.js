@@ -96,9 +96,8 @@ class Scene {
     if ( newContent != this.content ) {
       // La scène a changé de contenu
       const oldLinesCount = this.LinesCount
-      const oldPage   = this.page 
       this.content = newContent
-      this.parse()
+      if ( this.page ) { this.page = parseFloat(this.page) }
       /*
       |  Replacement de scène si nécessaire
       */
@@ -333,11 +332,23 @@ class Scene {
 
   // --- Données définissables dans la scène par $page, $duree, etc.
 
-  get page()  { return this.sceneData.page }
+  get page()  { 
+    if ( undefined === this._page ) {
+      this.scenario.calc_positionScenes()
+    }
+    return this._page
+  }
 
-  get title() { return this.sceneData.page }
+  get title() { return this.sceneData.title }
 
-  get duree() { return this.sceneData.duree }
+  get duree() { 
+    if ( undefined === this.sceneData.duree ) {
+      return this.PagesCount
+    } else if ( 'string' == typeof this.sceneData.duree ) {
+      this.sceneData.duree = parseFloat(this.sceneData.duree)
+    }
+    return this.sceneData.duree
+  }
 
   get summary(){ return this.sceneData.summary }
 
@@ -398,8 +409,8 @@ class Scene {
       }
     })
     this._linescount = count
-    const nbLinesPerPage = Preferences.get('nombre_lignes_per_page')
-    this._pagescount = Number.parseFloat(count / nbLinesPerPage).toFixed(2)
+    const nbLinesPerPage  = Preferences.get('nombre_lignes_per_page')
+    this._pagescount      = parseFloat(Number.parseFloat(count / nbLinesPerPage).toFixed(2))
     this.log.debug('Scène n°'+this.numero+' : lines: ' + this._linescount + ' / pages: ' + this._pagescount)
     
     return { pages:this._pagescount, lines:this._linescount }
