@@ -2,7 +2,7 @@
 
 * Poursuivre les tests (cf. [ci-dessous](#tests))
 * Poursuivre le filtre
-  - option : griser plutôt que cacher
+  - quand on ferme une boite du filtre, ça désactive le bouton (pour éviter les surprises)
   - quand un nom  de personnage est cherché, on garde les dialogues associés au nom
   - traiter le filtrage du scénario
   - mettre des boutons pour tout déselectionner/tout sélectionner

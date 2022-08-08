@@ -12,5 +12,6 @@ const ERRORS = {
     }
   , filter: {
         noPreviewer: 'Aucun visualisateur de scénario. Je ne peux pas filtrer.'
+      , badSceneNumero: 'Mauvais numéro de scène : %s.'
     }
 }

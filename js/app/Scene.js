@@ -32,6 +32,7 @@ class Scene {
 //##################################################################
 
   constructor(data){
+    console.log("data scène : ", data)
     this.data       = data
     this.scenario   = data.scenario
     this.content    = data.content
@@ -401,7 +402,7 @@ class Scene {
     this._pagescount = Number.parseFloat(count / nbLinesPerPage).toFixed(2)
     this.log.debug('Scène n°'+this.numero+' : lines: ' + this._linescount + ' / pages: ' + this._pagescount)
     
-    return {pages:this._pagescount, lines:this._linescount}
+    return { pages:this._pagescount, lines:this._linescount }
   }
 
 }// class Scene

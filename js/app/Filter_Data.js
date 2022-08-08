@@ -20,10 +20,10 @@ FILTRE.TYPES_ELEMENTS = {
 
 FILTRE.ZONES = {
     'expo':   {name:'Exposition'      ,value:'expo'}
-  , 'dev':    {name:'Développement'   ,value:'deve'}
+  , 'dev':    {name:'Dévelopmnt'      ,value:'deve'}
+  , 'deno':   {name:'Dénouement'      ,value:'deno'}
   , 'dev1':   {name:'Part 1 de Dév.'  ,value:'dev1'}
   , 'dev2':   {name:'Part 2 de Dév.'  ,value:'dev2'}
-  , 'deno':   {name:'Dénouement'      ,value:'deno'}
 }
 
 

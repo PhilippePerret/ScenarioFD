@@ -2,6 +2,8 @@ body {
   margin: 0;
   padding: 0;
   color: #555;
+  font-family: "Arial Narrow";
+  font-size: 15.5pt;
 }
 
 section#toolsbar {

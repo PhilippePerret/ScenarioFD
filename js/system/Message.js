@@ -131,7 +131,7 @@ div#message.center {
 div#message.bottom-left{ left:0; bottom:0 }
 div#message.bottom-right { right:0; bottom:0 }
 div#message.top-right { top:0; right:0 }
-div#message.top-left { top:0: left:0 }
+div#message.top-left { top:0; left:0 }
 div#message span.close-btn {
   position:absolute;
   right:10px;

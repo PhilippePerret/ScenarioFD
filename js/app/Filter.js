@@ -27,12 +27,18 @@ class ScenarioFilter extends InCadre {
       /*
       |  Observations
       */
-      // Ouverture/fermeture sur le span de titre
+      // Ouverture/fermeture sur le span de titre du groupe d'options
       builder.spanTitre.addEventListener('click', this.toggleFilter.bind(this, builder.obj))
       // Réaction au clic n'importe où
       dfiltre.onChange && builder.addEventListeners(dfiltre.onChange)
     })
     this.isBuilt = true
+    /*
+    |  Réglage de certains éléments
+    */
+    // Mettre la première et la dernière scène
+    DGet('input.filter_field-from_scene', this.content).value  = 1
+    DGet('input.filter_field-to_scene', this.content).value    = Scenario.current.scenes.length
     /*
     |  Chainage
     */
@@ -54,32 +60,42 @@ class ScenarioFilter extends InCadre {
    *  - elle indique le résultat
    */
   filtreScenario(){
-    const dataFiltrage = this.getStateOfEachFiltre()
+    /*
+    |  On s'assure qu'il y ait bien un prévisualisateur
+    */
     Preview.current || raise(ERRORS.filter.noPreviewer)
-
+    /*
+    |  On commence par relever l'état de tous les filtres à 
+    |  prendre en compte
+    */
+    const dataFiltrage = this.getStateOfEachFiltre()
+    /*
+    |  Si on filtre par personnage, on doit faire l'expression 
+    |  régulière qui simplifiera la recherche et l'accélèrera
+    */
     if ( dataFiltrage.personnagesOn ) {
       Object.assign(dataFiltrage, {regPersosOn: new RegExp(`(${dataFiltrage.personnagesOn.join('|')})`) })
     }
 
-    console.log("On va filtrer le scénario avec ", dataFiltrage)
 
     /*
-    |  Traitement d'option préliminaires
+    |  === OPTIONS PRÉLIMINAIRES ===
+    */
+    /*
+    |   Si on doit "griser" les scènes plutôt que les masquer
     */
     if ( dataFiltrage.option_grised_rather_hide) {
-      // Quand il faut grisé plutôt que de masquer les paragraphes
-      // exclus.
-      console.log("Le mode de cacher est mis à 'grised'")
       FilterParagrah.HideMode = 'grised'
     }
 
+    console.log("On va filtrer le scénario avec ", dataFiltrage)
     /**
      * Boucle sur tous les paragraphes pour les filtrer
      * 
      */
     var currentSceneNum = null
-    const fromSceneNum  = null // à régler
-        , toSceneNum    = null // à régler
+    const fromSceneNum  = dataFiltrage.fromScene
+        , toSceneNum    = dataFiltrage.toScene
     Preview.current.mapParagraph( oparag => {
       /*
       |  Ne prendre que les scènes qui nous intéressent
@@ -202,8 +218,45 @@ class ScenarioFilter extends InCadre {
     return dataFiltrage
   }
   getStateSceneRange(dataFiltrage){
-    console.log("Changement du rang de scène")
-    return dataFiltrage
+    const cont = DGet('div.maindiv-filter-scenes_range', this.content)
+    const nombreScenes = Scenario.current.scenes.length
+    /*
+    |  Scène de départ et scène de fin
+    */
+    var fromScene = DGet('input.filter_field-from_scene', cont).value
+    if ( fromScene != '' ) {
+      fromScene.replace(/[0-9]/g,'') == '' || raise(tp(ERRORS.filter.badSceneNumero, 'doit être un nombre'))
+      fromScene = parseInt(fromScene,10)
+      fromScene < nombreScenes || raise(tp(ERRORS.filter.badSceneNumero, 'doit être inférieur à '+nombreScenes))
+      dataFiltrage.fromScene = fromScene
+    }
+    var toScene = DGet('input.filter_field-to_scene', cont).value
+    if ( toScene != '' ) {
+      toScene.replace(/[0-9]/g,'') == '' || raise(tp(ERRORS.filter.badSceneNumero, 'doit être un nombre'))
+      toScene = parseInt(toScene,10)
+      toScene <= nombreScenes || raise(tp(ERRORS.filter.badSceneNumero, 'doit être inférieur à '+nombreScenes))
+      dataFiltrage.toScene = toScene
+    }
+    /*
+    |   Un zone particulière du film
+    */
+    var zonesOn = {}
+    this.content.querySelectorAll('input.cb-zone').forEach(cb => {
+      if ( cb.checked ) Object.assign(zonesOn, {[cb.dataset.value]:true})
+    })
+    if ( Object.keys(zonesOn).length ) {
+      const dureeFilm = InfosScenario.get('duree_film')
+      const moitieFilm = Math.ceil(dureeFilm / 2)
+      const quartFilm  = Math.ceil(dureeFilm / 4)
+      const zonesPages = {expo:null,deve:null,deno:null,dev1:null,dev2:null}
+      zonesPages.expo = [1, quartFilm]
+      zonesPages.deve = [quartFilm - 1, 3 * quartFilm]
+      zonesPages.deno = [3 * quartFilm - 1, dureeFilm]
+      zonesPages.dev1 = [quartFilm - 1, moitieFilm]
+      zonesPages.dev2 = [moitieFilm - 1, 3 * moitieFilm]
+      zonesOn = Object.keys(zonesOn).map(z => {return zonesPages[z]})
+      ObjectAssign(dataFiltrage, {zonesOn: zonesOn})
+    }
   }
   getStatePersonnage(dataFiltrage){
     const personnagesOn = []
@@ -211,11 +264,9 @@ class ScenarioFilter extends InCadre {
       cb.checked && personnagesOn.push(cb.dataset.value)
     })
     Object.assign(dataFiltrage, {personnagesOn: personnagesOn})
-    return dataFiltrage
   }
   getStateDecorEtEffet(dataFiltrage){
     console.warn("Je dois apprendre à filtrer par décor et effet")
-    return dataFiltrage
   }
   getStateTypeElement(dataFiltrage){
     console.log("Récupération des types d'élément")
@@ -439,12 +490,16 @@ class FilterFieldBuilder {
     var header_tools, cbs_tools ;
     header_tools = DCreate('DIV', {class:'cbs-tools'})
     o.appendChild(header_tools)
-    const btn_selectAll = DCreate('BUTTON', {class:'cbs-tool', text:'tout sélectionner'})
-    const btn_deselectAll = DCreate('BUTTON', {class:'cbs-tool', text:'tout désélectionner'})
+    const span_tout       = DCreate('SPAN', {text: 'tout : ', class:'rfloat tiny'})
+    const btn_selectAll   = DCreate('BUTTON', {class:'cbs-tool', text:'sélectionner'})
+    const span_sep        = DCreate('SPAN', {text: ' | ', class:'rfloat tiny'})
+    const btn_deselectAll = DCreate('BUTTON', {class:'cbs-tool', text:'désélectionner'})
     btn_selectAll.addEventListener('click', this.ifilter.onSelectOrDeselectAll.bind(this, true, o) )
     btn_deselectAll.addEventListener('click', this.ifilter.onSelectOrDeselectAll.bind(this, false, o) )
     header_tools.appendChild(btn_selectAll)
+    header_tools.appendChild(span_sep)
     header_tools.appendChild(btn_deselectAll)
+    header_tools.appendChild(span_tout)
     header_tools.appendChild(DCreate('LEGEND', {class:'panel-legend', text:this.label||' '}))
 
 
@@ -537,7 +592,10 @@ class FilterParagrah {
 
    // ---/fin des méthodes de filtre
 
-  hide(){this.obj.classList.add(FilterParagrah.HideMode)}
+  hide(){
+    if (FilterParagrah.HideMode != 'hidden') {this.obj.classList.remove('hidden')}
+    this.obj.classList.add(FilterParagrah.HideMode)
+  }
   show(){
     this.obj.classList.remove(FilterParagrah.HideMode)
     if (FilterParagrah.HideMode != 'hidden') {this.obj.classList.remove('hidden')}

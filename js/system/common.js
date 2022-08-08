@@ -26,6 +26,7 @@ function not(v){ return ! v }
  */
 function raise(foo, remp) { 
   if ( remp ) foo = tp(foo, remp)
+  erreur(foo)
   throw foo 
 }
 
@@ -67,6 +68,7 @@ function JString(foo, noCatch){
  * 
  */
 function tp(str, values){
+  if ('string' == typeof values) { values = [values] }
   if ( values.length ) {
     while(str.match(/\%s/)){
       str = str.replace(/\%s/, values.shift())

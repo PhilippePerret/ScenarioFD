@@ -9,7 +9,8 @@ class UIClass {
   prepare(){
     message("Préparation de l'interface…")  
 
-    Message.position = 'bottom-right'
+    // Message.position = 'bottom-right'
+    Message.position = 'top-left'
     
     /*
     | Construction et préparation des timelines

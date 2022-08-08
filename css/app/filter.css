@@ -8,6 +8,7 @@ section.filter div.maindiv-filter {
   border: 1px solid #CCC;
   border-radius: 1em;
   width: calc(100% - 8em);
+  margin-top: 0.5em;
 }
 section.filter div.maindiv-filter label.filter-name {
   display: block;
@@ -102,4 +103,16 @@ div.panel-multi-select div.cbs-tools button.cbs-tool {
   float: right;
   border: none!important;
   background-color: inherit!important;
+}
+
+div.cb-container {
+  vertical-align: middle;
+  margin: 8px 0;
+}
+div.cb-container > input {
+  vertical-align: middle; 
+  margin-right: 1em;
+}
+div.cb-container > label {
+ vertical-align: bottom; 
 }

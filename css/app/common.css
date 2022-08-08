@@ -1,4 +1,4 @@
-.fright {float: right}
+.fright, .rfloat {float: right}
 
 .invisible {
   visibility: hidden;
@@ -24,3 +24,5 @@ div.buttons {
 input[type="text"].short {
   width: 40px;
 }
+
+.tiny { font-size: 13.3333px }

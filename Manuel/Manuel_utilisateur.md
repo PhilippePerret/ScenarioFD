@@ -153,6 +153,12 @@ Pour importer et convertir un scénario Final Draft :
 
 ---
 
+## Filtrage du scénario
+
+**Scenario**, contrairement à Final-Draft, possède un puissant filtre pour voir ce que l’on veut dans le scénario.
+
+---
+
 <a name="annexe"></a>
 
 ## Annexe
