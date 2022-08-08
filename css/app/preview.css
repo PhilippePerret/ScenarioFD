@@ -16,7 +16,7 @@ div.sline {
 }
 
 div.intitule, div.nom,
-div.action
+div.action, div.transition
  {
   margin-top: 1em;
 }
@@ -98,10 +98,10 @@ div.action {
   text-align: justify;
 }
 
-div.dialog, div.dialog-alt {
+div.dialogue, div.dialogue-alt {
   margin-left: 8em;
 }
-div.dialog-alt {
+div.dialogue-alt {
   display: none;
 }
 div.note-jeu {
@@ -109,6 +109,14 @@ div.note-jeu {
 }
 div.note-jeu:before {content: '('}
 div.note-jeu:after  {content: ')'}
+
+div.sline.transition {
+  text-align: right;
+  margin-right: 4em;
+}
+div.sline.transition:after {
+  content: ':';
+}
 
 
 button.btn-add-scene {

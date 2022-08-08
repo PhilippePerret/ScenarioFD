@@ -20,7 +20,7 @@ section#cadres_container > div.disposition > div.cadre {
 }
 section#cadres_container > div.disposition > div.cadre > section.incadre > div.content {
   transform-origin: top left;
-  height: calc(100% - 40px);
+  height: calc(100% - 40px - 2em);
   width:  inherit;
   position: relative;
 }

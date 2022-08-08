@@ -55,6 +55,9 @@ NOM PERSONNAGE:
 Une action avec [1] une note
 # Mais noter que la note sera toujours associée à la phrase complète (pour le moment)
 
+# Une transition (fin de scène) se définit par :
+> FONDU ENCHAINÉ
+
 # Une donnée est toujours précédée d'un dollar :
 $time = 50.5
 # Ci-dessus on définit que la scène devrait se trouver à la 50e page et

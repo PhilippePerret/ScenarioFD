@@ -90,9 +90,14 @@ class Scenario {
 
   get log() { return this.constructor.log }
 
+  get inspect(){
+    return this._inspect || (this._inspect = `Scénario ${this.titre}`)
+  }
+
+
   /**
    * Enregistrer le scénario
-   * 
+   * ------------------------
    */
   save(){
     WAA.send({
@@ -118,8 +123,9 @@ class Scenario {
   }
 
  /**
-   * Exporter le scénario au format +format+
-   * avec les options choisies
+   * Exporter le scénario 
+   * --------------------
+   * au format +format+ avec les options choisies
    */
   export(format){
     const options = {scenes:'all'} // TODO pouvoir les définir
@@ -128,6 +134,8 @@ class Scenario {
 
 
   /**
+   * Éditer le scénario
+   * -------------------
    * L'édition du scénario consiste afficher ses scènes, à mettre en
    * action ses options, et à attendre la première commande.
    * 
@@ -156,6 +164,48 @@ class Scenario {
 
     this.forEachScene('display')
     this.forEachScene('displayInTimeline')
+  }
+
+  // ---- MÉTHODES SUR LES SCÈNES ----
+
+  /**
+   * @return la scène d'identifiant +sceneId+
+   * 
+   * (pour la récupérerer par l'index, cf. la méthode suivante)
+   */
+  sceneById(sceneId){
+    this.tableScenes || this.makeTableScenes()
+    return this.tableScenes[sceneId]
+  }
+
+  /**
+   * @return la scène de numéro (index) +sceneNum+
+   * 
+   * (pour la récupérer par Identifiant, cf. la méthode précédente)
+   * 
+   */
+  sceneByNumero(sceneNum){
+    return this.scenes[sceneNum - 1]
+  }
+
+  /**
+   * @return la scène par son index
+   * 
+   * Attention : l'index n'est pas le numéo (numéro = index + 1)
+   */
+  sceneByIndex(sceneIndex){
+    return this.scenes[sceneIndex]
+  }
+
+  /**
+    * Faire la table des scènes par identifiant
+    * 
+    */
+  makeTableScenes(){
+    this.tableScenes = {}
+    this.forEachScene(scene => {
+      Object.assign(this.tableScenes, {[scene.id]: scene})
+    })
   }
 
   /**

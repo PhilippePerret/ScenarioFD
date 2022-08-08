@@ -11,6 +11,9 @@ const TYPES_ELEMENTS = {
   , 'nom'     : {label: 'Personnage'   ,value:'nom'} 
   , 'note-jeu': {label: 'Note de jeu'  ,value:'not-jeu'}
 }
+
+const TYPES_DIALOGUE = ['dialogue','dialogue-alt','note-jeu']
+
 /**
  * Les contenu de cadre "plain", c'est-à-dire sans padding dans leur
  * cadre 

@@ -236,14 +236,24 @@ class Scene {
   parseScriptLinesInContent(rawLines){
     this.lines = []
     var type;
+    var lastCharacter; // se souvenir du dernier personnage (pour les dialogues)
     rawLines.forEach( line => {
-      const firstChar = line.trim()[0]
+      const firstChar = line[0]
       if ( firstChar == ' ' && line.substring(0,2) == '  ' /* => dialogue */) {
-        type = 'dialog'
+        type = 'dialogue'
         line = line.trim()
-        if ( line[0] == '^' ) {
-          type = 'dialog-alt'
-          line = line.substring(1, line.length)
+        const len = line.length
+        switch(line[0]) {
+        case '(':
+          if ( line.substring(len - 1, len ) == ')') {
+            type = 'note-jeu'
+            line = line.substring(1, len - 1)
+          }
+          break
+        case '^':
+          type = 'dialogue-alt'
+          line = line.substring(1, len)
+          break
         }
       } else if ( line[line.length - 1] == ':' /* => nom de personnage */) {
         type = 'nom'
@@ -258,7 +268,23 @@ class Scene {
         type = 'action'
       }
       line = line.trim()
-      this.lines.push(new SceneLine({scenario:this.scenario, type:type, rawContent:line, content:line, notes:null, scene:this}))      
+      const dataLine  = {scenario:this.scenario, type:type, rawContent:line, content:line, notes:null, scene:this}
+      if ( TYPES_DIALOGUE.includes(type) ) {
+        Object.assign(dataLine, {owner: lastCharacter})
+        // console.log("Owner de la ligne '%s' mis à %s", dataLine.content, dataLine.owner)
+      }
+      const sceneLine = new SceneLine(dataLine)
+      this.lines.push(sceneLine)
+      /*
+      |  Traitement spécial de certaines lignes
+      */
+      if ( sceneLine.isIntitule ) {
+        this._lieu  = sceneLine.lieu
+        this._effet = sceneLine.effet
+        this._decor = sceneLine.decor
+      } else if ( sceneLine.isCharacter ) {
+        lastCharacter = sceneLine.content
+      }
     })
   }
   /**
@@ -316,6 +342,19 @@ class Scene {
 
   get color() { return this.sceneData.color || this.sceneData.couleur }
 
+  // --- DONNÉES RÉCUPÉRÉES DANS LE CONTENU ---
+
+  get lieu(){
+    return this._lieu
+  }
+  get effet(){
+    return this._effet
+  }
+  get decor(){
+    return this._decor
+  }
+
+  // --- DONNÉES CALCULÉES ---
   /**
    * @return la durée relative de la scène (note : correspond à 
    * son nombre de page)
@@ -354,7 +393,8 @@ class Scene {
         count += 1
         break
       default:
-        const nl = Math.ceil(sline.obj.offsetHeight / hmoyline)
+        const nl = Math.round(sline.obj.offsetHeight / hmoyline)
+        // console.log("sline.obj.offsetHeight = %i / hmoyline = %i / nombre lignes = %i", sline.obj.offsetHeight, hmoyline, nl)
         count += nl + 1
       }
     })
@@ -373,18 +413,24 @@ class Scene {
 
 class SceneLine {
   constructor(data){
-    this.data       = data
-    this.scene      = data.scene
-    this.scenario   = data.scenario||this.scene.scenario
-    this.type       = data.type
-    this.rawContent = data.rawContent
-    this.content    = data.content
-    this.notes      = data.notes || []
+    this.data         = data
+    this.scene        = data.scene
+    this.scenario     = data.scenario||this.scene.scenario
+    this.type         = data.type
+    this.rawContent   = data.rawContent
+    this.content      = data.content
+    this.notes        = data.notes || []
+    this.isIntitule   = this.type == 'intitule'
+    this.isDialogue   = this.type == 'dialogue' || this.type == 'dialogue-alt'
+    this.isNoteJeu    = this.type == 'note-jeu'
+    this.isCharacter  = this.type == 'nom' 
 
-    if (this.type == 'intitule'){
+    if (this.isIntitule){
       this.addSceneHeadingToDecors()
-    } else if ( this.type == 'nom') {
+    } else if ( this.isCharacter ) {
       this.addCharacterToPersonnages()
+    } else if (this.isDialogue || this.isNoteJeu) { 
+      this.owner = data.owner
     }
   }
 
@@ -395,10 +441,11 @@ class SceneLine {
    */
   addSceneHeadingToDecors(){
     var decor = this.content.split(' ')
-    decor.pop()   // pour retirer le 'JOUR' ou autre
-    decor.shift() // pour retirer le 'INT.' ou autre
+    this.effet = decor.pop().trim()   // pour retirer le 'JOUR' ou autre
+    this.lieu  = decor.shift().trim() // pour retirer le 'INT.' ou autre
     decor = decor.join(' ').trim()
     decor = decor.replace(/^(?:[-–—] )?([^-–—]+)[-–—]?$/g,'$1').trim()
+    this.decor = decor
     this.scenario.decors.add(new Decor({decor:decor, scenario:this.scenario}))
   }
 

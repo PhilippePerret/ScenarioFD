@@ -2,6 +2,8 @@
 
 * Poursuivre les tests
 * Poursuivre le filtre
+  - option : griser plutôt que cacher
+  - quand un nom  de personnage est cherché, on garde les dialogues associés au nom
   - traiter le filtrage du scénario
   - mettre des boutons pour tout déselectionner/tout sélectionner
 * Au redimensionnement de la fenêtre, il faut calculer le ratio des fenêtres et le conserver (au lieu d'augmenter seulement la dimension du cadre au bord)
@@ -12,8 +14,8 @@
 
 ## BUGS
 
-* [bug] On ne peut plus redimensionner les cadres (depuis la nouvelle disposition)
 * [bug] Les dialogues (lignes commençant par deux espaces) ne sont pas identifiés par le parsing de la scène
+* [bug] On ne peut plus redimensionner les cadres (depuis la nouvelle disposition)
 * [bug] Le bouton de la disposition courante n'est pas celui affiché
 * [bug] Quand on construit le panneau de filtre, les labels se mettent au bout de la fenêtre de preview (c'est la fenêtre preview qui est le this.content dans le panneau Filter). Normalement, ça a dû être corrigé
 * [bug] Certaines scènes contiennent en résumé leur $page… (ou alors c'est par que l'extrait se sert des premières lignes et qu'on a ça dedans ? — ça m'étonnerait)
@@ -28,6 +30,7 @@
 * CONVERSION FINAL-DRAFT -> SCENARIO
   - Ajouter les données dollar dans le content (couleur->color, résumé->summary, titre-> ?)
 
+* S'assurer toujours, à l'enregistrement, qu'une scène commence toujours par un intitulé (mais il peut y avoir des définitions avant cet intitulé)
 * Autocomplétion pour les données de scène (avec le caractère $)
 * À la création d'une scène, il faut éditer son intitulé (autocompletion)
 * Enregistrer l'état des timesline, disposition, etc. régulièrement pour pouvoir les remettre au démarrage
