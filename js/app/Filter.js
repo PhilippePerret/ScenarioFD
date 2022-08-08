@@ -62,13 +62,24 @@ class ScenarioFilter extends InCadre {
     }
 
     console.log("On va filtrer le scénario avec ", dataFiltrage)
+
+    /*
+    |  Traitement d'option préliminaires
+    */
+    if ( dataFiltrage.option_grised_rather_hide) {
+      // Quand il faut grisé plutôt que de masquer les paragraphes
+      // exclus.
+      console.log("Le mode de cacher est mis à 'grised'")
+      FilterParagrah.HideMode = 'grised'
+    }
+
     /**
      * Boucle sur tous les paragraphes pour les filtrer
      * 
      */
     var currentSceneNum = null
-    const fromSceneNum  = 2
-        , toSceneNum    = 2
+    const fromSceneNum  = null // à régler
+        , toSceneNum    = null // à régler
     Preview.current.mapParagraph( oparag => {
       /*
       |  Ne prendre que les scènes qui nous intéressent
@@ -86,10 +97,17 @@ class ScenarioFilter extends InCadre {
         return iparag
       }
     }).map( iparag => {
+      
       /*
-      |   Tous les autres filtrages
+      |
+      |   === Tous les autres filtrages ===
+      |
       */
-      if ( iparag.isIntitule && dataFiltrage.options_always_heading) { return iparag }
+
+      /*
+      | Option 'always_heading' (toujours afficher l'intitulé)
+      */
+      if ( iparag.isIntitule && dataFiltrage.option_always_heading) { return iparag }
       if ( iparag.isNotElementStyleOn(dataFiltrage.styleOn) ) {
         iparag.hide()
         return null
@@ -179,7 +197,7 @@ class ScenarioFilter extends InCadre {
     this.content
       .querySelector('div.maindiv-filter-options')
       .querySelectorAll('.cb-options').forEach( cb => {
-        if ( cb.checked ) { Object.assign(dataFiltrage, {[`options_${cb.dataset.value}`]: true}) }
+        if ( cb.checked ) { Object.assign(dataFiltrage, {[`option_${cb.dataset.value}`]: true}) }
       })
     return dataFiltrage
   }
@@ -292,6 +310,8 @@ class ScenarioFilter extends InCadre {
  * Pour la construction des éléments du filtre
  * 
  */
+
+
 class FilterElementBuilder {
   constructor(data, filter){
     this.data     = data
@@ -424,11 +444,11 @@ class FilterFieldBuilder {
   }
   buildAsCheckbox(){
     const css = ['cb-container', this.data.disp]
-    const span  = DCreate('SPAN', {class:css.join(' ')})
+    const span  = DCreate(this.data.disp == 'inline'?'SPAN':'DIV', {class:css.join(' ')})
     const cbid  = `cb-${this.id}-${new Date().getTime()}`
     const cb    = DCreate('INPUT',{class:`cb-${this.mainElement.id} cb-${this.id}`, id:cbid, type:'checkbox', 'data-value':this.id})
     span.appendChild(cb)
-    cb.checked = true
+    cb.checked = this.data.checked == undefined ? true : this.data.checked
     span.appendChild(DCreate('LABEL', {for:cbid, text:this.label}))
     return span
   }
@@ -445,7 +465,21 @@ class FilterFieldBuilder {
 }
 
 
+/**
+ * 
+ * class FilterParagraph
+ * ---------------------
+ * Gestion de tous les paragraphes du scénario affiché
+ * 
+ */
 class FilterParagrah {
+  /**
+   * Le mode de masque, qui détermine s'il faut cacher le paragraphe
+   * ou le griser.
+   */
+  static get HideMode(){ return this._hidemode || 'hidden'}
+  static set HideMode(v){ this._hidemode = v }
+
   constructor(oparag, sceneNum) {
     this.obj      = oparag
     if ( this.isIntitule ) {
@@ -482,8 +516,8 @@ class FilterParagrah {
 
    // ---/fin des méthodes de filtre
 
-  hide(){this.obj.classList.add('hidden')}
-  show(){this.obj.classList.remove('hidden')}
+  hide(){this.obj.classList.add(FilterParagrah.HideMode)}
+  show(){this.obj.classList.remove(FilterParagrah.HideMode)}
 
   get isIntitule(){
     if ( undefined === this._isintitule ) {

@@ -36,6 +36,7 @@ test = new InsideTest({
       // nouveau pour cette partie.
       // 
       ITFactory.makeCurrentScenario(DataScenarioForFiltre)
+      
       // 
       // Afficher le contenu 'filtre'
       // 

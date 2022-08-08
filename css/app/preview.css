@@ -14,6 +14,9 @@ section.preview.incadre div.content {
 div.sline {
   position: relative;
 }
+div.sline.grised {
+  opacity: 0.3;
+}
 
 div.nom, div.action, div.transition {
   margin-top: 1em;

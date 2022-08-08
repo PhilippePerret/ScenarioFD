@@ -1,6 +1,6 @@
 ## EN COURS
 
-* Poursuivre les tests
+* Poursuivre les tests (cf. [ci-dessous](#tests))
 * Poursuivre le filtre
   - option : griser plutôt que cacher
   - quand un nom  de personnage est cherché, on garde les dialogues associés au nom
@@ -17,8 +17,11 @@
 * Voir les bugs à l'aide de `ghi list`
 * [bug] La donnée 'FD-scene-properties' contient des retours chariot inutiles
 
+<a name="tests"></a>
+
 ## TESTS 
 
+* Tests de l'export/import depuis et vers Final Draft
 * Vérifier que le bouton du type de contenu soit bien réglé (son data-content doit être au type de contenu, par exemple 'console' si c'est la console qui est affichée — pour le moment, ça n'est pas le cas dans les premiers tests)
 
 ## PROCHAINES ÉTAPES 

@@ -34,6 +34,7 @@ FILTRE.DATA_FILTRE = {
     , id:   'options'
     , fields: [
           {id:'always_heading', label:'Toujours afficher les intitulés de scène', type:'checkbox', disp:'block'}
+        , {id:'grised_rather_hide', label:'Griser plutôt que cacher le texte exclus', type:'checkbox', disp:'block', checked:false}
       ]
   }
 , 'scenes_range': {
