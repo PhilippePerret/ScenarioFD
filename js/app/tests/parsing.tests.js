@@ -11,11 +11,23 @@ import {DataScenarioComplet} from './utils/Data_Scenarios.js'
 
 var tests = [], test ;
 var erreurs = []
+
+// Pour les messages d'erreurs ci-dessous
+const RTAB = "\n    "
+const RTAB_EXP = RTAB + 'Expected:'
+const RTAB_ACT = RTAB + 'Actual  :'
+const EXPECT_ACTUAL = RTAB_EXP+"«%s»"+RTAB_ACT+"«%s»"
+
+// Les messages d'erreur de ce test
 const ITERRORS = {
     badLinesCount   : 'Le nombre de ligne de la scène #%s devrait être %s. Il est de %s.'
   , badDecor        : 'Le décor de la scène #%s devrait être «%s». C’est «%s».'
-  , badScene        : "La propriété :%s de la scène #%s est mauvaise.\n    Expected: «%s»\n    Actual: «%s»"
-  , badSpec         : "La propriété :%s de la ligne %s de la scène #%s est mauvaise.\n    Expected: «%s».\n    Actual: «%s»"
+  , badScene        : "La propriété :%s de la scène #%s est mauvaise."+EXPECT_ACTUAL
+  , badSpec         : "La propriété :%s de la ligne %s de la scène #%s est mauvaise."+EXPECT_ACTUAL
+  , decor:{
+        badMainDecor : "Le décor principale de l’instance décor de la scène %s est mauvais :"+EXPECT_ACTUAL
+      , badSubDecor  : "Le sous-décor de l’instance décor de la scène %s est mauvais :"+EXPECT_ACTUAL
+    }
 }
 
 /**
@@ -98,6 +110,12 @@ test = new InsideTest({
         // Transition
         scene = scenario.sceneById(7)
         LineSpecsEqual(scene, 2, {type:'transition', content:'CUT'})
+
+        // Décor et sous-décor
+        scene = scenario.sceneById(12)
+        SceneSpecsEqual(scene, {id:12, decor:'APPART : TERRASSE', mainDecor: 'APPART', subDecor:'TERRASSE'})
+        scene.idecor.mainDecor == 'APPART'  || erreurs.push(tp(ITERRORS.decor.badMainDecor, [scene.numero, 'APPART', scene.idecor.mainDecor]))
+        scene.idecor.subDecor  == 'TERRASSE' || erreurs.push(tp(ITERRORS.decor.badSubDecor, [scene.numero, 'TERRASSE', scene.idecor.subDecor]))
 
       } catch (err) {
 

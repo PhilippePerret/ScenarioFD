@@ -15,10 +15,11 @@ div.sline {
   position: relative;
 }
 
-div.intitule, div.nom,
-div.action, div.transition
- {
+div.nom, div.action, div.transition {
   margin-top: 1em;
+}
+div.intitule {
+  margin-top: 1.8em;
 }
 
 div.scene {
@@ -81,9 +82,6 @@ div.nom {
   font-weight: bold;
 }
 
-div.intitule {
-  
-}
 div.nom {
   margin-left: 10em;
 }

@@ -14,11 +14,7 @@
 
 ## BUGS
 
-* [bug] Les dialogues (lignes commençant par deux espaces) ne sont pas identifiés par le parsing de la scène
-* [bug] On ne peut plus redimensionner les cadres (depuis la nouvelle disposition)
-* [bug] Le bouton de la disposition courante n'est pas celui affiché
-* [bug] Quand on construit le panneau de filtre, les labels se mettent au bout de la fenêtre de preview (c'est la fenêtre preview qui est le this.content dans le panneau Filter). Normalement, ça a dû être corrigé
-* [bug] Certaines scènes contiennent en résumé leur $page… (ou alors c'est par que l'extrait se sert des premières lignes et qu'on a ça dedans ? — ça m'étonnerait)
+* Voir les bugs à l'aide de `ghi list`
 * [bug] La donnée 'FD-scene-properties' contient des retours chariot inutiles
 
 ## TESTS 

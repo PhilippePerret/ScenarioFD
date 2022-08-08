@@ -344,15 +344,13 @@ class Scene {
 
   // --- DONNÉES RÉCUPÉRÉES DANS LE CONTENU ---
 
-  get lieu(){
-    return this._lieu
-  }
-  get effet(){
-    return this._effet
-  }
-  get decor(){
-    return this._decor
-  }
+  /** @return l'instance {Decor} du décor de la scène */
+  get idecor()    { return this._idecor }
+  get decor()     { return this._decor }
+  get mainDecor() { return this.idecor.mainDecor }
+  get subDecor()  { return this.idecor.subDecor  }
+  get lieu()      { return this._lieu  }
+  get effet()     { return this._effet }
 
   // --- DONNÉES CALCULÉES ---
   /**
@@ -446,7 +444,9 @@ class SceneLine {
     decor = decor.join(' ').trim()
     decor = decor.replace(/^(?:[-–—] )?([^-–—]+)[-–—]?$/g,'$1').trim()
     this.decor = decor
-    this.scenario.decors.add(new Decor({decor:decor, scenario:this.scenario}))
+    const idecor = new Decor({decor:decor, scenario:this.scenario})
+    this.scene._idecor = idecor
+    this.scenario.decors.add(idecor)
   }
 
   /**
