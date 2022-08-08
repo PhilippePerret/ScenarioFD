@@ -285,6 +285,17 @@ class ScenarioFilter extends InCadre {
     this.filtreScenario()
   }
 
+  /**
+   * Méthode générale pour sélection tout ou déselectionner tout dans
+   * un champ multi-select
+   * 
+   */
+  onSelectOrDeselectAll(selectit, container, e){
+    container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.checked = selectit
+    })
+    return stopEvent(e)
+  }
 
   /**
    * Observation complète du filtre, pour réactions en direct en
@@ -372,6 +383,7 @@ class FilterFieldBuilder {
     this.label        = data.label
     this.values       = data.values
     this.mainElement  = mainElement
+    this.ifilter      = mainElement.ifilter // l'instance {Filtre} courante
 
     if ( 'function' == typeof this.values ) {
       this.values = this.values.call(null)
@@ -405,7 +417,7 @@ class FilterFieldBuilder {
   buildAsDivOfFields(){
     const cont = DCreate('DIV', {class:'fields-container'})
     this.values.forEach( dfield => {
-      const field = new FilterFieldBuilder(dfield)
+      const field = new FilterFieldBuilder(dfield, this.mainElement)
       field.buildIn(cont)
     })
     return cont
@@ -424,9 +436,18 @@ class FilterFieldBuilder {
   }
   buildAsMultiSelect(){
     const o = DCreate('DIV', {class:'panel-multi-select'})
-    if ( this.label ) {
-      o.appendChild(DCreate('LEGEND', {class:'panel-legend', text:this.label}))
-    }
+    var header_tools, cbs_tools ;
+    header_tools = DCreate('DIV', {class:'cbs-tools'})
+    o.appendChild(header_tools)
+    const btn_selectAll = DCreate('BUTTON', {class:'cbs-tool', text:'tout sélectionner'})
+    const btn_deselectAll = DCreate('BUTTON', {class:'cbs-tool', text:'tout désélectionner'})
+    btn_selectAll.addEventListener('click', this.ifilter.onSelectOrDeselectAll.bind(this, true, o) )
+    btn_deselectAll.addEventListener('click', this.ifilter.onSelectOrDeselectAll.bind(this, false, o) )
+    header_tools.appendChild(btn_selectAll)
+    header_tools.appendChild(btn_deselectAll)
+    header_tools.appendChild(DCreate('LEGEND', {class:'panel-legend', text:this.label||' '}))
+
+
     if ( not('function' == typeof this.values.forEach) ) {
       this.values = Object.values(this.values)
     }
@@ -510,14 +531,17 @@ class FilterParagrah {
    */
   isNotPersonnageOn(regPersosOn){
     if ( not(regPersosOn) ) return false
-    return not(this.text.match(regPersosOn))
+    return not(this.text.match(regPersosOn) || (this.owner && this.owner.match(regPersosOn)))
   }
 
 
    // ---/fin des méthodes de filtre
 
   hide(){this.obj.classList.add(FilterParagrah.HideMode)}
-  show(){this.obj.classList.remove(FilterParagrah.HideMode)}
+  show(){
+    this.obj.classList.remove(FilterParagrah.HideMode)
+    if (FilterParagrah.HideMode != 'hidden') {this.obj.classList.remove('hidden')}
+  }
 
   get isIntitule(){
     if ( undefined === this._isintitule ) {
@@ -528,6 +552,10 @@ class FilterParagrah {
 
   get text(){
     return this._text || (this._text = this.obj.innerHTML)
+  }
+  // Le propriétaire du paragraphe (pour les dialogues et note de jeu)
+  get owner(){
+    return this._owner || (this._owner = this.obj.dataset.owner)
   }
   get eltype(){
     return this._eltype || (this._eltype = this.obj.dataset.eltype)

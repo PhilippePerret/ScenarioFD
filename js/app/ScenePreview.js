@@ -68,7 +68,6 @@ class ScenePreview {
       , class:'scene'
     })
     this.scene.lines.forEach( line => {
-      // console.log("Construction de la ligne", line)
       o.appendChild(line.preview) 
     })
     return o

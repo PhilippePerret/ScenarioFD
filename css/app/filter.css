@@ -93,3 +93,13 @@ span.multiselect-span > label {
 span.multiselect-span > input[type="checkbox"] {
   margin-right: 0.5em;
 }
+
+
+div.panel-multi-select div.cbs-tools {
+
+}
+div.panel-multi-select div.cbs-tools button.cbs-tool {
+  float: right;
+  border: none!important;
+  background-color: inherit!important;
+}
