@@ -57,6 +57,84 @@ function JString(foo, noCatch){
   }  
 }
 
+function prettyInspect(foo, output, indent){
+  indent = indent || 0
+  output = output || 'console'
+  switch(typeof foo){
+  case 'string':
+    return '"' + foo + '"'
+  case 'boolean':
+    return foo ? 'true' : 'false'
+  case 'object':
+    if ( undefined !== foo.sticky ) { // expression régulière
+      return String(foo)
+    } else if ( Array.isArray(foo) ) {
+      return prettyInspectArray(foo, output, indent + 1)
+    } else { // table de hashage
+      return prettyInspectObject(foo, output, indent + 1)
+    }
+  default :
+    return foo
+  }
+}
+/**
+ * Pour un affichage d'une table
+ * 
+ * @param table {Hash} La table à afficher
+ * @param output {string} Le format ou la sortie ('console', 'html')
+ * @param indent {Number} Indentation (nombre de doubles espaces)
+ * 
+ */
+function prettyInspectObject(table, output, indent){
+  indent = indent || 1
+  output = output || 'console'
+  if (output == 'text') { output = 'console' }
+  const alinea = alineaFor(indent)
+  const lines = [alinea+'{']
+  var val
+  for(var key in table) {
+    val = prettyInspect(table[key], output, indent + 1)
+    var line;
+    switch(output){
+    case 'console':
+      line = alinea + key + ': ' + val + ',' ; break
+    default:
+      line = '<div style="text-indent:'+indent+'em;"><span class="key">'+key+'</span><span class="value">'+val+'</span></div>'
+      break
+    }
+    lines.push(line)
+  }
+  lines.push(alinea+'}')
+  return lines.join(output == 'console' ? "\n" : '')
+}
+
+function prettyInspectArray(ary, output, indent){
+  const alinea = alineaFor(indent)
+  lines = [alinea+'[']
+  ary.forEach( foo => {
+    lines.push(prettyInspect(foo, output, indent + 1 ))
+  })
+  lines.push(alinea+']')
+  switch(output){
+    case 'console': case 'text':
+      lines = lines.join("\n")
+      break
+    case 'html':
+      lines = lines.join("")
+      break
+  }
+  return lines
+}
+
+
+function alineaFor(nombre, unite){
+  unite = unite || '  '
+  var a = ''
+  ++nombre
+  while(--nombre){a += unite}
+  return a
+}
+
 /**
  * Template string
  *

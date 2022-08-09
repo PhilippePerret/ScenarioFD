@@ -69,13 +69,34 @@ class ScenarioFilter extends InCadre {
     |  prendre en compte
     */
     const dataFiltrage = this.getStateOfEachFiltre()
+
+    // ===== PRÉPARATION DES FILTRES =====
     /*
+    |   Préparation du filtre des PERSONNAGES
+    |   --------------------------------------
     |  Si on filtre par personnage, on doit faire l'expression 
     |  régulière qui simplifiera la recherche et l'accélèrera
     */
     if ( dataFiltrage.personnagesOn ) {
       Object.assign(dataFiltrage, {regPersosOn: new RegExp(`(${dataFiltrage.personnagesOn.join('|')})`) })
     }
+    /*
+    |   Préparation du filtre PAR MOTS
+    |   ------------------------------
+    |
+    */
+    if ( dataFiltrage.search ) {
+      const dsearch = dataFiltrage.search
+      var flags = [], str, regexp ;
+      if (dsearch.options.uncase) { flags.push('i')}
+      str = dsearch.words
+      if ( not(dsearch.options.regexp) ) {
+        if ( dsearch.options.whole || dsearch.options.exact) { str = '\\b'+str+'\\b' }
+      }
+      regexp = new RegExp(str, flags.join(''))
+      Object.assign(dataFiltrage.search, {regexp: regexp})
+    }
+
 
 
     /*
@@ -88,7 +109,8 @@ class ScenarioFilter extends InCadre {
       FilterParagrah.HideMode = 'grised'
     }
 
-    this.log.debug("Filtrage du scénario avec %s", dataFiltrage)
+    // console.log("dataFiltrage", dataFiltrage)
+    this.log.debug("Filtrage du scénario avec :\n" + prettyInspect(dataFiltrage, 'console', 2))
 
     /**
      * Boucle sur tous les paragraphes pour les filtrer
@@ -144,6 +166,10 @@ class ScenarioFilter extends InCadre {
       |
       |   === Tous les autres filtrages ===
       |
+      | Noter que pour la clarté, on ne teste pas ici si le filtre
+      | est actif ou non. C'est dans la méthode de filtre qu'on
+      | le fera, en renvoyant true si le filtre n'est pas activé
+      |
       */
       if ( !iparag ) return
       /*
@@ -161,9 +187,16 @@ class ScenarioFilter extends InCadre {
         iparag.hide()
         return null
       }
+      /*
+      |  Filtrage par les mots
+      */
+      if ( iparag.isNotMatchingSearch(dataFiltrage.search) ) {
+        iparag.hide()
+        return null
+      }
       return iparag
     }).map(iparag => { 
-      console.log("iparag restant", iparag)
+      // console.log("iparag restant", iparag)
     })
   }
 
@@ -214,7 +247,8 @@ class ScenarioFilter extends InCadre {
    * @return dataFiltrage
    */
   getStateOfFiltre(filtreId, dataFiltrage){
-    console.log("-> getStateOfFiltre")
+    this.log.in(tp("#getStateOfFiltre(filtreId = '%s')", filtreId))
+    console.log("dataFiltrage au départ", prettyInspect(dataFiltrage))
     switch(filtreId){
     case 'scenes_range':
       return this.getStateSceneRange(dataFiltrage)
@@ -231,7 +265,6 @@ class ScenarioFilter extends InCadre {
     default:
       erreur("Le filtre #"+filtreId+" n'est pas traité…")
     }
-    return dataFiltrage
   }
 
   /**
@@ -244,7 +277,6 @@ class ScenarioFilter extends InCadre {
       .querySelectorAll('.cb-options').forEach( cb => {
         if ( cb.checked ) { Object.assign(dataFiltrage, {[`option_${cb.dataset.value}`]: true}) }
       })
-    return dataFiltrage
   }
   getStateSceneRange(dataFiltrage){
     const cont = DGet('div.maindiv-filter-scenes_range', this.content)
@@ -308,11 +340,18 @@ class ScenarioFilter extends InCadre {
     })
     this.log.debug("Styles à filtrer (voir) : " + JString(stylesOn))
     Object.assign(dataFiltrage, {styleOn: stylesOn})
-    return dataFiltrage
   }
   getStateSearch(dataFiltrage){
-    console.warn("Je dois apprendre à filtrer par recherche de mot")
-    return dataFiltrage
+    const search = DGet('input.filter_field-words', this.content).value.trim()
+    if ( search == '' ) return
+    const options = {}
+    const panel   = DGet('div.panel-multi-select-words_as', this.content)
+    DGetAll('input[type="checkbox"]', panel).forEach( cb => {
+      Object.assign(options, {[cb.dataset.value]: cb.checked})
+    })
+    Object.assign(
+      dataFiltrage, { search:{words:search, options:options} }
+    )
   }
 
 
@@ -567,7 +606,7 @@ class FilterFieldBuilder {
 
 
   buildAsMultiSelect(){
-    const o = DCreate('DIV', {class:'panel-multi-select', id:`panel-multi-select-${this.id}`})
+    const o = DCreate('DIV', {class:'panel-multi-select '+`panel-multi-select-${this.id}`})
     /*
     |   L'entête avec les boutons "tout sélectionné"/"tout déselectionner"
     */
@@ -587,8 +626,6 @@ class FilterFieldBuilder {
       header_tools.appendChild(span_tout)
       header_tools.appendChild(DCreate('LEGEND', {class:'panel-legend', text:this.label||' '}))
     }
-
-
     if ( not('function' == typeof this.values.forEach) ) {
       this.values = Object.values(this.values)
     }
@@ -634,7 +671,6 @@ class FilterFieldBuilder {
     return DCreate('BUTTON', {text:this.label, id:this.id})
   }
 
-
   /**
    * Construction de l'explication du champ
    * 
@@ -642,7 +678,6 @@ class FilterFieldBuilder {
   buildExplication(){
     return DCreate('DIV', {class:'explication', text:this.data.explication})
   }
-
 
   get domId(){
     return this._domid || (this._domid = `filter_field-${this.id}`)
@@ -714,7 +749,10 @@ class FilterParagrah {
     return false
   }
 
-
+  isNotMatchingSearch(search){
+    if ( !search ) return false
+    return not(this.text.match(search.regexp))
+  }
   // ---/fin des méthodes de filtre
 
 
