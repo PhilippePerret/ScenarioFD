@@ -88,7 +88,8 @@ class ScenarioFilter extends InCadre {
       FilterParagrah.HideMode = 'grised'
     }
 
-    console.log("On va filtrer le scénario avec ", dataFiltrage)
+    this.log.debug("Filtrage du scénario avec %s", dataFiltrage)
+
     /**
      * Boucle sur tous les paragraphes pour les filtrer
      * 
@@ -357,11 +358,43 @@ class ScenarioFilter extends InCadre {
    * "Appliquer" pour appliquer le sous-filtre
    * 
    */
-  onApplyFilterOn(btn, idFiltre, e){
+  onToggleFilterGroup(filtre, btn, idFiltre, e){
     // console.log("Application du filtre", idFiltre)
     const newState = btn.dataset.state == 'on' ? 'off' : 'on'
+    const isOn = newState == 'on'
+    filtre.obj.classList[isOn?'add':'remove']('actif')
     btn.dataset.state = newState
     this.filtreScenario()
+  }
+
+  /**
+   * Méthode qu'appelle tout bouton du filtre lorsque sa valeur 
+   * change, pour actualiser le filtrage. 
+   * Noter que cela n'a d'effet qui si le container est sur 'ON'. 
+   * S'il est désactivé (OFF), ça ne produit rien.
+   * 
+   * @param objProp {DOM Element} L'objet dont on a changé la valeur
+   * @param cont    {DOM Element} L'objet qui contient le bouton ON
+   * @param e       {Event} L'évènement 'onchange'
+   * 
+   */
+  onChangeFilterProperty(objProp, cont, e){
+    if ( this.isOff(cont) ) {
+      return
+    } else {
+      this.filtreScenario()
+    }
+  }
+  
+  /**
+   * @return  TRUE si le +container+ contient un bouton 'ON' de groupe
+   *          de filtre non activé.
+   * 
+   * @param o   {DOM Element} Un élément du DOM contenant un bouton
+   *            'ON' général.
+   */
+  isOff(o){
+    return o.querySelector('button.btn-apply[data-state="on"]') == null
   }
 
   /**
@@ -440,7 +473,7 @@ class FilterElementBuilder {
       field.buildIn(this.fieldsContainer)
     })
     const btnApply = DCreate('BUTTON', {text:'ON', class:'btn-apply', 'data-id':this.id, 'data-state':'off'})
-    btnApply.addEventListener('click', this.ifilter.onApplyFilterOn.bind(this.ifilter, btnApply, this.id))
+    btnApply.addEventListener('click', this.ifilter.onToggleFilterGroup.bind(this.ifilter, this, btnApply, this.id))
     this.fieldsContainer.appendChild(DCreate('DIV', {class:'buttons', inner:[btnApply]}))
   }
 }
@@ -459,6 +492,7 @@ class FilterFieldBuilder {
     this.data         = data
     this.id           = data.id
     this.type         = data.type
+    this.css          = data.css // ajout au span du paramètre
     this.label        = data.label
     this.values       = data.values
     this.mainElement  = mainElement
@@ -490,6 +524,21 @@ class FilterFieldBuilder {
   }
 
   /**
+   * Méthodes qui permettent d'actualiser le filtrage chaque fois 
+   * qu'on modifiera un élément du filtre, à partir du moment où le
+   * bouton 'ON' du groupe de filtre sera activé
+   * 
+   * @param obj   {DOM ELement} L'objet dont la valeur change (cb, 
+   *              text-input, etc.)
+   */
+  observeChangeOn(o){
+    o.addEventListener('change', this.methodOnChange(o))
+  }
+  methodOnChange(obj){
+    return this.ifilter.onChangeFilterProperty.bind(this.ifilter, obj, this.mainElement.obj)
+  }
+
+  /**
    * Les méthodes de construction
    * 
    */
@@ -510,11 +559,17 @@ class FilterFieldBuilder {
     }
     let css = [this.domId, this.data.css].join(' ')
     const field = DCreate('INPUT',{type:'text', class:css})
+    this.observeChangeOn(field)
     cont.appendChild(field)
     return cont
   }
+
+
   buildAsMultiSelect(){
-    const o = DCreate('DIV', {class:'panel-multi-select'})
+    const o = DCreate('DIV', {class:'panel-multi-select', id:`panel-multi-select-${this.id}`})
+    /*
+    |   L'entête avec les boutons "tout sélectionné"/"tout déselectionner"
+    */
     var header_tools, cbs_tools ;
     header_tools = DCreate('DIV', {class:'cbs-tools'})
     o.appendChild(header_tools)
@@ -535,13 +590,18 @@ class FilterFieldBuilder {
       this.values = Object.values(this.values)
     }
     this.values.forEach( ivalue => {
-      const span  = DCreate('SPAN', {class:'multiselect-span'})
+      const css   = ['multiselect-span']
+      if ( this.css ) { css.push(this.css) }
+      const span  = DCreate('SPAN', {class:css.join(' ')})
       const value = ivalue.value || ivalue.key
       const cbid  = `cb-multiselect-${this.id}-${new Date().getTime()}-${value}`
       const cb    = DCreate('INPUT',{class:`cb-${this.id}`, id:cbid, type:'checkbox', 'data-value':value})
+      this.observeChangeOn(cb)
       span.appendChild(cb)
       cb.checked = true
-      span.appendChild(DCreate('LABEL', {for:cbid, text:ivalue.name}))
+      const dataLabel = {for:cbid, text:ivalue.name}
+      if ( this.id == 'decor' ) {Object.assign(dataLabel, {class:'petit'})}
+      span.appendChild(DCreate('LABEL', dataLabel))
       o.appendChild(span)
     })
     return o
@@ -551,13 +611,16 @@ class FilterFieldBuilder {
     const span  = DCreate(this.data.disp == 'inline'?'SPAN':'DIV', {class:css.join(' ')})
     const cbid  = `cb-${this.id}-${new Date().getTime()}`
     const cb    = DCreate('INPUT',{class:`cb-${this.mainElement.id} cb-${this.id}`, id:cbid, type:'checkbox', 'data-value':this.id})
+    this.observeChangeOn(cb)
     span.appendChild(cb)
     cb.checked = this.data.checked == undefined ? true : this.data.checked
     span.appendChild(DCreate('LABEL', {for:cbid, text:this.label}))
     return span
   }
   buildAsSelect(){
-    return DCreate('SELECT', {values: this.values})
+    const select = DCreate('SELECT', {values: this.values})
+    this.observeChangeOn(select)
+    return select
   }
   buildAsButton(){
     return DCreate('BUTTON', {text:this.label, id:this.id})

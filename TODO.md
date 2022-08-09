@@ -2,6 +2,8 @@
 
 * Poursuivre les tests (cf. [ci-dessous](#tests))
 * Poursuivre le filtre
+  - dès qu'on joue un bouton (input, cb, button) de la boite de filtre => si le bouton ON est appuyé, on actualise
+    idem pour les boutons "tout déselectionner"
   - quand on ferme une boite du filtre, ça désactive le bouton (pour éviter les surprises)
   - quand un nom  de personnage est cherché, on garde les dialogues associés au nom
   - traiter le filtrage du scénario

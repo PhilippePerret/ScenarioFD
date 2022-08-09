@@ -25,4 +25,5 @@ input[type="text"].short {
   width: 40px;
 }
 
+.petit { font-size: 16px }
 .tiny { font-size: 13.3333px }

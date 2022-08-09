@@ -36,6 +36,11 @@ section.filter div.maindiv-filter button.btn-apply[data-state="on"] {
 section.filter div.maindiv-filter.closed {
   padding: 0.5em 2em;
 }
+/* Quand un groupe de filtre actif est replié */
+section.filter div.maindiv-filter.closed.actif {
+  background-color: #caffca;
+}
+
 section.filter div.maindiv-filter.open {
   padding: 1em 2em 2em;
   margin-bottom: 0.5em;
@@ -84,12 +89,23 @@ div.panel-multi-select legend {
 }
 span.multiselect-span {
   display: inline-block;
-  min-width: 140px;
-  width: 140px;
+  white-space: nowrap;
+  padding-right: 0.5em;
+  overflow: hidden;
 }
+span.multiselect-span:not(.large){
+  min-width: 180px;
+  width: 30%;
+}
+span.multiselect-span.large {
+  min-width: 240px;
+  width: 48%;
+}
+
 span.multiselect-span > label {
   display: inline-block;
   text-align: center;
+  vertical-align: middle;
 }
 span.multiselect-span > input[type="checkbox"] {
   margin-right: 0.5em;

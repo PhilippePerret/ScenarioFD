@@ -26,7 +26,7 @@ section#cadres_container > div.disposition > div.cadre > section.incadre > div.c
 }
 section#cadres_container > div.disposition > div.cadre > section.incadre > div.content:not(.plain){
   padding: 1em;
-  overflow_y: auto;
+  overflow-y: auto;
 }
 section#cadres_container > div.disposition > div.cadre > section.incadre > div.toolsbar {
   width: 100%;
