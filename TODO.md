@@ -12,21 +12,6 @@
 
 ## BUGS
 
-* Bug sur l'affichage par le filtre 
-  Pour le reproduire :
-    - je choisis le développement (avec les données complètes des tests — filtre.test.js)
-    => tout s'efface
-    - j'active les options en les mettant sur ON
-      ! Normalement, les intitulés de scène devraient apparaitre
-    - j'active l'option grisée
-  Pour reproduire un autre
-    - j'active l'option "griser"
-    - je choisis les scènes 4 à 10
-    => les scènes autres se grisent
-    - je dégrise et je rafraichis :
-    ! les scènes maquées restent grisée
-
-  - Même lorsque les options ne sont pas sur ON et si la case "griser" n'est pas cochée (mais l'a été), ça apparait en grisé.
 * Voir les bugs à l'aide de `ghi list`
 * [bug] La donnée 'FD-scene-properties' contient des retours chariot inutiles
 

@@ -55,7 +55,7 @@ FILTRE.DATA_FILTRE = {
       name: 'Rang de scènes'
     , id:   'scenes_range'
     , fields:[
-          {type:'div', values: [
+          {type:'div', label:'Rang de scènes', values: [
               {id:'from_scene', label:'De scène', type:'input-text', disp:'inline', css:'short center'}
             , {id:'to_scene',   label:'à scène',  type:'input-text', disp:'inline', css:'short center'}
             ]}

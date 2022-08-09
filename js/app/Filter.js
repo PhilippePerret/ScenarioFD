@@ -135,12 +135,15 @@ class ScenarioFilter extends InCadre {
     var fluxOpened      = false // pour les temps par exemple
     const fromSceneNum  = dataFiltrage.fromScene
         , toSceneNum    = dataFiltrage.toScene
+    var paragraphCount  = 0
+    var paragraphKept   = 0
     Preview.current.mapParagraph( oparag => {
       /*
       |
       |  Ne prendre que les scènes qui nous intéressent
       |
       */
+      ++paragraphCount
       const iparag = new FilterParagrah(oparag, currentSceneNum)
       currentSceneNum = iparag.sceneNum
       if ( fromSceneNum && currentSceneNum < fromSceneNum) {
@@ -197,10 +200,11 @@ class ScenarioFilter extends InCadre {
         var exclus = false ;
         if ( this.notMatchingFilter(iparag, dataFiltrage) ) {
           iparag.show(true /* comme repère ?*/)
+          return null
         } else {
           iparag.show()
+          return iparag
         }
-        return iparag
       }
       if ( this.notMatchingFilter(iparag, dataFiltrage) ) {
         iparag.hide()
@@ -209,7 +213,15 @@ class ScenarioFilter extends InCadre {
       return iparag
     }).forEach(iparag => {
       // TODO Pour produire le rapport
+      if ( iparag /* so not null */) {
+        ++paragraphKept
+      }
     })
+    /*
+    |  Mettre le rapport dans le span
+    */
+    var report = `${paragraphKept} / ${paragraphCount} parag.`
+    DGet('span.miniReport', this.content).innerHTML = report
   }
 
   /**
@@ -652,6 +664,9 @@ class FilterFieldBuilder {
    */
   buildAsDivOfFields(){
     const cont = DCreate('DIV', {class:'fields-container'})
+    if ( this.label ) {
+      cont.appendChild(DCreate('LABEL', {class:'filter-name'})) // 'field-label'
+    }
     this.values.forEach( dfield => {
       const field = new FilterFieldBuilder(dfield, this.mainElement)
       field.buildIn(cont)

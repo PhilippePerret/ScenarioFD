@@ -1,6 +1,13 @@
 section.filter {
 
 }
+
+section.filter span.miniReport {
+  font-family: Georgia;
+  font-size: 12pt;
+  font-style: italic;
+  color: green;
+}
 /*
   --- les divs principaux ---
 */
