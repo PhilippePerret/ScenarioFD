@@ -37,7 +37,7 @@ export const DataScenarioComplet = {
       // Donnée $duree
     , {sceneId: '11', content:"# Une scène de durée imposée\n:EXT. CHAMP DE BLÉ - JOUR\nC'est une scène courte, mais longue.\n\n$duree = 20"}
       // Scène totale
-    , {sceneId:'24', content:"# Cette scène contient tous les formatages\n$page = 12\n$titre = La scène totale\n:INT./EXT. APPART\nUne action simple.\nUne action avec une note [1]\nMARIE:\n  Je m'appelle Marie.\n  ^Je ne m'appelle pas Marie.\nJOSEPH:\n  (fermant les yeux)\n  Comment t'appelles-tu alors ?\nIl la regarde [3] avec la note 3.\n[1] La première note.•\n> Fondu enchaîné\n[3] La seconde note d'id 3."}
+    , {sceneId:'24', content:"# Cette scène contient tous les formatages\n$page = 12\n$titre = La scène totale\n:INT./EXT. APPART - NUIT\nUne action simple.\nUne action avec une note [1]\nMARIE:\n  Je m'appelle Marie.\n  ^Je ne m'appelle pas Marie.\nJOSEPH:\n  (fermant les yeux)\n  Comment t'appelles-tu alors ?\nIl la regarde [3] avec la note 3.\n[1] La première note.•\n> Fondu enchaîné\n[3] La seconde note d'id 3."}
   ]
 , infos: {
     titre_scenario: "Test du parsing des scènes"

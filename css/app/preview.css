@@ -16,6 +16,7 @@ div.sline {
 }
 div.sline.grised {
   opacity: 0.3;
+  display: block!important;/* pour contrer 'hidden' */
 }
 
 div.nom, div.action, div.transition {

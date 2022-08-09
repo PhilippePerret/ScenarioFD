@@ -110,14 +110,14 @@ function prettyInspectObject(table, output, indent){
 
 function prettyInspectArray(ary, output, indent){
   const alinea = alineaFor(indent)
-  lines = [alinea+'[']
+  var lines = [alinea+'[']
   ary.forEach( foo => {
     lines.push(prettyInspect(foo, output, indent + 1 ))
   })
   lines.push(alinea+']')
   switch(output){
     case 'console': case 'text':
-      lines = lines.join("\n")
+      lines = alinea + lines.join("\n" + alinea)
       break
     case 'html':
       lines = lines.join("")

@@ -96,7 +96,20 @@ class ScenarioFilter extends InCadre {
       regexp = new RegExp(str, flags.join(''))
       Object.assign(dataFiltrage.search, {regexp: regexp})
     }
-
+    /*
+    |   Préparation du filtre par DÉCORS, LIEUX ET EFFETS
+    |   -------------------------------------------------
+    */
+    if ( dataFiltrage.decors ) {
+      const d = dataFiltrage.decors
+      if ( d.decors.length == 0 ) {delete dataFiltrage.decors.decors}
+      if ( d.effets.length == 0 || d.effets.includes('x') ) {
+        delete dataFiltrage.decors.effets
+      }
+      if ( d.lieux.length == 0 || d.lieux.includes('x') ) {
+        delete dataFiltrage.decors.lieux
+      }
+    }
 
 
     /*
@@ -177,18 +190,31 @@ class ScenarioFilter extends InCadre {
       */
       if ( iparag.isIntitule && dataFiltrage.option_always_heading) { 
         iparag.show()
-        return iparag 
+        return iparag
       }
+      /*
+      |   Filtrage par les DÉCORS et EFFETS
+      */
+      if ( iparag.isNotMatchingDecorOrEffet(dataFiltrage.decors)){
+        iparag.hide()
+        return null
+      }
+      /*
+      |   Filtrage par les TYPES D'ÉLÉMENT
+      */
       if ( iparag.isNotElementStyleOn(dataFiltrage.styleOn) ) {
         iparag.hide()
         return null
       }
+      /*
+      |  Filtrage par les PERSONNAGES
+      */
       if ( iparag.isNotPersonnageOn(dataFiltrage.regPersosOn) ){ 
         iparag.hide()
         return null
       }
       /*
-      |  Filtrage par les mots
+      |  Filtrage par les MOTS
       */
       if ( iparag.isNotMatchingSearch(dataFiltrage.search) ) {
         iparag.hide()
@@ -248,7 +274,6 @@ class ScenarioFilter extends InCadre {
    */
   getStateOfFiltre(filtreId, dataFiltrage){
     this.log.in(tp("#getStateOfFiltre(filtreId = '%s')", filtreId))
-    console.log("dataFiltrage au départ", prettyInspect(dataFiltrage))
     switch(filtreId){
     case 'scenes_range':
       return this.getStateSceneRange(dataFiltrage)
@@ -320,26 +345,27 @@ class ScenarioFilter extends InCadre {
     }
   }
   getStatePersonnage(dataFiltrage){
-    const personnagesOn = []
-    this.content.querySelectorAll('.cb-personnage').forEach(cb => {
-      cb.checked && personnagesOn.push(cb.dataset.value)
+    Object.assign(dataFiltrage, {
+      personnagesOn: this.getCheckedBoxInPanel('personnage')
     })
-    Object.assign(dataFiltrage, {personnagesOn: personnagesOn})
   }
   getStateDecorEtEffet(dataFiltrage){
-    console.warn("Je dois apprendre à filtrer par décor et effet")
-  }
-  getStateTypeElement(dataFiltrage){
-    console.log("Récupération des types d'élément")
-    /*
-    | On récupère les éléments à voir
-    */
-    const stylesOn = [] // les styles de paragraphes à voir
-    this.content.querySelectorAll('.cb-type_element').forEach(cb => {
-      cb.checked && stylesOn.push(cb.dataset.value)
+    Object.assign(dataFiltrage, {
+      decors: {
+          decors:   this.getCheckedBoxInPanel('decor')
+        , effets:   this.getCheckedBoxInPanel('effet')
+        , lieux:    this.getCheckedBoxInPanel('lieu')
+      }
     })
-    this.log.debug("Styles à filtrer (voir) : " + JString(stylesOn))
-    Object.assign(dataFiltrage, {styleOn: stylesOn})
+  }
+
+  /*
+  | On récupère les éléments à voir
+  */
+  getStateTypeElement(dataFiltrage){
+    Object.assign(dataFiltrage, {
+      styleOn: this.getCheckedBoxInPanel('type_element')
+    })
   }
   getStateSearch(dataFiltrage){
     const search = DGet('input.filter_field-words', this.content).value.trim()
@@ -354,6 +380,24 @@ class ScenarioFilter extends InCadre {
     )
   }
 
+
+  /**
+   * - méthode généraliste -
+   * 
+   * Pour récupérer toutes les cases cochées du panneau multi-select
+   * (et seulement un panneau multi-select) et renvoyer leur valeur
+   * @return {Array} Liste des valeurs des cb cochées
+   * 
+   * @param panelId {String} IDentifiant du panneau
+   */  
+  getCheckedBoxInPanel(panelId){
+    const panel = DGet('div.panel-multi-select-'+panelId, this.content)
+    var checkeds = []
+    DGetAll('span.multiselect-span input[type="checkbox"]', panel).forEach(cb=>{
+      cb.checked && checkeds.push(cb.dataset.value)
+    })
+    return checkeds
+  }
 
   // -------- MÉTHODES D'OBSERVATION ------
 
@@ -715,6 +759,31 @@ class FilterParagrah {
    * 
    */
 
+  /** @return TRUE si le paragraphe n'est pas dans le décor ou
+   *          l'effet du filtre
+   * 
+   * Note : on considère que si aucun décor n'est choisi, c'est que
+   * l'utilisateur ne veut pas filtrer par le décor (ça pourrait au
+   * contraire vouloir dire qu'il exclut tous les décors, mais ça n'a
+   * pas de sens). Idem pour les effets.
+   * 
+   * @param decors {Table} Table de définition du filtre des
+   *               décors, avec la clé .decor qui contient la liste
+   *               des décors possible et .effets la liste des effets
+   */
+  isNotMatchingDecorOrEffet(decors){
+    // console.log("this.scene = ", this.scene)
+    if ( decors.decors && not(decors.decors.includes(this.scene.decor)) ) {
+      return true // exclu
+    }
+    if ( decors.effets && not(decors.effets.includes(this.scene.effet)) ) {
+      return true // exclu
+    }
+    if ( decors.lieux && not(decors.lieux.includes(this.scene.lieu)) ) {
+      return true // exclu
+    }
+    return false // keep it
+  }
   /**
    *  @return TRUE si le paragraphe n'est pas d'un bon style
    */

@@ -450,7 +450,8 @@ class SceneLine {
    * 
    */
   addSceneHeadingToDecors(){
-    var decor = this.content.split(' ')
+    var decor = this.content.trim().split(' ')
+    console.log("décor = ", decor)
     this.effet = decor.pop().trim()   // pour retirer le 'JOUR' ou autre
     this.lieu  = decor.shift().trim() // pour retirer le 'INT.' ou autre
     decor = decor.join(' ').trim()

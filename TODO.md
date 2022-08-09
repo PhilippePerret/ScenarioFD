@@ -2,12 +2,8 @@
 
 * Poursuivre les tests (cf. [ci-dessous](#tests))
 * Poursuivre le filtre
-  - dès qu'on joue un bouton (input, cb, button) de la boite de filtre => si le bouton ON est appuyé, on actualise
-    idem pour les boutons "tout déselectionner"
-  - quand on ferme une boite du filtre, ça désactive le bouton (pour éviter les surprises)
-  - quand un nom  de personnage est cherché, on garde les dialogues associés au nom
-  - traiter le filtrage du scénario
-  - mettre des boutons pour tout déselectionner/tout sélectionner
+  - pour faire la liste des effets, il faut prendre ceux présents dans le scénario
+  - faire des statistiques à la fin du filtrage (nombre de paragraphes, nombre de déccors, durée ? etc.)
 * Au redimensionnement de la fenêtre, il faut calculer le ratio des fenêtres et le conserver (au lieu d'augmenter seulement la dimension du cadre au bord)
 * Faire des tests
   - importation FinalDraft -> Scenario

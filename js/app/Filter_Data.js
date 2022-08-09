@@ -3,10 +3,18 @@
 const FILTRE = {}
 
 FILTRE.EFFETS = {
-    'e':  {name:'Extérieur', value:'EXT.'}
-  , 'i':  {name:'Intérieur', value:'INT.'}
-  , 'n':  {name:'Noir',      value:'NOIR'}
-  , 'ei': {name:'Int./ext.', value:'INT./EXT.'}
+    'j':  {name:'Jour'  , value:'JOUR'}
+  , 'n':  {name:'Nuit'  , value:'NUIT'}
+  , 's':  {name:'Soir'  , value:'SOIR'}
+  , 'm':  {name:'Matin' , value:'MATIN'}
+  , 'x':  {name:'Autre' , value:'x'}
+}
+FILTRE.LIEUX = {
+    'e':  {name:'Extérieur' , value:'EXT.'}
+  , 'i':  {name:'Intérieur' , value:'INT.'}
+  , 'n':  {name:'Noir'      , value:'NOIR'}
+  , 'ei': {name:'Int./ext.' , value:'INT./EXT.'}
+  , 'x':  {name:'Autre'     , value:'x'}
 }
 
 FILTRE.TYPES_ELEMENTS = {
@@ -81,8 +89,9 @@ FILTRE.DATA_FILTRE = {
       name: 'Les décors'
     , id:   'decor_et_effet'
     , fields: [
-          {id:'decor', type:'multi-select', css:'large', label: 'Lieux', values: function(){return Scenario.current.decors.items}}
+          {id:'decor', type:'multi-select', css:'large', label: 'Décors', values: function(){return Scenario.current.decors.items}}
         , {id:'effet', type:'multi-select', label: 'Effet', values: FILTRE.EFFETS}
+        , {id:'lieu', type:'multi-select', label: 'Lieux', values: FILTRE.LIEUX}
       ]
   }
 } // DATA_FILTRE
