@@ -26,6 +26,12 @@ FILTRE.ZONES = {
   , 'dev2':   {name:'Part 2 de Dév.'  ,value:'dev2'}
 }
 
+FILTRE.TYPES_SEARCH = [
+    {name:'Expr. rationnelle'     , value:'regexp'}
+  , {name:'Littéral'              , value:'exact' }
+  , {name:'Insensible à la casse' , value:'uncase'}
+  , {name:'Mot entier'            , value:'whole' }
+]
 
 FILTRE.DATA_FILTRE = {
   // --- De scène x avec scène y ---
@@ -48,19 +54,20 @@ FILTRE.DATA_FILTRE = {
         , {id:'zone',       label:'Zones',    type:'multi-select', values: FILTRE.ZONES }
       ]
   }
+, 'words': {
+      name: 'Recherche par mots'
+    , id:   'words'
+    , fields: [
+          {id:'words',  label:'Rechercher', type:'input-text', css: 'long', disp:'block',
+            explication:'Séparer les différents mots par des doubles guillemets (« mot M1 "" mot M2 "" motM3 »)'}
+        , {id:'words_as', type:'multi-select', css:'no-background', values: FILTRE.TYPES_SEARCH, noSelectAll:true, notSelected:true}
+      ]
+  }
 , 'personnages': {
       name: 'Les personnages'
     , id:   'personnage'
     , fields: [
           {id:'personnage', type:'multi-select', values: function(){return Scenario.current.personnages.items}}
-      ]
-  }
-, 'decors': {
-      name: 'Les décors'
-    , id:   'decor_et_effet'
-    , fields: [
-          {id:'decor', type:'multi-select', css:'large', label: 'Lieux', values: function(){return Scenario.current.decors.items}}
-        , {id:'effet', type:'multi-select', label: 'Effet', values: FILTRE.EFFETS}
       ]
   }
 , 'types_element':{
@@ -70,12 +77,12 @@ FILTRE.DATA_FILTRE = {
         {id:'type_element', type:'multi-select', values: FILTRE.TYPES_ELEMENTS}
       ] 
   }
-, 'words': {
-      name: 'Recherche par mots'
-    , id:   'words'
+, 'decors': {
+      name: 'Les décors'
+    , id:   'decor_et_effet'
     , fields: [
-          {id:'words',  label:'Rechercher', type:'input-text', disp:'block'}
-        , {id:'words_as', label:'comme…', type:'select', values:[{label:'Expression régulière', value:'regexp'}, {label:'Littéral',value:'exact'}, {label:'Insensible à la casse', value:'uncase'}]}
+          {id:'decor', type:'multi-select', css:'large', label: 'Lieux', values: function(){return Scenario.current.decors.items}}
+        , {id:'effet', type:'multi-select', label: 'Effet', values: FILTRE.EFFETS}
       ]
   }
 } // DATA_FILTRE

@@ -21,9 +21,14 @@ div.buttons {
 
 .center {text-align: center}
 
+.petit { font-size: 16px }
+.tiny { font-size: 13.3333px }
+
+textarea, input[type="text"], select, select > option {
+  font-family: inherit;
+  font-size: inherit;
+}
+
 input[type="text"].short {
   width: 40px;
 }
-
-.petit { font-size: 16px }
-.tiny { font-size: 13.3333px }

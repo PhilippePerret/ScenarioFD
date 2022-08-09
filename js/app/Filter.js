@@ -505,6 +505,7 @@ class FilterFieldBuilder {
 
   buildIn(container){
     container.appendChild(this.buildField())
+    if ( this.data.explication ) { container.appendChild(this.buildExplication())}
   }
   buildField(){
     switch(this.type){
@@ -570,20 +571,22 @@ class FilterFieldBuilder {
     /*
     |   L'entête avec les boutons "tout sélectionné"/"tout déselectionner"
     */
-    var header_tools, cbs_tools ;
-    header_tools = DCreate('DIV', {class:'cbs-tools'})
-    o.appendChild(header_tools)
-    const span_tout       = DCreate('SPAN', {text: 'tout : ', class:'rfloat tiny'})
-    const btn_selectAll   = DCreate('BUTTON', {class:'cbs-tool', text:'sélectionner'})
-    const span_sep        = DCreate('SPAN', {text: ' | ', class:'rfloat tiny'})
-    const btn_deselectAll = DCreate('BUTTON', {class:'cbs-tool', text:'désélectionner'})
-    btn_selectAll.addEventListener('click', this.ifilter.onSelectOrDeselectAll.bind(this, true, o) )
-    btn_deselectAll.addEventListener('click', this.ifilter.onSelectOrDeselectAll.bind(this, false, o) )
-    header_tools.appendChild(btn_selectAll)
-    header_tools.appendChild(span_sep)
-    header_tools.appendChild(btn_deselectAll)
-    header_tools.appendChild(span_tout)
-    header_tools.appendChild(DCreate('LEGEND', {class:'panel-legend', text:this.label||' '}))
+    if ( not(this.data.noSelectAll) ) {    
+      var header_tools, cbs_tools ;
+      header_tools = DCreate('DIV', {class:'cbs-tools'})
+      o.appendChild(header_tools)
+      const span_tout       = DCreate('SPAN', {text: 'tout : ', class:'rfloat tiny'})
+      const btn_selectAll   = DCreate('BUTTON', {class:'cbs-tool', text:'sélectionner'})
+      const span_sep        = DCreate('SPAN', {text: ' | ', class:'rfloat tiny'})
+      const btn_deselectAll = DCreate('BUTTON', {class:'cbs-tool', text:'désélectionner'})
+      btn_selectAll.addEventListener('click', this.ifilter.onSelectOrDeselectAll.bind(this, true, o) )
+      btn_deselectAll.addEventListener('click', this.ifilter.onSelectOrDeselectAll.bind(this, false, o) )
+      header_tools.appendChild(btn_selectAll)
+      header_tools.appendChild(span_sep)
+      header_tools.appendChild(btn_deselectAll)
+      header_tools.appendChild(span_tout)
+      header_tools.appendChild(DCreate('LEGEND', {class:'panel-legend', text:this.label||' '}))
+    }
 
 
     if ( not('function' == typeof this.values.forEach) ) {
@@ -598,7 +601,7 @@ class FilterFieldBuilder {
       const cb    = DCreate('INPUT',{class:`cb-${this.id}`, id:cbid, type:'checkbox', 'data-value':value})
       this.observeChangeOn(cb)
       span.appendChild(cb)
-      cb.checked = true
+      if ( not(this.data.notSelected) ) { cb.checked = true }
       const dataLabel = {for:cbid, text:ivalue.name}
       if ( this.id == 'decor' ) {Object.assign(dataLabel, {class:'petit'})}
       span.appendChild(DCreate('LABEL', dataLabel))
@@ -619,12 +622,27 @@ class FilterFieldBuilder {
   }
   buildAsSelect(){
     const select = DCreate('SELECT', {values: this.values})
+    this.values.forEach( doption => {
+      const opt = DCreate('OPTION', {text: doption.label, value: doption.value})
+      select.appendChild(opt)
+    })
     this.observeChangeOn(select)
-    return select
+    const span = DCreate('SPAN', {inner:[select]})
+    return span
   }
   buildAsButton(){
     return DCreate('BUTTON', {text:this.label, id:this.id})
   }
+
+
+  /**
+   * Construction de l'explication du champ
+   * 
+   */
+  buildExplication(){
+    return DCreate('DIV', {class:'explication', text:this.data.explication})
+  }
+
 
   get domId(){
     return this._domid || (this._domid = `filter_field-${this.id}`)
