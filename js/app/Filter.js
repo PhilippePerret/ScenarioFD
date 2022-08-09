@@ -120,6 +120,8 @@ class ScenarioFilter extends InCadre {
     */
     if ( dataFiltrage.option_grised_rather_hide) {
       FilterParagrah.HideMode = 'grised'
+    } else {
+      FilterParagrah.HideMode = 'hidden'
     }
 
     // console.log("dataFiltrage", dataFiltrage)
@@ -188,42 +190,64 @@ class ScenarioFilter extends InCadre {
       /*
       | Option 'always_heading' (toujours afficher l'intitulé)
       */
-      if ( iparag.isIntitule && dataFiltrage.option_always_heading) { 
-        iparag.show()
+      if ( iparag.isIntitule && dataFiltrage.option_always_heading) {
+        // On met toujours les intitulés, mais ils ne doivent pas 
+        // être affichés de la même manière s'ils sont exclus ou
+        // non
+        var exclus = false ;
+        if ( this.notMatchingFilter(iparag, dataFiltrage) ) {
+          iparag.show(true /* comme repère ?*/)
+        } else {
+          iparag.show()
+        }
         return iparag
       }
-      /*
-      |   Filtrage par les DÉCORS et EFFETS
-      */
-      if ( iparag.isNotMatchingDecorOrEffet(dataFiltrage.decors)){
-        iparag.hide()
-        return null
-      }
-      /*
-      |   Filtrage par les TYPES D'ÉLÉMENT
-      */
-      if ( iparag.isNotElementStyleOn(dataFiltrage.styleOn) ) {
-        iparag.hide()
-        return null
-      }
-      /*
-      |  Filtrage par les PERSONNAGES
-      */
-      if ( iparag.isNotPersonnageOn(dataFiltrage.regPersosOn) ){ 
-        iparag.hide()
-        return null
-      }
-      /*
-      |  Filtrage par les MOTS
-      */
-      if ( iparag.isNotMatchingSearch(dataFiltrage.search) ) {
+      if ( this.notMatchingFilter(iparag, dataFiltrage) ) {
         iparag.hide()
         return null
       }
       return iparag
-    }).map(iparag => { 
-      // console.log("iparag restant", iparag)
+    }).forEach(iparag => {
+      // TODO Pour produire le rapport
     })
+  }
+
+  /**
+   * Pour faire passer les filtres principaux à tous les paragraphes
+   * 
+   * @return TRUE si le paragraphe +iparag+ ne passent pas les 
+   *         filtres
+   * 
+   * @param  iparag {FilterParagraph} Le paragraphe à tester
+   * @param  dataFiltrage {Object} La table des filtres
+   * 
+   */
+  notMatchingFilter(iparag, dataFiltrage){
+    /*
+    |   Filtrage par les DÉCORS et EFFETS
+    */
+    if ( iparag.isNotMatchingDecorOrEffet(dataFiltrage.decors)){
+      return true
+    }
+    /*
+    |   Filtrage par les TYPES D'ÉLÉMENT
+    */
+    if ( iparag.isNotElementStyleOn(dataFiltrage.styleOn) ) {
+      return true
+    }
+    /*
+    |  Filtrage par les PERSONNAGES
+    */
+    if ( iparag.isNotPersonnageOn(dataFiltrage.regPersosOn) ){ 
+      return true
+    }
+    /*
+    |  Filtrage par les MOTS
+    */
+    if ( iparag.isNotMatchingSearch(dataFiltrage.search) ) {
+      return true
+    }
+    return false
   }
 
   /**
@@ -300,7 +324,7 @@ class ScenarioFilter extends InCadre {
     this.content
       .querySelector('div.maindiv-filter-options')
       .querySelectorAll('.cb-options').forEach( cb => {
-        if ( cb.checked ) { Object.assign(dataFiltrage, {[`option_${cb.dataset.value}`]: true}) }
+        Object.assign(dataFiltrage, {[`option_${cb.dataset.value}`]: cb.checked})
       })
   }
   getStateSceneRange(dataFiltrage){
@@ -772,6 +796,7 @@ class FilterParagrah {
    *               des décors possible et .effets la liste des effets
    */
   isNotMatchingDecorOrEffet(decors){
+    if ( ! decors ) { return false }
     // console.log("this.scene = ", this.scene)
     if ( decors.decors && not(decors.decors.includes(this.scene.decor)) ) {
       return true // exclu
@@ -788,7 +813,7 @@ class FilterParagrah {
    *  @return TRUE si le paragraphe n'est pas d'un bon style
    */
   isNotElementStyleOn(stylesOn){
-    if ( not(stylesOn) ) return false
+    if ( ! stylesOn ) return false
     return not(stylesOn.includes(this.eltype))
   }
 
@@ -798,7 +823,7 @@ class FilterParagrah {
    * 
    */
   isNotPersonnageOn(regPersosOn){
-    if ( not(regPersosOn) ) return false
+    if ( ! regPersosOn ) return false
     return not(this.text.match(regPersosOn) || (this.owner && this.owner.match(regPersosOn)))
   }
 
@@ -819,23 +844,31 @@ class FilterParagrah {
   }
 
   isNotMatchingSearch(search){
-    if ( !search ) return false
+    if ( ! search ) return false
     return not(this.text.match(search.regexp))
   }
   // ---/fin des méthodes de filtre
 
 
-
-
   hide(){
-    if (FilterParagrah.HideMode != 'hidden') {
-      this.obj.classList.remove('hidden')
+    var class2rem;
+    switch(FilterParagrah.HideMode){
+    case 'hidden': class2rem = 'grised'; break
+    case 'grised': class2rem = 'hidden'; break
     }
+    this.obj.classList.remove(class2rem)
     this.obj.classList.add(FilterParagrah.HideMode)
   }
-  show(){
+  show(asRepere /* pour le moment, pour les intitulés quand il faut toujours les mettres */){
     this.obj.classList.remove('hidden')
     this.obj.classList.remove('grised')
+    if ( this.isIntitule ) {
+      if ( asRepere ) {
+        this.obj.classList.add('repere')
+      } else {
+        this.obj.classList.remove('repere')
+      }
+    }
   }
 
   get isIntitule(){

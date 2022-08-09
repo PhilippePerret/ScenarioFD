@@ -85,6 +85,13 @@ div.intitule,
 div.nom {
   font-weight: bold;
 }
+/* Quand avec le filtre, il faut toujours afficher les intitulés
+   même lorsqu'ils ne matchent pas les filtres */
+div.sline.intitule.repere {
+  font-weight: normal;
+  font-size: 8pt;
+  color: #A18FFF;
+}
 
 div.nom {
   margin-left: 10em;
