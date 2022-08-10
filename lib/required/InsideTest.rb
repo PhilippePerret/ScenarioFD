@@ -33,7 +33,7 @@ class << self
       result[:errors] << "Le fichier #{fd_filepath} est introuvable"
     end
     result[:ok] = result[:errors].empty?
-    WAA.send(class:'IT_WAA', method:'receive', data:{testId: data['testId'], result:result })
+    WAA.send(class:'IT_WAA', method:'receive', data:{testId: data['testId'], testIndex: data['testIndex'], result:result })
   end
 
   def fd_files_folder

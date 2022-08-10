@@ -92,26 +92,36 @@ export class InsideTest {
 
   /**
    * Puisque personne ne peut joindre ce module (du fait que ce soit
-   * justement un module), on passe par IT_WAA ici, qui peut être
-   * atteint aussi bien par le serveur (par WAA.send) que par ce 
-   * module.
+   * justement un module), on passe par la classe globale IT_WAA,
+   * aussi bien pour le serveur (par WAA.send) que par ce module.
    * On s'en sert donc pour passer les données et l'état serveur.
+   * 
+   * Cf. le fonctionnement dans le manuel développeur.
    */
   static awaitForAllServerChecksDone(){
     if ( not(IT_WAA.working) ) return true
     const my = this
     return new Promise((ok,ko)=>{
-      my.intervaler = setInterval(my.checkerServerDone.bind(my, ok), 500)
+      my.intervaler = setInterval(my.checkerServerResultats.bind(my, ok), 500)
     })
   }
-  static checkerServerDone(ok){
+  static checkerServerResultats(ok){
+    const my = this
     if (IT_WAA.working === false ){
       clearInterval(this.intervaler)
       delete this.intervaler
       ok()
-    } else {
-      if ( IT_WAA.stackForInsideTestModule.length ) {
-        const newServerResultat = IT_WAA.stackForInsideTestModule.pop()
+    } else if ( IT_WAA.stackServerResultats.length ) {
+      /*
+      |  Arrêt provisoire de la boucle
+      */
+      clearInterval(this.intervaler)
+      delete this.intervaler
+      /*
+      |   Boucle sur tous les résultats renvoyés par le serveur
+      */
+      let newServerResultat ;
+      while ( (newServerResultat = IT_WAA.stackServerResultats.pop()) ) {
         const testId  = newServerResultat.testId
         const test    = this.table[testId]
         const result = newServerResultat.result
@@ -122,6 +132,12 @@ export class InsideTest {
           test.throwError()
         }
       }
+      /*
+      |  On peut relancer la boucle d'attente
+      */
+      my.intervaler = setInterval(my.checkerServerResultats.bind(my, ok), 500)
+    } else {
+      return true // working
     }
   }
 
@@ -209,9 +225,11 @@ export class InsideTest {
   }
 
   runStack(){
+    var testIndex = 0
     this.stack.forEach( dtest => {
-      try {      
+      try {
         const [test, args] = dtest
+        test.index = testIndex ++ 
         if ( args ) {
           test.call(null, ...args)
         } else {
@@ -233,15 +251,20 @@ export class InsideTest {
     this.errorMsg = null
   }
 
+  newIndex(){
+    if (undefined === this.lastTestIndex) { this.lastTestIndex = -1 }
+    return ++ this.lastTestIndex
+  }
+
   /**
    * Exécution du test avec le sujet +sujet+
    */
   with(sujet, expected){
     if ( undefined === expected ) {    
-      this.addStack(function(sujet){
+      this.addStack(function(sujet, testIndex){
         this.reset()
-        this.eval.call(this, sujet) || this.throwError(false, sujet)
-      }.bind(this), [sujet])
+        this.eval.call(this, sujet, testIndex) || this.throwError(false, sujet)
+      }.bind(this), [sujet, this.newIndex()])
     } else {
       this.withExpected(sujet, expected)
     }      
@@ -312,18 +335,18 @@ export class InsideTest {
    * 
    */
   exec(){
-    this.addStack(function(){
+    this.addStack(function(testIndex){
       this.reset()
-      this.eval.call() || this.throwError(false)
-    }.bind(this))
+      this.eval.call(this, testIndex) || this.throwError(false)
+    }.bind(this, this.newIndex()))
     return this; // chainage
   }
   execNegate(){
-    this.addStack(function(){
+    this.addStack(function(testIndex){
       this.negate = true
       this.reset()
-      this.eval.call() && this.throwError(true)
-    }.bind(this))
+      this.eval.call(this, testIndex) && this.throwError(true)
+    }.bind(this, this.newIndex()))
     return this; // chainage
   }
 

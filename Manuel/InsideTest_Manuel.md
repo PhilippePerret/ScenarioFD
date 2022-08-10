@@ -228,6 +228,16 @@ WAA.send(class:'IT_WAA', method:'receive', data:{<data>})
 
 
 
+### Fonctionnement
+
+Dans `InsideTest`, une fois que tous les tests ont été joués par **`InsideTest.runStack()`**…
+
+… on se met en attente dans la méthode **`InsideTest.awaitForAllServerCheckDone()`**. Cette méthode interroge `IT_WAA` pour savoir si la classe est en activité. 
+
+Dans **`IT_WAA`**, si aucun test serveur n’a été lancé, la propriété **`working`** (`IT_WAA.working`) est à `false` et l’on peut achever les tests et afficher le résultat.
+
+En revanche, si des tests serveurs ont été lancés (rappel : depuis un inside-test normal, mais avec `IT_WAA.send`), alors la méthode **`InsideTest.checkerServerResultats`** est appelée tous les demi-secondes pour relever dans **`IT_WAA.stackServerResultats`** tous les résultats remontés par le serveur (rappel : grâce à l’appel `WAA.send(class:'IT_WAA', method:'receive', data:{testId:<test-id>, result:{ok:..., error…}, data:{<autres données}})` côté ruby.)
+
 ---
 
 

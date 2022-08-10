@@ -1,6 +1,8 @@
 ## EN COURS
 
 * Poursuivre les tests (cf. [ci-dessous](#tests))
+  - pour poursuivre le travail côté serveur : au retour du resultat serveur, implémenter la possibilité qu'on poursuivre les tests. Un paramètre qui dirait de rappeler la méthode eval (ou une autre ?) avec les données remontées
+    => essayer en remontant les données du scénario et en l'affichant.
 * Poursuivre le filtre
   - pour faire la liste des effets, il faut prendre ceux présents dans le scénario
 * Au redimensionnement de la fenêtre, il faut calculer le ratio des fenêtres et le conserver (au lieu d'augmenter seulement la dimension du cadre au bord)
@@ -11,7 +13,7 @@
 
 ## BUGS
 
-* Voir les bugs à l'aide de `ghi list -L bug`
+* Voir les bugs à l'aide de `ghi list[ -L bug]`
 * [bug] La donnée 'FD-scene-properties' contient des retours chariot inutiles
 
 <a name="tests"></a>
