@@ -1,4 +1,4 @@
-import { InsideTest, page, mouse } from '../../../system/inside-test.lib.js'
+import { InsideTest, page, mouse } from '../../../system/InsideTest/inside-test.lib.js'
 /**
  * Classe qui définit tout un tas d'actions à accomplir au cours des
  * tests, pour simplifier l'écriture.

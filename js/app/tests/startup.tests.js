@@ -1,4 +1,4 @@
-import { InsideTest, page, mouse } from '../../system/inside-test.lib.js'
+import { InsideTest, page, mouse } from '../../system/InsideTest/inside-test.lib.js'
 import { ITFactory } from './utils/Factory.js'
 import * as Check from './utils/Checkers.js'
 

@@ -341,7 +341,6 @@ class Disposition {
    */
   forEachCadre(method){
     Object.values(this.cadres).forEach( cadre => {
-      console.log("Traitement de cadre ", cadre)
       if ( 'string' == typeof method ) {
         cadre[method].call(cadre)
       } else /* une fonction */ { 

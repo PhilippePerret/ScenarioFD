@@ -8,7 +8,7 @@ Le fonctionnement est cependant assez différent des autres modules de test, il 
 Par exemple :
 
 ~~~javascript
-import { InsideTest, page, mouse } from '../../system/inside-test.lib.js'
+import { InsideTest, page, mouse } from '../../system/InsideTest/inside-test.lib.js'
 
 // Un test qui doit vérifier que les valeurs sont bien égales à 4
 var test = new InsideTest({
@@ -179,6 +179,56 @@ var test = new InsideTest({
 })
 test.exec() // => true si tout se passe bien
 ~~~
+
+
+
+---
+
+
+
+## Travail complexe quand tests côté serveur
+
+Les tests se compliquent lorsqu’on doit travailler avec le serveur avec WAA car la méthode `WAA.send` ne renvoie pas son message à `InsideTest` puisque c’est un module. Dans ce cas, au niveau mécanique, on utilise cette astuce :
+
+~~~
+Lorsqu'une méthode eval de test doit appeler WAA.send, elle prévient l'application
+qu'elle le fait.
+Un traitement se fait côté serveur, qu'on imagine long.
+
+Lorsque InsideTest arrive en fin des tests, il interroge l'application pour savoir
+si un travail serveur est encore en train de se faire.
+Si c'est le cas, il attend avant de montrer les résultats.
+
+Lorsque les tests côté serveur ont été effectués, le serveur prévient l'application.
+Lorsque InsideTest interroge l'application, on lui dit alors que c'est fini et on
+lui donne les résultats.
+
+InsideTest peut alors clore l'opération et afficher les résultats.
+~~~
+
+Concrètement, tout ça se passe avec la classe **`IT_WAA`** qu’il faut charger par `IT_WAA.js` comme un script normal dans l’application (ça se fait automatiquement par `InsideTest.install()` qui ajoute une balise pour ce script.
+
+Ensuite, on appelle les méthodes serveur avec : 
+
+~~~javascript
+IT_WAA.send({data})
+~~~
+
+… où `data` contient les propriétés normales, auxquelles sont ajoutées par le programme la propriété `testId` qui devra être remonté ensuite pour savoir que le test a fini son travail.
+
+> Cela signifie qu’il faut appeler des méthodes propres aux tests, qui seront susceptibles de retourner ce identifiant du test. Dans le cas contraire, les tests ne s’arrêteront jamais (un timeout les arrêtera cependant)
+
+Côté serveur, on se sert de la méthode `WAA.send` normale, mais en appelant :
+
+~~~ruby
+WAA.send(class:'IT_WAA', method:'receive', data:{<data>})
+~~~
+
+> Rappel : `<data`> doit impérativement définir `testId`, l’identifiant du test.
+
+
+
+---
 
 
 

@@ -47,6 +47,25 @@ export class InsideTest {
   static get log(){
     return this._log || (this._log = new LogClass('InsideTest'))
   }
+
+  /**
+   * Méthode appelée au chargement du module principal (dans le
+   * ready, plus exactement)
+   * 
+   */
+  static install(){
+    return new Promise((ok,ko) => {
+      /*
+      |  Insertion de la balise chargeant InsideTestServer (qui permet
+      |  de faire des checks server — cf. le manuel)
+      */
+      const scp = DCreate('SCRIPT', {type:'text/javascript'})
+      scp.src = './js/system/InsideTest/IT_WAA.js'
+      document.head.appendChild(scp)
+      scp.addEventListener('load', ok)
+    })
+  }
+
   /**
    * Test courant
    */
@@ -61,12 +80,48 @@ export class InsideTest {
    * Pour jouer tous les tests
    * 
    */
-  static run() {
+  static async run() {
     if ( INSIDE_TESTS ){ 
       this.resetCounters()
       this.runStack()
+      await this.awaitForAllServerChecksDone()
       this.stopCounters()
       this.report()
+    }
+  }
+
+  /**
+   * Puisque personne ne peut joindre ce module (du fait que ce soit
+   * justement un module), on passe par IT_WAA ici, qui peut être
+   * atteint aussi bien par le serveur (par WAA.send) que par ce 
+   * module.
+   * On s'en sert donc pour passer les données et l'état serveur.
+   */
+  static awaitForAllServerChecksDone(){
+    if ( not(IT_WAA.working) ) return true
+    const my = this
+    return new Promise((ok,ko)=>{
+      my.intervaler = setInterval(my.checkerServerDone.bind(my, ok), 500)
+    })
+  }
+  static checkerServerDone(ok){
+    if (IT_WAA.working === false ){
+      clearInterval(this.intervaler)
+      delete this.intervaler
+      ok()
+    } else {
+      if ( IT_WAA.stackForInsideTestModule.length ) {
+        const newServerResultat = IT_WAA.stackForInsideTestModule.pop()
+        const testId  = newServerResultat.testId
+        const test    = this.table[testId]
+        const result = newServerResultat.result
+        // console.log("newServerResultat = ", newServerResultat)
+        // console.log("test = ", test)
+        if ( not(result.ok) ) {
+          test.error = result.errors.join("\n")
+          test.throwError()
+        }
+      }
     }
   }
 
@@ -74,6 +129,7 @@ export class InsideTest {
     this.nombreTests    = 0
     this.nombreFailures = 0
     Log.test('=== DÉBUT DES TESTS ===')
+    console.log('=== DÉBUT DES TESTS ===')
     this.startTime = new Date().getMilliseconds()
   }
   static stopCounters(){
@@ -88,8 +144,18 @@ export class InsideTest {
   }
 
   static addToStack(test){
+    this.add(test)
     if (undefined == this.stack) { this.stack = [] }
     this.stack.push(test)
+  }
+
+  /**
+   * Pour consigner le test. On en aura besoin si on fait des
+   * test serveur
+   */
+  static add(test){
+    if (undefined === this.table ) { this.table = {} }
+    Object.assign(this.table, {[test.id]: test})
   }
 
   /**
@@ -118,6 +184,15 @@ export class InsideTest {
     return {stopPropagation:function(){}, preventDefault:function(){}}
   }
 
+  /**
+   * @return  Un Identifiant pour les tests 
+   * 
+   */
+  static getNewTestId(){
+    if ( undefined === this.lastTestId) { this.lastTestId = 0 }
+    return `test-${++this.lastTestId}`
+  }
+
   //################################################################
 
 
@@ -128,6 +203,7 @@ export class InsideTest {
     this.eval   = data.eval
     // Pour les tests de InsideTest seulement (cf. en bas de page)
     this.noconsole = data.noconsole 
+    this.id     = this.constructor.getNewTestId()
     this.stack = []
     if ( INSIDE_TESTS ) { this.constructor.addToStack(this) }
   }
@@ -175,11 +251,13 @@ export class InsideTest {
    * Compare l'égalité
    */
   equal(sujet, expected){
+    const my = this
     this.addStack(function(){
-      const actual = JString(this.eval.call(null, sujet))
+      my.actual = JString(my.eval.call(null, sujet))
       expected = JString(expected)
-      actual == expected || this.throwError(false, JString(sujet), expected, actual)
-    }.bind(this), [sujet, expected])
+      my.expected = expected
+      my.actual == expected || my.throwError(false, JString(sujet), expected, my.actual)
+    }.bind(my), [sujet, expected])
     return this // chainage
   }
 
@@ -190,6 +268,7 @@ export class InsideTest {
     if ( undefined === expected) {
       this.addStack(function(){
         this.reset()
+        this.negate = true
         this.eval.call(null, sujet) && this.throwError(true, sujet)
       }.bind(this), [sujet])
     } else {
@@ -204,8 +283,10 @@ export class InsideTest {
   withExpected(sujet, expected){
     this.addStack(function(){
       this.reset()
-      const resultat = this.eval.call(null, sujet, expected)
-      const value    = this.eval.value
+      const resultat  = this.eval.call(null, sujet, expected)
+      const value     = this.eval.value
+      this.expected   = expected
+      this.actual     = value
       resultat == expected || this.throwError(false, sujet, expected, value)
     }.bind(this), [sujet, expected])
     return this; // chainage
@@ -217,8 +298,11 @@ export class InsideTest {
   withExpectedNegate(sujet, expected){
     this.addStack(function(){
       this.reset()
-      const resultat = this.eval.call(null, sujet, expected)
-      const value    = this.eval.value
+      this.negate = true
+      const resultat  = this.eval.call(null, sujet, expected)
+      const value     = this.eval.value
+      this.expected   = expected
+      this.actual     = value
       resultat != expected && this.throwError(true, sujet, expected, value)    
     }.bind(this), [sujet, expected])
     return this; // chainage
@@ -236,6 +320,7 @@ export class InsideTest {
   }
   execNegate(){
     this.addStack(function(){
+      this.negate = true
       this.reset()
       this.eval.call() && this.throwError(true)
     }.bind(this))
@@ -253,6 +338,9 @@ export class InsideTest {
 
   throwError(negate, sujet, expected, actual){
     this.constructor.nombreFailures ++
+    if (undefined === negate   ) { negate   = this.negate == true }
+    if (undefined === expected ) { expected = this.expected }
+    if (undefined === actual   ) { actual   = this.actual   }
     const prefix = "[INSIDE_TEST] "
     let msg = this.error;
     if ( sujet && not(msg.match('%{sujet}')) ) {
