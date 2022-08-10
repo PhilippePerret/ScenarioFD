@@ -8,7 +8,9 @@
 const IT_ERRORS = {
     requireCurrentTest  : "Il faut impérativement appeler IT_WAA send en mettant en premier argument 'InsideTest.current' pour obtenir l'instance du test (car 'this' est indéfini, dans la définition du test)."
   , testIdRequired      : "IT_WAA.receive attend impérativement data.testId."
+  , testIndexRequired   : 'IT_WAA.receive attend impérativement data.testIndex, l’index du test exact.'
   , resultServerRequired: 'IT_WAA.receive attend impérativement le résultat du test serveur ({:ok, :errors}).'
+
 }
 class IT_WAA {
   static get working(){
@@ -54,9 +56,9 @@ class IT_WAA {
    */
   static receive(data){
     // console.log("Données reçues par IT_WAA.receive", data)
-    data.testId || raise(IT_ERRORS.testIdRequired)
-    data.result || raise(IT_ERRORS.resultServerRequired)
-    const testId = data.testId
+    data.testId     || raise(IT_ERRORS.testIdRequired)
+    data.testIndex  || raise(IT_ERRORS.testIndexRequired)
+    data.result     || raise(IT_ERRORS.resultServerRequired)
     /*
     |  On passe les résultats au test
     */
@@ -64,7 +66,7 @@ class IT_WAA {
     /*
     |  On détruit ce worker
     */
-    delete this.workers[testId]
+    delete this.workers[data.testId]
   }
 
 

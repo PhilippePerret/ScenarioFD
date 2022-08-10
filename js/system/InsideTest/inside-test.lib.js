@@ -66,6 +66,10 @@ export class InsideTest {
     })
   }
 
+  static reset(){
+    this.lastTestIndex = -1
+  }
+
   /**
    * Test courant
    */
@@ -122,14 +126,26 @@ export class InsideTest {
       */
       let newServerResultat ;
       while ( (newServerResultat = IT_WAA.stackServerResultats.pop()) ) {
-        const testId  = newServerResultat.testId
-        const test    = this.table[testId]
-        const result = newServerResultat.result
+        const {testId, testIndex, result} = newServerResultat
+        // const testId    = newServerResultat.testId
+        // const testIndex = newServerResultat.testIndex
+        // const result    = newServerResultat.result
+        const test      = this.table[testId]
         // console.log("newServerResultat = ", newServerResultat)
-        // console.log("test = ", test)
-        if ( not(result.ok) ) {
+        console.log("Je dois rejouer le test ", test)
+        if ( result.ok ) {
+          /*
+          |  Je dois poursuivre si la méthode afterServerEval existe
+          */
+          if ( 'function' == typeof test.data.afterServerEval ) {
+            test.data.afterServerEval.call(test, result)
+          }
+        } else {
+          /*
+          |  En cas d'erreur sur le serveur, on peut s'arrêter là
+          */
           test.error = result.errors.join("\n")
-          test.throwError()
+          test.throwError()          
         }
       }
       /*
@@ -252,6 +268,10 @@ export class InsideTest {
   }
 
   newIndex(){
+    return this.constructor.newIndex()
+  }
+  static newIndex(){
+    console.log("-> newIndex, this.lastTestIndex = ", this.lastTestIndex)
     if (undefined === this.lastTestIndex) { this.lastTestIndex = -1 }
     return ++ this.lastTestIndex
   }
@@ -275,12 +295,12 @@ export class InsideTest {
    */
   equal(sujet, expected){
     const my = this
-    this.addStack(function(){
+    this.addStack(function(testIndex){
       my.actual = JString(my.eval.call(null, sujet))
       expected = JString(expected)
       my.expected = expected
       my.actual == expected || my.throwError(false, JString(sujet), expected, my.actual)
-    }.bind(my), [sujet, expected])
+    }.bind(my), [sujet, expected, this.newIndex()])
     return this // chainage
   }
 

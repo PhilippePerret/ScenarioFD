@@ -10,12 +10,17 @@ Par exemple :
 ~~~javascript
 import { InsideTest, page, mouse } from '../../system/InsideTest/inside-test.lib.js'
 
+InsideTest.reset(); // pour le moment, juste pour l'index du test
+
 // Un test qui doit vérifier que les valeurs sont bien égales à 4
 var test = new InsideTest({
-  error: '%{devrait} être égal à 4.'
-  eval: function(sujet){
-    return sujet == 4
-  }
+  	error: '%{devrait} être égal à 4.'
+	, eval: function(sujet){
+   	  return sujet == 4
+	  }
+	, afterServerEval: function(resultat) {
+  		// appelé si on travail avec une opération serveur  
+	  }
 })
 // On fait les tests
 test.with(2) // => une erreur en console "««« 2 »»» devrait être égal à 4."
@@ -225,6 +230,16 @@ WAA.send(class:'IT_WAA', method:'receive', data:{<data>})
 ~~~
 
 > Rappel : `<data`> doit impérativement définir `testId`, l’identifiant du test.
+
+~~~javascript
+// Données :
+// --------
+
+testId    : IDentifiant du test {InsideTest}
+testIndex : Index du test précis dans le stack du InsideTest[testId]
+						// Chaque fois qu'on a un test.with("sujet") par exemple,
+						// ça crée un nouvel index.
+~~~
 
 
 

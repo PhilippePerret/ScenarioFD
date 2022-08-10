@@ -4,12 +4,19 @@ import {InsideTest} from '../../system/InsideTest/inside-test.lib.js'
  * 
  */
 
+function resetIndex(){
+  InsideTest.lastTestIndex = -1
+  return true
+}
+
 // Les tests
 // ----------
-import './ui.tests.js'
+// import './ui.tests.js'
+resetIndex()
 import './startup.tests.js'
 // import './parsing.tests.js'
 // import './filtre.tests.js'
+resetIndex() 
 import './import_fd.tests.js'
 // import './export_fd.tests.js'
 

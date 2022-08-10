@@ -10,8 +10,20 @@ import { ITAction } from './utils/Actions.js'
  * the Scenario app and saved in the Scneario file.
  * 
  */
+InsideTest.reset() // pour l'index, utile quand on utilise le serveur
+
 var test ;
 var erreurs = []
+
+test = new InsideTest({
+    error: 'Juste pour mettre l’index à 1'
+  , eval: (sujet, index)=>{
+      console.log("Pour le sujet '%s', l'index est %i", sujet, index)
+      return true
+    }
+})
+test.with("Ce sujet")
+
 
 test = new InsideTest({
     error: 'Le scénario Final-Draft %{doit} s’importer correctement.'
@@ -23,6 +35,9 @@ test = new InsideTest({
       */
       IT_WAA.send(InsideTest.current, index, {class:'Scenario::InsideTest',method:'test_import',data:{fd_file:'simple'}})
       return true
+    }
+  , afterServerEval:(resultat) => {
+      console.log("Le résultat du travail serveur renvoie : ", resultat)
     }
 })
 test.exec()
