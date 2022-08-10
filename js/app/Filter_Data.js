@@ -47,8 +47,11 @@ FILTRE.DATA_FILTRE = {
       name: 'Options'
     , id:   'options'
     , fields: [
-          {id:'always_heading', label:'Toujours afficher les intitulés de scène', type:'checkbox', disp:'block'}
-        , {id:'grised_rather_hide', label:'Griser plutôt que cacher le texte exclus', type:'checkbox', disp:'block', checked:false}
+        {type:'div', values:[
+            {id:'always_heading', label:'Toujours afficher les intitulés de scène', type:'checkbox', disp:'block'}
+          , {id:'grised_rather_hide', label:'Griser plutôt que cacher le texte exclus', type:'checkbox', disp:'block', checked:false}
+          ]
+        }
       ]
   }
 , 'scenes_range': {

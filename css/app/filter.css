@@ -89,13 +89,14 @@ div.fields-container
   padding: 1em;
   border-radius: 1em;
   margin-bottom: 16px;
+  background-color: lavender;
 }
 div.panel-multi-select:not(.no-background),
 div.fields-container:not(.no-background),
 {
   background-color: #fffebf;  
 }
-div.panel-multi-select legend {
+legend.panel-legend {
   font-weight: bold;
   font-size: 1.1em;
   font-style: italic;

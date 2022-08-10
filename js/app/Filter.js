@@ -665,7 +665,7 @@ class FilterFieldBuilder {
   buildAsDivOfFields(){
     const cont = DCreate('DIV', {class:'fields-container'})
     if ( this.label ) {
-      cont.appendChild(DCreate('LABEL', {class:'filter-name'})) // 'field-label'
+      cont.appendChild(DCreate('LEGEND', {class:'panel-legend', text:this.label}))
     }
     this.values.forEach( dfield => {
       const field = new FilterFieldBuilder(dfield, this.mainElement)
