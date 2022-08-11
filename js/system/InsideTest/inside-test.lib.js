@@ -17,6 +17,9 @@ const ITERRORS = {
     , resultRequiredInServerResultat: "La donnée :result est requise dans le retour côté serveur vers IT_WAA.receive pour connaitre le résultat et savoir quoi faire ensuite."
   }
 }
+const CONSOLE_STYLE_ERROR = 'font-family:"Arial Narrow";color:red;'
+// Pour l'affichage final du lieu de la définition du test
+const CONSOLE_STYLE_FILENAME = 'font-style:italic;margin-left:10em;font-size:0.85em;color:#999;'
 
 class HTMLPageClass {
   contains(selector, innerText){
@@ -201,7 +204,8 @@ export class InsideTest {
       |  appeler pour traiter le résultat.
       */
       if ( 'function' == typeof test.data.afterServerEval ) {
-        test.data.afterServerEval.call(null, result)
+        this.current = test
+        test.data.afterServerEval.call(null, result) || test.throwError()
       } else if ( not(result.ok) ) {
         /*
         |  Sinon, en cas d'erreur sur le serveur, on enregistre
@@ -216,17 +220,30 @@ export class InsideTest {
   static resetCounters(){
     this.nombreTests    = 0
     this.nombreFailures = 0
-    Log.test('=== DÉBUT DES TESTS ===')
-    console.log('=== DÉBUT DES TESTS ===')
+    this.Failures = []
+    console.log('%c=== DÉBUT DES TESTS ===', 'color:green;font-weight:bold;font-size:14pt;')
     this.startTime = new Date().getMilliseconds()
   }
   static stopCounters(){
     this.endTime = new Date().getMilliseconds()
   }
+
+  /**
+   * Rapport final des tests 
+   * 
+   */
   static report(){
     const nombreSucces = this.nombreTests - this.nombreFailures
     const hasFailures = this.nombreFailures > 0
     const duration = String(this.endTime - this.startTime) + ' ms';
+    if ( hasFailures ) {
+      var indexFailure = 0
+      this.Failures.forEach(test => {
+        indexFailure ++ 
+        // console.log("test : ",test)
+        console.log('%cError #' + indexFailure + '%c['+ test.fileName + ':' + test.lineNumber + ']' + "\n%c⛔️ " + test.errorMsg, CONSOLE_STYLE_ERROR + 'text-decoration:underline;', CONSOLE_STYLE_FILENAME, CONSOLE_STYLE_ERROR)
+      })
+    }
     let style = 'display:block;width:100%;border-top:1px solid;color:'+(hasFailures?'red':'green')+';'
     console.log('%c' + `Durée: ${duration}` + '%c' + `INSIDE-TESTS\nTests: ${this.nombreTests} - Succès: ${nombreSucces} - Échecs: ${this.nombreFailures}`, 'float:right;font-style:italic;font-size:0.85em;padding-right:8em;', style)
   }
@@ -294,6 +311,19 @@ export class InsideTest {
     this.id     = this.constructor.getNewTestId()
     this.stack = []
     if ( INSIDE_TESTS ) { this.constructor.addToStack(this) }
+    /*
+    | Pour connaitre la localité du test
+    */
+    try{throw new Error("Origine test")}catch(err){
+      // console.log("Trace", err.stack, typeof err.stack)
+      const stack = err.stack.trim().split("\n")
+      let fileLine = stack.pop()
+      fileLine = fileLine.split('/').pop()
+      const [fileName, lineNumber, columnNumber] = fileLine.split(':')
+      console.info(fileName, lineNumber, columnNumber)
+      this.fileName   = fileName
+      this.lineNumber = lineNumber
+    }
   }
 
   runStack(){
@@ -421,15 +451,17 @@ export class InsideTest {
   }
   get error() { 
     if ( undefined == this._error ) return null ;
-    return this._error.join("\n")
+    return this._error.join("\n# ☠️ # ")
   }
 
   throwError(negate, sujet, expected, actual){
     this.constructor.nombreFailures ++
+    this.constructor.Failures.push(this)
     if (undefined === negate   ) { negate   = this.negate == true }
     if (undefined === expected ) { expected = this.expected }
     if (undefined === actual   ) { actual   = this.actual   }
-    const prefix = "[INSIDE_TEST] "
+    if (undefined === sujet   )  { sujet    = this.sujet    }
+    const prefix = "[IT] " // non utilisé
     let msg = this.error;
     if ( sujet && not(msg.match('%{sujet}')) ) {
       msg = '««« %{sujet} »»» ' + msg
@@ -441,10 +473,10 @@ export class InsideTest {
       msg += "\n" + 'Attendu : ' + JSON.stringify(expected)
       if ( actual ) msg += "\n" + 'Obtenu  : ' + JSON.stringify(actual)
     }
-    msg = prefix + msg
+    // msg = prefix + msg
     // Sorti du message en console
     this.noconsole || console.error(msg)
-    this.errorMsg = msg // pour les tests d'InsideTest (cf. ci-dessous)
+    this.errorMsg = msg // Pour auto test et rapport final
   }
 
 }

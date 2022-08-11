@@ -1,6 +1,8 @@
 ## EN COURS
 
 * Poursuivre les tests (cf. [ci-dessous](#tests))
+  - [bug] l'erreur doit être enregistrées dans l'instance test
+  - [improve] Essayer de mémoriser le lieu du test
   - pour poursuivre le travail côté serveur : au retour du resultat serveur, implémenter la possibilité qu'on poursuivre les tests. Un paramètre qui dirait de rappeler la méthode eval (ou une autre ?) avec les données remontées
     => essayer en remontant les données du scénario et en l'affichant.
 * Poursuivre le filtre

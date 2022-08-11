@@ -27,7 +27,7 @@ class << self
       # 
       # On le remonte pour le voir à l'affichage
       # 
-      sleep 2
+      sleep 1
       # result[:errors] << "Rien n'est encore traité…"
     else
       result[:errors] << "Le fichier #{fd_filepath} est introuvable"

@@ -13,9 +13,10 @@ var tests = [], test ;
 var erreurs = []
 
 test = new InsideTest({
-    error: 'Le scénario Scénario %{doit} doit s’exporter correctement dans le fichier Final-Draft.'
+    error: 'Le scénario Scénario %{devrait} s’exporter correctement dans le fichier Final-Draft.'
   , eval: function(){
-
+      InsideTest.error = "L'exportation n'est pas encore traitée."
+      return false
     }
 })
 test.exec()

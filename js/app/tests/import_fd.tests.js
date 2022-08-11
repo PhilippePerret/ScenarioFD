@@ -31,7 +31,7 @@ test.with("Ce sujet")
 
 
 test = new InsideTest({
-    error: 'Le scénario Final-Draft %{doit} s’IMPORTER correctement.'
+    error: 'Le scénario Final-Draft %{devrait} s’IMPORTER correctement.'
   , eval: function(){
       /*
       |  On invoque la méthode de test qui va simuler l'import
