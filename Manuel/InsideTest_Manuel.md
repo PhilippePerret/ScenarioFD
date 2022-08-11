@@ -1,3 +1,12 @@
+<style type="text/css">
+.red {
+  color:red;
+  font-weight:bold;
+ }
+</style>
+
+
+
 # Manuel InsideTest
 
 **InsideTest** permet de lancer des tests dans le module à tester lui-même, afin d’avoir une suveillance permanente en cours de développement.
@@ -193,65 +202,68 @@ test.exec() // => true si tout se passe bien
 
 ## Travail complexe quand tests côté serveur
 
-Les tests se compliquent lorsqu’on doit travailler avec le serveur avec WAA car la méthode `WAA.send` ne renvoie pas son message à `InsideTest` puisque c’est un module. Dans ce cas, au niveau mécanique, on utilise cette astuce :
+Les tests se compliquent lorsqu’on doit travailler avec le serveur avec WAA car la méthode `WAA.send` ne renvoie pas son message à `InsideTest` puisque c’est un module.
 
-~~~
-Lorsqu'une méthode eval de test doit appeler WAA.send, elle prévient l'application
-qu'elle le fait.
-Un traitement se fait côté serveur, qu'on imagine long.
+* On passe par **`IT_WAA.send`** côté javascript (en lui passant en premier argument le test courant, par `InsideTest.current` — car l’instruction `this` ne fonctionne pas dans ce contexte)
+* **`WAA.send(class:'IT_WAA', method:'receive', data: data})`** côté serveur (<span class="red">noter que les données `:testId`, `:result` et `:data` sont obligatoires</span>)
+* la méthode **`afterServerEval`** d’InsideTest si on doit poursuivre le test avec le résultat.
 
-Lorsque InsideTest arrive en fin des tests, il interroge l'application pour savoir
-si un travail serveur est encore en train de se faire.
-Si c'est le cas, il attend avant de montrer les résultats.
+### Exemple concret d’utilisation
 
-Lorsque les tests côté serveur ont été effectués, le serveur prévient l'application.
-Lorsque InsideTest interroge l'application, on lui dit alors que c'est fini et on
-lui donne les résultats.
-
-InsideTest peut alors clore l'opération et afficher les résultats.
-~~~
-
-Concrètement, tout ça se passe avec la classe **`IT_WAA`** qu’il faut charger par `IT_WAA.js` comme un script normal dans l’application (ça se fait automatiquement par `InsideTest.install()` qui ajoute une balise pour ce script.
-
-Ensuite, on appelle les méthodes serveur avec : 
+On définit le test :
 
 ~~~javascript
-IT_WAA.send({data})
+// javascript
+var test ;
+
+test = new InsideTest({
+  	error: "Le test %{doit} passer."
+  , eval: (sujet) => {
+      // Envoi au serveur
+    	IT_WAA.send(InsideTest.current, {class:'MonApp',method:'maMethod', data:{sujet:sujet}})
+  		return true // Pour ne pas faire de faux négatif  
+	  }
+ 	, afterServerEval:(data)=>{... on la verra plus bas ...}
+})
+
 ~~~
 
-… où `data` contient les propriétés normales, auxquelles sont ajoutées par le programme la propriété `testId` qui devra être remonté ensuite pour savoir que le test a fini son travail.
-
-> Cela signifie qu’il faut appeler des méthodes propres aux tests, qui seront susceptibles de retourner ce identifiant du test. Dans le cas contraire, les tests ne s’arrêteront jamais (un timeout les arrêtera cependant)
-
-Côté serveur, on se sert de la méthode `WAA.send` normale, mais en appelant :
+Côté serveur :
 
 ~~~ruby
-WAA.send(class:'IT_WAA', method:'receive', data:{<data>})
+# ruby
+class MonApp
+  def self.maMethod(data)
+    
+    # Le test
+    ok = sujet > 4
+    error = ok ? nil : "Le sujet #{sujet} devrait être > 4."
+   	result = {ok: ok, error: error}
+    
+    # Renvoi au client
+    data.merge!(result: result)
+    WAA.send(class:'IT_WAA', method:'receive', data:data)
+  end
+end
 ~~~
 
-> Rappel : `<data`> doit impérativement définir `testId`, l’identifiant du test.
+Et retour côté client :
 
 ~~~javascript
-// Données :
-// --------
+// Javascript
 
-testId    : IDentifiant du test {InsideTest}
-testIndex : Index du test précis dans le stack du InsideTest[testId]
-						// Chaque fois qu'on a un test.with("sujet") par exemple,
-						// ça crée un nouvel index.
+test = new InsideTest({
+  //...
+  , afterServerEval:(data) => {
+  		if ( data.result.ok ) {
+        // Traitement si c'est bon
+      } 
+    	return data.result.ok // ou autre valeur calculée ici
+	  }
+})
 ~~~
 
 
-
-### Fonctionnement
-
-Dans `InsideTest`, une fois que tous les tests ont été joués par **`InsideTest.runStack()`**…
-
-… on se met en attente dans la méthode **`InsideTest.awaitForAllServerCheckDone()`**. Cette méthode interroge `IT_WAA` pour savoir si la classe est en activité. 
-
-Dans **`IT_WAA`**, si aucun test serveur n’a été lancé, la propriété **`working`** (`IT_WAA.working`) est à `false` et l’on peut achever les tests et afficher le résultat.
-
-En revanche, si des tests serveurs ont été lancés (rappel : depuis un inside-test normal, mais avec `IT_WAA.send`), alors la méthode **`InsideTest.checkerServerResultats`** est appelée tous les demi-secondes pour relever dans **`IT_WAA.stackServerResultats`** tous les résultats remontés par le serveur (rappel : grâce à l’appel `WAA.send(class:'IT_WAA', method:'receive', data:{testId:<test-id>, result:{ok:..., error…}, data:{<autres données}})` côté ruby.)
 
 ---
 

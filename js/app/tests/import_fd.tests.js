@@ -27,17 +27,17 @@ test.with("Ce sujet")
 
 test = new InsideTest({
     error: 'Le scénario Final-Draft %{doit} s’importer correctement.'
-  , eval: (index) => {
-      console.log("index : ", index)
+  , eval: function(){
       /*
       |  On invoque la méthode de test qui va simuler l'import
       |  du document final draft
       */
-      IT_WAA.send(InsideTest.current, index, {class:'Scenario::InsideTest',method:'test_import',data:{fd_file:'simple'}})
+      IT_WAA.send(InsideTest.current, {class:'Scenario::InsideTest',method:'test_import',data:{fd_file:'simple'}})
       return true
     }
-  , afterServerEval:(resultat) => {
+  , afterServerEval: function(resultat){
       console.log("Le résultat du travail serveur renvoie : ", resultat)
+      return false
     }
 })
 test.exec()

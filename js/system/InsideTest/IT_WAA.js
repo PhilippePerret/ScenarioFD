@@ -6,9 +6,8 @@
  * 
  */
 const IT_ERRORS = {
-    requireCurrentTest  : "Il faut impérativement appeler IT_WAA send en mettant en premier argument 'InsideTest.current' pour obtenir l'instance du test (car 'this' est indéfini, dans la définition du test)."
+    requireCurrentTest  : "Il faut impérativement un test courant pour appeler IT_WAA.send."
   , testIdRequired      : "IT_WAA.receive attend impérativement data.testId."
-  , testIndexRequired   : 'IT_WAA.receive attend impérativement data.testIndex, l’index du test exact.'
   , resultServerRequired: 'IT_WAA.receive attend impérativement le résultat du test serveur ({:ok, :errors}).'
 
 }
@@ -24,7 +23,7 @@ class IT_WAA {
 
   }
 
-  static send(test, testIndex, data){
+  static send(test, data){
     test || raise(IT_ERRORS.requireCurrentTest)
     if ( undefined === this.stackServerResultats ) {
       this.workers = {}
@@ -34,13 +33,12 @@ class IT_WAA {
     | On consigne ce "worker" (ça donnera aussi la valeur true à
     | this.working)
     */
-    const keyWorkers = `${test.id}-${testIndex}`
     Object.assign(this.workers, { [test.id]: test })
     /*
     |  On peut envoyer la requête serveur en ajoutant aux données
     |  l'identifiant du test.
     */
-    Object.assign(data.data, {testId: test.id, testIndex: testIndex})
+    Object.assign(data.data, {testId: test.id})
     /*
     |  Transmission de la requête au serveur
     */
@@ -56,9 +54,8 @@ class IT_WAA {
    */
   static receive(data){
     // console.log("Données reçues par IT_WAA.receive", data)
-    data.testId     || raise(IT_ERRORS.testIdRequired)
-    data.testIndex  || raise(IT_ERRORS.testIndexRequired)
-    data.result     || raise(IT_ERRORS.resultServerRequired)
+    data.testId || raise(IT_ERRORS.testIdRequired)
+    data.result || raise(IT_ERRORS.resultServerRequired)
     /*
     |  On passe les résultats au test
     */

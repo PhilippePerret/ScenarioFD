@@ -27,13 +27,15 @@ class << self
       # 
       # On le remonte pour le voir à l'affichage
       # 
-      sleep 4
-      result[:errors] << "Rien n'est encore traité…"
+      sleep 2
+      # result[:errors] << "Rien n'est encore traité…"
     else
       result[:errors] << "Le fichier #{fd_filepath} est introuvable"
     end
     result[:ok] = result[:errors].empty?
-    WAA.send(class:'IT_WAA', method:'receive', data:{testId: data['testId'], testIndex: data['testIndex'], result:result })
+    result[:ok] || result.merge!(error: result.delete(:errors).join("\n"))
+    data.merge!(result: result)
+    WAA.send(class:'IT_WAA', method:'receive', data:data)
   end
 
   def fd_files_folder

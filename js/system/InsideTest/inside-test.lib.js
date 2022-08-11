@@ -10,6 +10,14 @@
  * 
  */
 
+const ITERRORS = {
+  itWaa:{
+      dataRequiredInServerResultat: "Côté serveur, dans l'appel à WAA.send(class:'IT_WAA', method:'receive', data:{}), les :data doivent contenir {:testId, :result et :data}"
+    , testIdRequiredInServerResultat: "La donnée :testId est requise dans le retour côté serveur vers IT_WAA.receive pour retrouver le test."
+    , resultRequiredInServerResultat: "La donnée :result est requise dans le retour côté serveur vers IT_WAA.receive pour connaitre le résultat et savoir quoi faire ensuite."
+  }
+}
+
 class HTMLPageClass {
   contains(selector, innerText){
     const element = document.querySelector(selector)
@@ -124,36 +132,57 @@ export class InsideTest {
       /*
       |   Boucle sur tous les résultats renvoyés par le serveur
       */
-      let newServerResultat ;
-      while ( (newServerResultat = IT_WAA.stackServerResultats.pop()) ) {
-        const {testId, testIndex, result} = newServerResultat
-        // const testId    = newServerResultat.testId
-        // const testIndex = newServerResultat.testIndex
-        // const result    = newServerResultat.result
-        const test      = this.table[testId]
-        // console.log("newServerResultat = ", newServerResultat)
-        console.log("Je dois rejouer le test ", test)
-        if ( result.ok ) {
-          /*
-          |  Je dois poursuivre si la méthode afterServerEval existe
-          */
-          if ( 'function' == typeof test.data.afterServerEval ) {
-            test.data.afterServerEval.call(test, result)
-          }
-        } else {
-          /*
-          |  En cas d'erreur sur le serveur, on peut s'arrêter là
-          */
-          test.error = result.errors.join("\n")
-          test.throwError()          
-        }
-      }
+      this.treateServerResultats()
       /*
       |  On peut relancer la boucle d'attente
       */
       my.intervaler = setInterval(my.checkerServerResultats.bind(my, ok), 500)
     } else {
       return true // working
+    }
+  }
+  /**
+   * En cas de tests côté serveur, cette méthode traite les retours
+   * que le serveur a donné (plusieurs tests peuvent avoir remonté
+   * des résultats)
+   */
+  static treateServerResultats(){
+    let newServerResultat ;
+    /*
+    | On boucle tant qu'il y a des retours du serveur
+    */
+    while ( (newServerResultat = IT_WAA.stackServerResultats.pop()) ) {
+
+      /*
+      |  On prend les données de ce retour serveur
+      */
+      const testId = newServerResultat.testId
+      testId || raise(ITERRORS.itWaa.testIdRequiredInServerResultat)
+      const result = newServerResultat.result
+      result || raise(ITERRORS.itWaa.resultRequiredInServerResultat)
+      
+      /*
+      |  Le test javascript {InsideTest}
+      */
+      const test = this.table[testId]
+      // console.log("Je dois rejouer le test ", test)
+
+      /*
+      |  Dans tous les cas — que le résultat côté serveur ait été 
+      |  positif ou non —, si une méthode d'évaluation du résultat
+      |  serveur existe dans le test, c'est cette méthode qu'on doit
+      |  appeler pour traiter le résultat.
+      */
+      if ( 'function' == typeof test.data.afterServerEval ) {
+        test.data.afterServerEval.call(null, result)
+      } else if ( not(result.ok) ) {
+        /*
+        |  Sinon, en cas d'erreur sur le serveur, on enregistre
+        |  l'erreur.
+        */
+        test.error = result.errors.join("\n")
+        test.throwError()          
+      }
     }
   }
 
@@ -241,11 +270,9 @@ export class InsideTest {
   }
 
   runStack(){
-    var testIndex = 0
     this.stack.forEach( dtest => {
       try {
         const [test, args] = dtest
-        test.index = testIndex ++ 
         if ( args ) {
           test.call(null, ...args)
         } else {
@@ -267,24 +294,15 @@ export class InsideTest {
     this.errorMsg = null
   }
 
-  newIndex(){
-    return this.constructor.newIndex()
-  }
-  static newIndex(){
-    console.log("-> newIndex, this.lastTestIndex = ", this.lastTestIndex)
-    if (undefined === this.lastTestIndex) { this.lastTestIndex = -1 }
-    return ++ this.lastTestIndex
-  }
-
   /**
    * Exécution du test avec le sujet +sujet+
    */
   with(sujet, expected){
     if ( undefined === expected ) {    
-      this.addStack(function(sujet, testIndex){
+      this.addStack(function(sujet){
         this.reset()
-        this.eval.call(this, sujet, testIndex) || this.throwError(false, sujet)
-      }.bind(this), [sujet, this.newIndex()])
+        this.eval.call(this, sujet) || this.throwError(false, sujet)
+      }.bind(this), [ sujet ])
     } else {
       this.withExpected(sujet, expected)
     }      
@@ -295,12 +313,12 @@ export class InsideTest {
    */
   equal(sujet, expected){
     const my = this
-    this.addStack(function(testIndex){
+    this.addStack(function(sujet, expected){
       my.actual = JString(my.eval.call(null, sujet))
       expected = JString(expected)
       my.expected = expected
       my.actual == expected || my.throwError(false, JString(sujet), expected, my.actual)
-    }.bind(my), [sujet, expected, this.newIndex()])
+    }.bind(my), [ sujet, expected ])
     return this // chainage
   }
 
@@ -309,11 +327,11 @@ export class InsideTest {
    */
   withNegate(sujet, expected){
     if ( undefined === expected) {
-      this.addStack(function(){
+      this.addStack(function(sujet){
         this.reset()
         this.negate = true
         this.eval.call(null, sujet) && this.throwError(true, sujet)
-      }.bind(this), [sujet])
+      }.bind(this), [ sujet ])
     } else {
       return this.withExpectedNegate(sujet,expected)
     }
@@ -324,14 +342,14 @@ export class InsideTest {
    * 
    */
   withExpected(sujet, expected){
-    this.addStack(function(){
+    this.addStack(function(sujet, expected){
       this.reset()
       const resultat  = this.eval.call(null, sujet, expected)
       const value     = this.eval.value
       this.expected   = expected
       this.actual     = value
       resultat == expected || this.throwError(false, sujet, expected, value)
-    }.bind(this), [sujet, expected])
+    }.bind(this), [ sujet, expected ])
     return this; // chainage
   }
   /**
@@ -339,7 +357,7 @@ export class InsideTest {
    * 
    */
   withExpectedNegate(sujet, expected){
-    this.addStack(function(){
+    this.addStack(function(sujet, expected){
       this.reset()
       this.negate = true
       const resultat  = this.eval.call(null, sujet, expected)
@@ -347,7 +365,7 @@ export class InsideTest {
       this.expected   = expected
       this.actual     = value
       resultat != expected && this.throwError(true, sujet, expected, value)    
-    }.bind(this), [sujet, expected])
+    }.bind(this), [ sujet, expected ])
     return this; // chainage
   }
   /**
@@ -355,18 +373,18 @@ export class InsideTest {
    * 
    */
   exec(){
-    this.addStack(function(testIndex){
+    this.addStack(function(){
       this.reset()
-      this.eval.call(this, testIndex) || this.throwError(false)
-    }.bind(this, this.newIndex()))
+      this.eval.call(this) || this.throwError(false)
+    }.bind(this, null ))
     return this; // chainage
   }
   execNegate(){
-    this.addStack(function(testIndex){
+    this.addStack(function(){
       this.negate = true
       this.reset()
-      this.eval.call(this, testIndex) && this.throwError(true)
-    }.bind(this, this.newIndex()))
+      this.eval.call(this) && this.throwError(true)
+    }.bind(this, null ))
     return this; // chainage
   }
 
