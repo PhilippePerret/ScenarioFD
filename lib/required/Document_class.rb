@@ -38,8 +38,8 @@ class << self
               q.per_page fichiers_finaldraft.count
             end
           end
-          require_relative '../modules/convert'
-          convert_final_draft_document(finaldraft_path)
+          scenario = Document.new(File.dirname(finaldraft_path))
+          scenario.import(finaldraft_path)
         end
       end
     end

@@ -102,6 +102,11 @@ class Document
     self.send("export_format_#{params[:format]}".to_sym)
   end
 
+  def import(finaldraft_path)
+    require_relative '../modules/convert'
+    self.class.convert_final_draft_document(finaldraft_path)
+  end
+
   ##
   # = main =
   # 
