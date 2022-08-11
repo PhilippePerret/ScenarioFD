@@ -38,10 +38,10 @@ class Waa
   # Pour provoquer une action côté client
   # 
   def send(data)
+    puts "WAA.send: Data envoyée :" + data.pretty_inspect if verbose?
     data = data.to_json if not(data.is_a?(String))
     data = data.gsub(/"/,'\\"')
     data = data.gsub(/\\n/,'\\\\\\n')
-    puts "WAA.send: Data envoyée : #{data}" if verbose?
     resultat = driver.execute_script('return WAA.receive("'+data+'")')
   end
 

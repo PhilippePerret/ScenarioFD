@@ -43,8 +43,12 @@ class Waa {
    * (cf. dans waa.rb le format des données)
    */
   send(data_message){
+    // console.log("data_message dans send: ", data_message)
+    // return false
     if(undefined == this.datastack) this.datastack = []
     if('string' != typeof data_message) data_message = JSON.stringify(data_message)
+    // console.log("data_message dans send: ", data_message)
+    // return false
     this.datastack.push(data_message)
   }
 
@@ -54,6 +58,8 @@ class Waa {
    * 
    */
   receive(data_message){
+    // console.log("data_message = ", data_message)
+    // return false
     try{
       try {
         data_message = JSON.parse(data_message)  
@@ -69,6 +75,8 @@ class Waa {
     }
     
     // console.log("Je viens de recevoir le message: ", data_message)
+    // return false
+
     // 
     // Classe définie par le message
     // 

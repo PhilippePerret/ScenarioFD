@@ -205,7 +205,7 @@ export class InsideTest {
       */
       if ( 'function' == typeof test.data.afterServerEval ) {
         this.current = test
-        test.data.afterServerEval.call(null, result) || test.throwError()
+        test.data.afterServerEval.call(null, newServerResultat) || test.throwError()
       } else if ( not(result.ok) ) {
         /*
         |  Sinon, en cas d'erreur sur le serveur, on enregistre
@@ -315,12 +315,10 @@ export class InsideTest {
     | Pour connaitre la localité du test
     */
     try{throw new Error("Origine test")}catch(err){
-      // console.log("Trace", err.stack, typeof err.stack)
       const stack = err.stack.trim().split("\n")
       let fileLine = stack.pop()
       fileLine = fileLine.split('/').pop()
       const [fileName, lineNumber, columnNumber] = fileLine.split(':')
-      console.info(fileName, lineNumber, columnNumber)
       this.fileName   = fileName
       this.lineNumber = lineNumber
     }

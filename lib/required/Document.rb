@@ -12,7 +12,19 @@ module Scenario
 class Document
 
   def initialize(path)
+    if File.directory?(path)
+      path = File.join(path,'Scenario.xml')
+    end
     @path = path
+  end
+
+  ##
+  # Principalement pour les tests, pour forcer à tout recalculer
+  #
+  def reset
+    @data_scenes  = nil
+    @metadata     = nil 
+    @xml          = nil
   end
 
   # @return les données pour le client

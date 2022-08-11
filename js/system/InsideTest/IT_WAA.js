@@ -38,7 +38,7 @@ class IT_WAA {
     |  On peut envoyer la requête serveur en ajoutant aux données
     |  l'identifiant du test.
     */
-    Object.assign(data.data, {testId: test.id})
+    Object.assign(data.data, { testId:test.id });
     /*
     |  Transmission de la requête au serveur
     */

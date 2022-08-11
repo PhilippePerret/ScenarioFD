@@ -417,6 +417,7 @@ class Scenario {
   instanciePersonnages(){
     const lm = new ListManager({name:'personnages', uniq:true})
     if ( this.data.personnages ) {
+      console.log("this.data.personnages = ", this.data.personnages, typeof this.data.personnages)
       this.data.personnages.forEach( dperso => {
         lm.add(new Personnage(Object.assign(dperso,{scenario:this})))
       })

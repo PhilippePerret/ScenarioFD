@@ -10,6 +10,8 @@ import { ITAction } from './utils/Actions.js'
  * the Scenario app and saved in the Scneario file.
  * 
  */
+try {
+
 
 const ERRS = {
     badTitre        : 'Le titre est mauvais. Devrait être «%s». Est «%s».'
@@ -37,26 +39,40 @@ test = new InsideTest({
       |  On invoque la méthode de test qui va simuler l'import
       |  du document final draft
       */
-      IT_WAA.send(InsideTest.current, {class:'Scenario::InsideTest',method:'test_import',data:{fd_file:'simple'}})
+      IT_WAA.send(InsideTest.current, {class:'Scenario::InsideTest', method:'test_import' ,data:{fd_file:'simple'}})
       return true
     }
   , afterServerEval: function(data){
+      /*
+      |  Noter qu'on passe ici même si les tests côté serveur ont
+      |  échoué.
+      */
+      const script  = Scenario.current
+      const err     = InsideTest.addError.bind(InsideTest)
+      var expected ;
+
+
+      if ( not(data.result.ok) ) {
+        data.result.errors.forEach(error => err(error))
+        return false
+      }
       console.log("Données remontée du serveur : ", data)
       /*
       |  On peut charger le scénario et vérifier
       */
       ITFactory.makeCurrentScenario(data.script)
 
-      const script  = Scenario.current
-      const err       = InsideTest.addError.bind(InsideTest)
-      var expected ;
 
       expected = 'Mon scénario'
       script.titre == expected || err(ERRS.badTitre, [expected, script.titre])
       script.synopsis == ''    || err(ERRS.baSynopis, ['', script.synopsis])
 
-
-      return false
+      return InsideTest.current.errors.length == 0
     }
 })
 test.exec()
+
+
+}catch(err){
+  console.error(err)
+}
