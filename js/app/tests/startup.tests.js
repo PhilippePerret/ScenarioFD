@@ -123,7 +123,7 @@ test = new InsideTest({
 
       } catch(err) {
   
-        InsideTest.current.error = err
+        InsideTest.error = err
         return false
   
       }

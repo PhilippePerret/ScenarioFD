@@ -84,8 +84,35 @@ export class InsideTest {
   static get current()  { return this._current }
   static set current(t) { this._current = t    }
 
+  /**
+   * Pour ajouter des messages d'erreur depuis les tests
+   * 
+   */
   static set error(err){
     this.current.error = err
+  }
+  /**
+   * Ajoute un message d'erreur.
+   * ----------------------------
+   * Si +remp+ est nullish, on ajoute simplement le message +err_msg+
+   * Si +remp+ est défini et que +err_msg+ contient des '%s', ces
+   * %s sont remplacées par les valeurs de +remp+
+   * Si le message ne contient pas de %s, +remp+ doit contenir dans
+   * l'ordre la valeur attendue et la valeur reçue.
+   * 
+   * @param err_msg {String} Le message d'erreur, ou le template.
+   * @param remp    {Null|Array} Les valeurs de remplacement.
+   * 
+   */
+  static addError(err_msg, remp){
+    if ( remp ) {
+      if ( err_msg.match('%s') ) {
+        err_msg = tp(err_msg, remp)
+      } else {
+        err_msg += `\n    Expected: ${remp[0]}\n    Actual   : ${remp[1]}`
+      }
+    }
+    this.error = err_msg
   }
 
   /**

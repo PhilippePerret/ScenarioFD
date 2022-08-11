@@ -10,7 +10,12 @@ import { ITAction } from './utils/Actions.js'
  * the Scenario app and saved in the Scneario file.
  * 
  */
-InsideTest.reset() // pour l'index, utile quand on utilise le serveur
+
+const ERRS = {
+    badTitre        : 'Le titre est mauvais. Devrait être «%s». Est «%s».'
+  , baSynopis       : 'Le synopsis n’est pas bon.'
+}
+
 
 var test ;
 var erreurs = []
@@ -26,7 +31,7 @@ test.with("Ce sujet")
 
 
 test = new InsideTest({
-    error: 'Le scénario Final-Draft %{doit} s’importer correctement.'
+    error: 'Le scénario Final-Draft %{doit} s’IMPORTER correctement.'
   , eval: function(){
       /*
       |  On invoque la méthode de test qui va simuler l'import
@@ -35,8 +40,22 @@ test = new InsideTest({
       IT_WAA.send(InsideTest.current, {class:'Scenario::InsideTest',method:'test_import',data:{fd_file:'simple'}})
       return true
     }
-  , afterServerEval: function(resultat){
-      console.log("Le résultat du travail serveur renvoie : ", resultat)
+  , afterServerEval: function(data){
+      console.log("Données remontée du serveur : ", data)
+      /*
+      |  On peut charger le scénario et vérifier
+      */
+      ITFactory.makeCurrentScenario(data.script)
+
+      const script  = Scenario.current
+      const err       = InsideTest.addError.bind(InsideTest)
+      var expected ;
+
+      expected = 'Mon scénario'
+      script.titre == expected || err(ERRS.badTitre, [expected, script.titre])
+      script.synopsis == ''    || err(ERRS.baSynopis, ['', script.synopsis])
+
+
       return false
     }
 })

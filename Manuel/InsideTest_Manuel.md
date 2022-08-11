@@ -91,6 +91,30 @@ var test = new InsideTest({
 
 > **Note importante** : contrairement aux apparences, si les trois noms sont absents de la page, les 3 messages seront affichés.. La méthode `error = ` est cumulative.
 
+### Messages d’erreurs faciles
+
+Lorsque les messages d’erreurs sont nombreux, il peut être fastidieux d’utiliser `InsideTest.error = ` chaque fois. On peut utiliser plutôt cette formule :
+
+~~~javascript
+const err = InsideTest.addError.bind(InsideTest)
+
+ceci_est_vrai || err("Ceci est faux", ["attendu", ceci_est_vrai])
+// Produira : 
+//    Ceci est faux
+//    	Expected: "attendu"
+// 			Actual  : "résultat de ceci_est_vrai"
+ceci_est_vrai || err("J'attendais '%s' et j'ai reçu '%s'.", ["attendu", ceci_est_vrai])
+// Produira en cas d'erreur :
+//     J'attendais 'attendu' et j'ai reçu 'ça'.
+ceci_est_faux && err("C'est vraiment faux.")
+// Produira :
+//     C'est vraiment faux.
+~~~
+
+
+
+---
+
 ## Activation des tests
 
 * Les définir dans chaque module ou dans des modules séparés,
