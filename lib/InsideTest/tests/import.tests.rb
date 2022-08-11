@@ -116,16 +116,7 @@ class << self
   end
 
   def err(msg, expected, actual)
-    # msg = "#{msg}\\n    Expected: #{expected.inspect}\\n    Actual  : #{actual.inspect}"
-    # puts "msg: #{msg.inspect}"
-    # puts "expected: #{expected.inspect}"
-    # puts "actual: #{actual.inspect}"
     msg = "#{msg} Expected: #{expected}. Actual: #{actual}"
-    # msg = msg.gsub(/\\/,'\\\\')
-
-    # msg = "Mauvais ID"
-    # msg = msg.gsub(/"/,"'")
-
     @errors.push(epure(msg))
   end
 

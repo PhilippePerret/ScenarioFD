@@ -2,7 +2,7 @@
 <scenario>
   <metadata>
     <final_draft_filename>simple.fdx</final_draft_filename>
-    <converted_at>1660211874</converted_at>
+    <converted_at>1660248280</converted_at>
     <scenario_version>0.5</scenario_version>
     <finaldraft_version>5</finaldraft_version>
   </metadata>
@@ -21,10 +21,7 @@ PHIL:
       <FD-scenes-properties>
         <title/>
         <summary/>
-        <personnages>
-          <personnage name="MARION"/>
-          <personnage name="PHIL"/>
-        </personnages>
+        <personnages/>
       </FD-scenes-properties>
     </scene>
     <scene sceneId="2">

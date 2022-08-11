@@ -45,13 +45,17 @@ class Document
         # puts "node : #{node.inspect}"
         tbl_scene = {}
         node.children.each do |cnode|
+          puts "cnode (class:#{cnode.class}, name:#{cnode.name}) = #{cnode.inspect}"
+          if cnode.is_a?(Nokogiri::XML::Text)
+            puts "<- Node Passé"
+            next
+          end
           tbl_scene.merge!( cnode.name => cnode.text )
         end
-        tbl_scene.delete('text') # ça produit cette clé, je ne sais pas pourquoi
-        tbl_scene
       end
+      puts "\n\n\n+++ table = #{table.pretty_inspect}"
       table = Document::DEFAULT_DATA['scenes'] if table.empty?
-      # puts "scenes: #{table.inspect}"
+      puts "\n\n\n+++scenes: #{table.pretty_inspect}"
       table
     end
   end

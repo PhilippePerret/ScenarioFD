@@ -180,6 +180,7 @@ class << self
   ##
   # Pour récupérer les informations contenu dans la balise
   # SceneProperties d'un paragraphe de type 'Scene Heading'
+  # Cette balise contient de nombreuses informations sur la scène.
   #
   def get_scene_property_from_node(node)
     return if node.nil?
@@ -209,7 +210,10 @@ class << self
       snode.css('CharacterArcBeat').each do |ssnode|
         personnage = ssnode['Name']
         ssnode.css('Paragraph').each do |sssnode|
-          personnages.merge!(personnage => sssnode.text.strip)
+          strnode = sssnode.text.strip
+          unless strnode.empty?
+            personnages.merge!(personnage => strnode)
+          end
         end
       end
     end
