@@ -65,9 +65,7 @@
       <Text>EXT. MAGASIN - JOUR</Text>
     </Paragraph>
     <Paragraph Type="Action">
-      <Text>Cette scène définit un titre, un titre et un synopsis (résumé, </Text>
-      <Text AdornmentStyle="-1" Background="#FFFFFFFFFFFF" Color="#000000000000" Font="Courier Final Draft" RevisionID="0" Size="12" Style="">summary</Text>
-      <Text>).</Text>
+      <Text>Cette scène définit un titre, un titre et un synopsis (résumé, summary).</Text>
     </Paragraph>
   </Content>
 

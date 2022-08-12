@@ -71,6 +71,16 @@ class Document
             tbl_scene_properties = {}
             cnode.children.each do |cnode|
               next if cnode.text?
+
+              # puts "Étude de cnode.name = #{cnode.name}".bleu
+
+              # if cnode.children.count > 0
+              #   # puts "Le noeud #{cnode.name} contient des enfants.".orange
+              #   cnode.children.each do |scnode|
+              #     # puts "Enfant de #{cnode.name} : #{cnode.name} = #{cnode.text}".orange
+              #   end
+              # end
+
               unless cnode.name == 'personnages'
 
                 # 
@@ -88,13 +98,13 @@ class Document
                 # 
 
                 tbl_scene_properties.merge!('personnages' => [])
-                cnode.children.each do |cnode|
-                  next if cnode.text?
-                  tbl_scene_properties['personnages'] << cnode.text
+                cnode.css('personnage').each do |scnode|
+                  tbl_scene_properties['personnages'] << scnode['name']
                 end
               end
             end
-            tbl_scene_properties = '' if tbl_scene_properties.count > 0
+            # puts "tbl_scene_properties = #{tbl_scene_properties.inspect}".bleu
+            tbl_scene_properties = '' if tbl_scene_properties.count == 0
             tbl_scene.merge!( 'FD-scene-properties' => tbl_scene_properties )
           end
         end
@@ -122,8 +132,21 @@ class Document
     getNodes('//infos/*') || Document::DEFAULT_DATA['infos']
   end
 
+  # La liste des personnages
+  # Elle se récupère dans toutes les balises <personnages> des
+  # scènes (donc attention aux doublons)
   def personnages
-    getNodes('//personnages/*') || []
+    personnages_node = xml.xpath('/scenario/personnages').first
+    if personnages_node.nil?
+      return nil
+    end
+    personnages_node.css('personnage').map do |cnode|
+      dpersonnage = {}
+      cnode.children.each do |scnode|
+        dpersonnage.merge!(scnode.name => scnode.text)
+      end
+      dpersonnage
+    end
   end
 
   def decors
@@ -131,7 +154,7 @@ class Document
   end
 
   def metadata
-    @metadata ||= getNode('/Scenario/metadata') || {}
+    @metadata ||= getNode('/scenario/metadata') || {}
   end
 
   def final_draft_filename
@@ -163,7 +186,7 @@ class Document
   end
 
   def xml
-    @xml ||= Nokogiri::XML(File.read(path))
+    @xml ||= Nokogiri::XML(File.read_xml(path))
   end
 
   def export(params)
@@ -296,7 +319,9 @@ class Document
 
 
   ##
-  # Construction complète du fichier scenario.xml
+  # Construction complète du fichier Scenario.xml
+  # 
+  # (à partir des données fournies par le client)
   # 
   def build(data)
     nowi = Time.now.to_i
@@ -354,7 +379,10 @@ class Document
         if data.key?('personnages') && data['personnages']
           x.personnages do
             data['personnages'].each do |k, v|
-              x.send(k.to_sym, v)
+              x.personnage('name' => k) do
+                x.name(k)
+                x.description({'xml:space' => "preserve"}, v['description'])
+              end
             end
           end
         end

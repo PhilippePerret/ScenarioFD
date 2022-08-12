@@ -2,7 +2,7 @@
 <scenario>
   <metadata>
     <final_draft_filename>Complet.fdx</final_draft_filename>
-    <converted_at>1660288985</converted_at>
+    <converted_at>1660325136</converted_at>
     <scenario_version>0.5</scenario_version>
     <finaldraft_version>5</finaldraft_version>
   </metadata>
@@ -18,8 +18,13 @@ ALEX:
   Je ne veux pas le savoir.</content>
       <FD-scene-properties>
         <title/>
-        <summary/>
-        <personnages/>
+        <summary xml:space="preserve"/>
+        <personnages>
+          <personnage name="ALEX">
+            <name>ALEX</name>
+            <description xml:space="preserve"/>
+          </personnage>
+        </personnages>
       </FD-scene-properties>
     </scene>
     <scene sceneId="2">
@@ -32,21 +37,26 @@ Elle contient aussi Alexandre mais il a &#xE9;t&#xE9; ajout&#xE9; de force.
 C&#x2019;est Alex qui fait quelque chose.</content>
       <FD-scene-properties>
         <title>Titre de la sc&#xE8;ne de garage</title>
-        <summary/>
-        <personnages/>
+        <summary xml:space="preserve"/>
+        <personnages>
+          <personnage name="ALEX">
+            <name>ALEX</name>
+            <description xml:space="preserve"/>
+          </personnage>
+        </personnages>
       </FD-scene-properties>
     </scene>
     <scene sceneId="3">
       <sceneId>3</sceneId>
       <content xml:space="preserve">:EXT. MAGASIN - JOUR
 $title = Titre de la sc&#xE8;ne dans le magasin
-$summary = Il y en a meme trois.
-Cette sc&#xE8;ne d&#xE9;finit un titre, un titre et un synopsis (r&#xE9;sum&#xE9;, 
-      summary
-      ).</content>
+$summary = C'est le r&#xE9;sum&#xE9; de la sc&#xE8;ne dans le magasin._RET_Il est sur plusieurs lignes._RET_Il y en a meme trois.
+Cette sc&#xE8;ne d&#xE9;finit un titre, un titre et un synopsis (r&#xE9;sum&#xE9;, summary).</content>
       <FD-scene-properties>
         <title>Titre de la sc&#xE8;ne dans le magasin</title>
-        <summary>Il y en a meme trois.</summary>
+        <summary xml:space="preserve">C'est le r&#xE9;sum&#xE9; de la sc&#xE8;ne dans le magasin.
+Il est sur plusieurs lignes.
+Il y en a meme trois.</summary>
         <personnages/>
       </FD-scene-properties>
     </scene>

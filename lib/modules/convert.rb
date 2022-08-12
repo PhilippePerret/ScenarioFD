@@ -15,7 +15,7 @@ class << self
   def convert_final_draft_document(fd_path)
     puts "J'apprends [encore] à convertir le fichier #{File.basename(fd_path)} en fichier Scenario".jaune
 
-    xsce = Nokogiri::XML(File.read(fd_path))
+    xsce = Nokogiri::XML(File.read_xml(fd_path))
 
     #
     # === TRAITEMENT DES SCÈNES ===
@@ -105,10 +105,13 @@ class << self
               if dscene[:fd_props]
                 x.send('FD-scene-properties') do
                   x.title dscene[:fd_props][:title]
-                  x.summary dscene[:fd_props][:summary]
+                  x.summary({'xml:space' => "preserve"}, dscene[:fd_props][:summary])
                   x.personnages do 
-                    dscene[:fd_props][:personnages].each do |nom, texte|
-                      x.personnage({name: nom}, texte)
+                    dscene[:fd_props][:personnages].each do |nom, dnom|
+                      x.personnage(name: dnom[:name]) do
+                        x.name( dnom[:name] )
+                        x.description({'xml:space' => "preserve"}, dnom[:text])
+                      end
                     end
                   end
                 end
@@ -173,7 +176,13 @@ class << self
   def add_scene_properties_to_content(new_scene)
     props = new_scene[:fd_props]
     [:color, :title, :summary].each do |key|
-      new_scene[:content] << "$#{key} = #{props[key]}" if props.key?(key)
+      if props.key?(key)
+        value = case key
+          when :summary then props[key].gsub(/\n/,'_RET_')
+          else props[key]
+          end
+        new_scene[:content] << "$#{key} = #{value}" 
+      end
     end
   end
 
@@ -184,10 +193,12 @@ class << self
   #
   def get_scene_property_from_node(node)
     return if node.nil?
-    puts "--- node = #{node.inspect}"
+    # puts "--- node = #{node.inspect}"
     data_scene = {}
     # Titre de la scène
     data_scene.merge!(title: node['Title'])
+
+    #
     # Couleur de la scène
     # 
     # Stupidement, la couleur est définie en redoublant chaque valeur
@@ -198,23 +209,36 @@ class << self
       color = '#' + c[1..2] + c[5..6] + c[9..10]
       data_scene.merge!(color: color)
     end
-    # Résumé
+
+    #
+    # Résumé (Summary)
+    #
     node.css('Summary').each do |snode|
+      data_scene.merge!(summary: [])
       snode.css('Paragraph').each do |ssnode|
-        data_scene.merge!(summary: ssnode.text.strip)
+        data_scene[:summary] << ssnode.text.strip
       end
+      data_scene[:summary] = data_scene[:summary].join("\n")
     end
+
+    #
     # Arcs de personnages
+    #
     personnages = {}
-    node.css('SceneArcBeats').each do |snode|
-      snode.css('CharacterArcBeat').each do |ssnode|
-        personnage = ssnode['Name']
-        ssnode.css('Paragraph').each do |sssnode|
-          strnode = sssnode.text.strip
+    puts "node.css('SceneArcBeats').first = #{node.css('SceneArcBeats').first.inspect}".rouge
+    node.css('SceneArcBeats').first.children.each do |snode|
+      if snode.name == 'CharacterArcBeat'
+        personnage = snode['Name']
+        personnages.merge!(personnage => [])
+        puts "Personnages en est à : #{personnages.inspect}".bleu
+        snode.css('Paragraph').each do |ssnode|
+          next if ssnode.text?
+          strnode = ssnode.text.strip
           unless strnode.empty?
-            personnages.merge!(personnage => strnode)
+            personnages[personnage] << strnode
           end
         end
+        personnages[personnage] = {name:personnage, text:personnages[personnage].join("\n")}
       end
     end
     data_scene.merge!(personnages:  personnages)

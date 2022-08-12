@@ -74,3 +74,10 @@ Chaque INCADRE instancié est conservé [où ?] pour pouvoir être réutilisé a
 besoin.
 ~~~
 
+
+
+## Les personnages
+
+On trouve les personnages dans les balises `<personnages>` de chaque scène, tels que définis dans le fichier FD.
+
+On trouve également une balise principale `<scenario><personnages>` propre à **Scenario** qui permet de conserver des données propres, comme le pseudo, le patronyme, etc.

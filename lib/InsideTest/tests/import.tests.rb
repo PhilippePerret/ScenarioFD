@@ -59,6 +59,7 @@ class << self
     # 
     errs = self.send("check_document_#{fd_filename.downcase}_imported".to_sym, scenario)
     errs.each do |e| result[:errors] << e end
+    puts "Result = #{result.pretty_inspect}"
 
     # 
     # On remonte pour le voir à l'affichage (afin de pouvoir le 
@@ -123,7 +124,9 @@ class << self
     return @errors
   end
 
-
+  ##
+  # Vérification du document "Complet/complet.fdx"
+  # 
   def check_document_complet_imported(scenario)
     @errors = []
 
@@ -132,16 +135,26 @@ class << self
     if not data.key?(:scenes)
       @errors.push("La donnée :scenes devrait impérativement exister.")
     elsif data[:scenes].count != 3
-      @errors.push("Il devrait impérativement y avoir 3 scènes")
+      @errors.push("Il devrait y avoir impérativement 3 scènes")
     else
-      ITScene.new(data[:scenes][0]) do |sc|
+      ITScene.new(data[:scenes][0]).tap do |sc|
         sc.id_must_be(1)
+        sc.color_must_be('#EB627B')
+        sc.title_must_be('')
+        @errors += sc.errors
       end
-      ITScene.new(data[:scenes][1]) do |sc|
+      ITScene.new(data[:scenes][1]).tap do |sc|
         sc.id_must_be(2)
+        sc.color_must_be('#8FC36A')
+        sc.title_must_be('Titre de la scène de garage')
+        sc.must_have_personnage('ALEX')
+        @errors += sc.errors
       end
-      ITScene.new(data[:scenes][2]) do |sc|
-        sc.id_must_be(4)
+      ITScene.new(data[:scenes][2]).tap do |sc|
+        sc.id_must_be(3)
+        sc.title_must_be('Titre de la scène dans le magasin')
+        sc.summary_must_be("C'est le résumé de la scène dans le magasin.\nIl est sur plusieurs lignes.\nIl y en a meme trois.")
+        @errors += sc.errors
       end
     end
 
@@ -151,8 +164,10 @@ class << self
 
   class ITScene
     attr_reader :data
+    attr_reader :errors
     def initialize(data)
       @data = data
+      @errors = []
     end
 
     def inspect
@@ -167,7 +182,34 @@ class << self
     def scene_properties(value)
       err_if_not_equal(data['FD-scene-properties'], value, "Mauvais FD-scene-properties pour #{inspect}")
     end
+    def color_must_be(value)
+      content_must_contains("$color = #{value}", "la balise $color")
+    end
+    def title_must_be(value)
+      err_if_not_equal(scene_properties['title'], value, "Mauvais Title dans les propriétés de #{inspect}")
+      unless value.nil?
+        content_must_contains("$title = #{value}", "la balise $title")
+      end
+    end
+    def summary_must_be(value)
+      err_if_not_equal(scene_properties['summary'], value, "Mauvais Summary dans les propriétés de #{inspect}")
+      content_must_contains(value.gsub(/\n/,'_RET_'), "la balise $summary")
+    end
+    def must_have_personnage(name)
+      ok = scene_properties['personnages'].is_a?(Array) && scene_properties['personnages'].include?(name)
+      if not ok
+        @errors.push(epure "#{inspect} devrait contenir le personnage #{name.inspect}")
+      end
+    end
 
+    def content_must_contains(value, what)
+      # puts "Recherché : #{value.inspect} dans content :"
+      # puts "#{content.inspect}"
+      # puts "content.match?(value) = #{content.match?(Regexp.escape(value)).inspect}"
+      if not content.match?(Regexp.escape(value))
+        @errors.push(epure "Le contenu devrait définir correctement #{what} dans #{inspect}.")
+      end
+    end
 
     # --- Méthodes d'écriture des erreurs ---
 
@@ -188,6 +230,16 @@ class << self
       str = str.gsub(/"/,"'")
 
       return str
+    end
+
+    # --- Méthodes de données ----
+
+    def scene_properties
+      @scene_properties ||= data['FD-scene-properties']
+    end
+
+    def content
+      @content ||= data['content']
     end
 
   end #/class ITScene
