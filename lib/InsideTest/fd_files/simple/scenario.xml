@@ -2,7 +2,7 @@
 <scenario>
   <metadata>
     <final_draft_filename>simple.fdx</final_draft_filename>
-    <converted_at>1660248280</converted_at>
+    <converted_at>1660282745</converted_at>
     <scenario_version>0.5</scenario_version>
     <finaldraft_version>5</finaldraft_version>
   </metadata>
@@ -18,22 +18,22 @@ Phil se retourne vers elle.
 PHIL:
   ((apr&#xE8;s une h&#xE9;sitation))
   Et tu te sens pr&#xEA;te ?</content>
-      <FD-scenes-properties>
+      <FD-scene-properties>
         <title/>
         <summary/>
         <personnages/>
-      </FD-scenes-properties>
+      </FD-scene-properties>
     </scene>
     <scene sceneId="2">
       <sceneId>2</sceneId>
       <content xml:space="preserve">:EXT. ROUTE DE TOULON - JOUR
 $title = 
 Marion roule sur la route de Toulon.</content>
-      <FD-scenes-properties>
+      <FD-scene-properties>
         <title/>
         <summary/>
         <personnages/>
-      </FD-scenes-properties>
+      </FD-scene-properties>
     </scene>
   </scenes>
 </scenario>

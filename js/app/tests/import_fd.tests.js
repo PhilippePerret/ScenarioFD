@@ -10,7 +10,6 @@ import { ITAction } from './utils/Actions.js'
  * the Scenario app and saved in the Scneario file.
  * 
  */
-try {
 
 
 const ERRS = {
@@ -25,7 +24,6 @@ var erreurs = []
 test = new InsideTest({
     error: 'Juste pour mettre l’index à 1'
   , eval: (sujet, index)=>{
-      console.log("Pour le sujet '%s', l'index est %i", sujet, index)
       return true
     }
 })
@@ -47,7 +45,6 @@ test = new InsideTest({
       |  Noter qu'on passe ici même si les tests côté serveur ont
       |  échoué.
       */
-      const script  = Scenario.current
       const err     = InsideTest.addError.bind(InsideTest)
       var expected ;
 
@@ -61,18 +58,61 @@ test = new InsideTest({
       |  On peut charger le scénario et vérifier
       */
       ITFactory.makeCurrentScenario(data.script)
+      const script = Scenario.current
 
 
       expected = 'Mon scénario'
       script.titre == expected || err(ERRS.badTitre, [expected, script.titre])
       script.synopsis == ''    || err(ERRS.baSynopis, ['', script.synopsis])
 
-      return InsideTest.current.errors.length == 0
+      return not(InsideTest.errors) || InsideTest.errors.length == 0
+    }
+})
+// test.exec()
+
+
+
+
+// ===== TEST DU FICHIER Complet (complet.fdx et Complet/Scenario.xml) =====
+
+test = new InsideTest({
+    error: 'Le scénario Final-Draft %{devrait} s’IMPORTER correctement.'
+  , eval: function(){
+      /*
+      |  On invoque la méthode de test qui va simuler l'import
+      |  du document final draft
+      */
+      IT_WAA.send(InsideTest.current, {class:'Scenario::InsideTest', method:'test_import' ,data:{fd_file:'Complet'}})
+      return true
+    }
+  , afterServerEval: function(data){
+      /*
+      |  Noter qu'on passe ici même si les tests côté serveur ont
+      |  échoué.
+      */
+      const err = InsideTest.addError.bind(InsideTest)
+      var expected ;
+
+
+      if ( not(data.result.ok) ) {
+        data.result.errors.forEach(error => err(error))
+        return false
+      }
+      console.log("Données remontée du serveur : ", data)
+      /*
+      |  On peut charger le scénario et vérifier
+      */
+      ITFactory.makeCurrentScenario(data.script)
+      const script = Scenario.current
+
+
+      expected = 'Mon scénario'
+      script.titre == expected || err(ERRS.badTitre, [expected, script.titre])
+      script.synopsis == ''    || err(ERRS.baSynopis, ['', script.synopsis])
+
+      return not(InsideTest.errors) || InsideTest.errors.length == 0
     }
 })
 test.exec()
 
 
-}catch(err){
-  console.error(err)
-}

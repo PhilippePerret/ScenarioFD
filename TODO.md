@@ -12,7 +12,6 @@
 ## BUGS
 
 * Voir les bugs à l'aide de `ghi list[ -L bug]`
-* [bug] La donnée 'FD-scene-properties' contient des retours chariot inutiles
 
 <a name="tests"></a>
 
@@ -22,6 +21,19 @@
 * Vérifier que le bouton du type de contenu soit bien réglé (son data-content doit être au type de contenu, par exemple 'console' si c'est la console qui est affichée — pour le moment, ça n'est pas le cas dans les premiers tests)
 
 ## PROCHAINES ÉTAPES 
+
+* [EXPORT] Il faudrait la possibilité de "merger" un scénario Final-draft avec un scénario Scenario. Fonctionnement :
+  - On importe initialement un fichier Final-Draft.
+  - Donc il est converti en fichier Scenario.xml (qui garde la trace du scénario d'origine)
+  - On travaille le scénario (qui s'enregistre dans dans Scenario.xml, avec d'autres éléments comme les préférences)
+  - On exporte Scenario.xml
+    (- l'app backupe le fichier Final-Draft)
+    (- puis produit un nouveau fichier Final-Draft)
+  - Un autre auteur (ou soi) modifie le fichier Final-Draft
+  - --> On peut alors "merger" ce fichier Final-Draft avec le fichier Scenario.xml existant, pour garder tous les réglages concernant les préférences, les tâches, etc. tout ce qui n'appartient pas à Final-Draft
+    * il faudra juste surveiller au niveau des script-notes ce que ça change.
+  OU : PEUT-ÊTRE QUE LE PLUS SIMPLE SERAIT DE POUVOIR IMPORTER LES CHOSES PROPRES À Scenario DANS LE NOUVEAU Scenario.xml PRODUIT (en ayant mis l'autre de côté)
+  => Quand on veut convertir un scénario Final-Draft (de force) et qu'il existe déjà un fichier Scenario.xml, l'app demande s'il faut "merger" les deux. On fait alors le fichier converti normal, puis on ajoute dedans les choses récupérées de l'ancien Scenario.xml qu'on a mis de côté.
 
 * CONVERSION FINAL-DRAFT -> SCENARIO
   - Ajouter les données dollar dans le content (couleur->color, résumé->summary, titre-> ?)

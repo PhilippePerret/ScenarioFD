@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<scenario>
+  <metadata>
+    <final_draft_filename>Complet.fdx</final_draft_filename>
+    <converted_at>1660288985</converted_at>
+    <scenario_version>0.5</scenario_version>
+    <finaldraft_version>5</finaldraft_version>
+  </metadata>
+  <scenes>
+    <scene sceneId="1">
+      <sceneId>1</sceneId>
+      <content xml:space="preserve">:EXT. AUTOROUTE - JOUR
+$color = #EB627B
+$title = 
+Cette sc&#xE8;ne d&#xE9;finit sa couleur &#xE0; rouge.
+Elle contient le personnage d&#x2019;Alexandre qui parle.
+ALEX:
+  Je ne veux pas le savoir.</content>
+      <FD-scene-properties>
+        <title/>
+        <summary/>
+        <personnages/>
+      </FD-scene-properties>
+    </scene>
+    <scene sceneId="2">
+      <sceneId>2</sceneId>
+      <content xml:space="preserve">:INT. GARAGE - NUIT
+$color = #8FC36A
+$title = Titre de la sc&#xE8;ne de garage
+Cette sc&#xE8;ne d&#xE9;finit une couleur verte et un titre.
+Elle contient aussi Alexandre mais il a &#xE9;t&#xE9; ajout&#xE9; de force.
+C&#x2019;est Alex qui fait quelque chose.</content>
+      <FD-scene-properties>
+        <title>Titre de la sc&#xE8;ne de garage</title>
+        <summary/>
+        <personnages/>
+      </FD-scene-properties>
+    </scene>
+    <scene sceneId="3">
+      <sceneId>3</sceneId>
+      <content xml:space="preserve">:EXT. MAGASIN - JOUR
+$title = Titre de la sc&#xE8;ne dans le magasin
+$summary = Il y en a meme trois.
+Cette sc&#xE8;ne d&#xE9;finit un titre, un titre et un synopsis (r&#xE9;sum&#xE9;, 
+      summary
+      ).</content>
+      <FD-scene-properties>
+        <title>Titre de la sc&#xE8;ne dans le magasin</title>
+        <summary>Il y en a meme trois.</summary>
+        <personnages/>
+      </FD-scene-properties>
+    </scene>
+  </scenes>
+</scenario>

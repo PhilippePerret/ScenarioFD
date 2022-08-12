@@ -221,7 +221,7 @@ export class InsideTest {
     this.nombreTests    = 0
     this.nombreFailures = 0
     this.Failures = []
-    console.log('%c=== DÉBUT DES TESTS ===', 'color:green;font-weight:bold;font-size:14pt;')
+    console.log('%c=== DÉBUT DES TESTS ===', 'color:green;font-weight:bold;font-size:8pt;')
     this.startTime = new Date().getMilliseconds()
   }
   static stopCounters(){
@@ -236,15 +236,11 @@ export class InsideTest {
     const nombreSucces = this.nombreTests - this.nombreFailures
     const hasFailures = this.nombreFailures > 0
     const duration = String(this.endTime - this.startTime) + ' ms';
-    if ( hasFailures ) {
-      var indexFailure = 0
-      this.Failures.forEach(test => {
-        indexFailure ++ 
-        // console.log("test : ",test)
-        console.log('%cError #' + indexFailure + '%c['+ test.fileName + ':' + test.lineNumber + ']' + "\n%c⛔️ " + test.errorMsg, CONSOLE_STYLE_ERROR + 'text-decoration:underline;', CONSOLE_STYLE_FILENAME, CONSOLE_STYLE_ERROR)
-      })
-    }
     let style = 'display:block;width:100%;border-top:1px solid;color:'+(hasFailures?'red':'green')+';'
+    console.log("%c  ", style)
+    if ( hasFailures ) {
+      this.Failures.forEach(test => test.reportError())
+    }
     console.log('%c' + `Durée: ${duration}` + '%c' + `INSIDE-TESTS\nTests: ${this.nombreTests} - Succès: ${nombreSucces} - Échecs: ${this.nombreFailures}`, 'float:right;font-style:italic;font-size:0.85em;padding-right:8em;', style)
   }
 
@@ -348,6 +344,19 @@ export class InsideTest {
   reset(){
     this.errorMsg = null
   }
+
+  /**
+   * Pour écrire le rapport d'erreur en console. Ce message est 
+   * affiché deux fois : au moment de l'erreur et au moment du 
+   * rapport final affichant toutes les erreurs.
+   * 
+   */
+  reportError(){
+    console.log('%cError #' + this.indexFailure + '%c['+ this.fileName + ':' + this.lineNumber + ']' + "\n%c⛔️ " + this.errorMsg, CONSOLE_STYLE_ERROR + 'text-decoration:underline;', CONSOLE_STYLE_FILENAME, CONSOLE_STYLE_ERROR)
+
+  }
+
+  // ----------- PUBLIC TEST METHODS -------------
 
   /**
    * Exécution du test avec le sujet +sujet+
@@ -455,6 +464,7 @@ export class InsideTest {
   throwError(negate, sujet, expected, actual){
     this.constructor.nombreFailures ++
     this.constructor.Failures.push(this)
+    this.indexFailure = this.constructor.Failures.length
     if (undefined === negate   ) { negate   = this.negate == true }
     if (undefined === expected ) { expected = this.expected }
     if (undefined === actual   ) { actual   = this.actual   }
@@ -473,8 +483,9 @@ export class InsideTest {
     }
     // msg = prefix + msg
     // Sorti du message en console
-    this.noconsole || console.error(msg)
     this.errorMsg = msg // Pour auto test et rapport final
+    // this.noconsole || console.error(msg)
+    this.noconsole || this.reportError()
   }
 
 }

@@ -103,7 +103,7 @@ class << self
               x.sceneId dscene[:sceneId]
               x.content({'xml:space' => "preserve"}, dscene[:content])
               if dscene[:fd_props]
-                x.send('FD-scenes-properties') do
+                x.send('FD-scene-properties') do
                   x.title dscene[:fd_props][:title]
                   x.summary dscene[:fd_props][:summary]
                   x.personnages do 

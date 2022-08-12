@@ -41,6 +41,9 @@ class << self
 
     # 
     # Opération : IMPORTATION
+    # -----------------------
+    # (i.e. on prend le scénario Final-Draft et on en fait un 
+    #  scénario Scenario)
     # 
     scenario.import(fd_filepath)
 
@@ -50,13 +53,16 @@ class << self
     File.exist?(sc_filepath) || raise("Le fichier Scenario.xml aurait dû être construit.")
 
     # 
+    # VÉRIFICATION DU CONTENU
+    # -----------------------
     # On le vérifie au niveau de son contenu
     # 
-    errs = self.send("check_document_#{fd_filename}_imported".to_sym, scenario)
+    errs = self.send("check_document_#{fd_filename.downcase}_imported".to_sym, scenario)
     errs.each do |e| result[:errors] << e end
 
     # 
-    # On remonte pour le voir à l'affichage
+    # On remonte pour le voir à l'affichage (afin de pouvoir le 
+    # tester aussi sur le client)
     # 
     scenario.reset
     data.merge!(script: scenario.data_for_client)
@@ -88,16 +94,24 @@ class << self
     @errors = []
     data = scenario.data_for_client
 
-    if data.key?(:scenes)
-      sc0 = data[:scenes][0]
-      err_if_not_equal(sc0['sceneId'], 1, "Mauvais ID pour la première scène")
-      err_if_not_equal(sc0['FD-scenes-properties'], "", "Mauvais FD-scenes-properties pour la première scène")
+    # puts "\n\n\n+++ Données à envoyer au client (pour check):\n#{data.pretty_inspect}"
 
-      sc1 = data[:scenes][1]
-      err_if_not_equal(sc1['sceneId'], 2, "Mauvais ID pour la scène 2")
-      err_if_not_equal(sc1['FD-scenes-properties'], "", "Mauvais FD-scenes-properties pour la scène 2")
-    else
+    if not data.key?(:scenes)
+
       @errors.push("La donnée :scenes devrait exister.")
+
+    else
+      
+      ITScene.new(data[:scenes][0]) do |sc|
+        sc.id_must_be(1)
+        sc.scene_properties.must_be("")
+      end
+
+      ITScene.new(data[:scenes][1]) do |sc|
+        sc.id_must_be(2)
+        sc.scene_properties.must_be("")
+      end
+
     end
 
     if data.key?(:personnages)
@@ -109,25 +123,74 @@ class << self
     return @errors
   end
 
-  def err_if_not_equal(actual, expected, msg)
-    if actual != expected
-      err msg, expected, actual
+
+  def check_document_complet_imported(scenario)
+    @errors = []
+
+    data = scenario.data_for_client
+
+    if not data.key?(:scenes)
+      @errors.push("La donnée :scenes devrait impérativement exister.")
+    elsif data[:scenes].count != 3
+      @errors.push("Il devrait impérativement y avoir 3 scènes")
+    else
+      ITScene.new(data[:scenes][0]) do |sc|
+        sc.id_must_be(1)
+      end
+      ITScene.new(data[:scenes][1]) do |sc|
+        sc.id_must_be(2)
+      end
+      ITScene.new(data[:scenes][2]) do |sc|
+        sc.id_must_be(4)
+      end
     end
+
+    return @errors
   end
 
-  def err(msg, expected, actual)
-    msg = "#{msg} Expected: #{expected}. Actual: #{actual}"
-    @errors.push(epure(msg))
-  end
 
-  def epure(str)
-    str = str.to_s
-    str = str.gsub(/\n/, '⏎')
-    str = str.gsub(/"/,"'")
+  class ITScene
+    attr_reader :data
+    def initialize(data)
+      @data = data
+    end
 
-    return str
-  end
-      
+    def inspect
+      @inspect ||= "Scène ##{data['sceneId']}"
+    end
+
+    # --- Méthodes publiques de test ---
+
+    def id_must_be(value)
+      err_if_not_equal(data['sceneId'].to_i, value, "Mauvais ID pour #{inspect}")
+    end
+    def scene_properties(value)
+      err_if_not_equal(data['FD-scene-properties'], value, "Mauvais FD-scene-properties pour #{inspect}")
+    end
+
+
+    # --- Méthodes d'écriture des erreurs ---
+
+    def err_if_not_equal(actual, expected, msg)
+      if actual != expected
+        err msg, expected, actual
+      end
+    end
+
+    def err(msg, expected, actual)
+      msg = "#{msg} Expected: #{expected}. Actual: #{actual}"
+      @errors.push(epure(msg))
+    end
+
+    def epure(str)
+      str = str.to_s
+      str = str.gsub(/\n/, '⏎')
+      str = str.gsub(/"/,"'")
+
+      return str
+    end
+
+  end #/class ITScene
 end #/<< self
 end #/class InsideTest
 end #/module Scenario

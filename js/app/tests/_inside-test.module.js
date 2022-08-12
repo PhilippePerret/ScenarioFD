@@ -7,12 +7,12 @@ import {InsideTest} from '../../system/InsideTest/inside-test.lib.js'
 
 // Les tests
 // ----------
-import './ui.tests.js'
-import './startup.tests.js'
-import './parsing.tests.js'
-import './filtre.tests.js'
+// import './ui.tests.js'
+// import './startup.tests.js'
+// import './parsing.tests.js'
+// import './filtre.tests.js'
 import './import_fd.tests.js'
-import './export_fd.tests.js'
+// import './export_fd.tests.js'
 
 
 $(document).ready(async e => {

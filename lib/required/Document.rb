@@ -39,23 +39,76 @@ class Document
     }    
   end
 
+  # 
+  # @return Une table des données de scène contenu dans le scénario
+  # (Scenario.xml)
+  # 
   def data_scenes
     @data_scenes ||= begin
-      table = xml.xpath('//scenes/*').map do |node|
+      table = []
+      xml.xpath('//scenes/*').map do |node|
         # puts "node : #{node.inspect}"
         tbl_scene = {}
         node.children.each do |cnode|
-          puts "cnode (class:#{cnode.class}, name:#{cnode.name}) = #{cnode.inspect}"
-          if cnode.is_a?(Nokogiri::XML::Text)
-            puts "<- Node Passé"
-            next
+          # puts "+++ cnode (class:#{cnode.class}, name:#{cnode.name})"
+          next if cnode.text?
+
+          unless cnode.name == 'FD-scene-properties'
+
+            # 
+            # Traitement d'un nœud normal de premier niveau 
+            # 
+
+            tbl_scene.merge!( cnode.name => cnode.text )
+
+          else
+
+            # 
+            # Traitement spécial de la 'FD-scene-properties'
+            # (propriété de scène, comme le résumé, le titre, etc.)
+            # 
+
+            tbl_scene_properties = {}
+            cnode.children.each do |cnode|
+              next if cnode.text?
+              unless cnode.name == 'personnages'
+
+                # 
+                # Traitement d'une propriété de scène de premier 
+                # niveau (i.e. sans enfant)
+                # 
+
+                tbl_scene_properties.merge!(cnode.name => cnode.text)
+              
+              else
+
+                # 
+                # Traitement de la propriété liste 'personnages'
+                # (les personnages de la scène)
+                # 
+
+                tbl_scene_properties.merge!('personnages' => [])
+                cnode.children.each do |cnode|
+                  next if cnode.text?
+                  tbl_scene_properties['personnages'] << cnode.text
+                end
+              end
+            end
+            tbl_scene_properties = '' if tbl_scene_properties.count > 0
+            tbl_scene.merge!( 'FD-scene-properties' => tbl_scene_properties )
           end
-          tbl_scene.merge!( cnode.name => cnode.text )
         end
+        table << tbl_scene
       end
-      puts "\n\n\n+++ table = #{table.pretty_inspect}"
+      #
+      # Si aucune donnée de scènes n'ont été trouvées, on met
+      # les scènes par défaut (c'est juste un petit exemple avec un
+      # intitulé et une action).
+      # 
       table = Document::DEFAULT_DATA['scenes'] if table.empty?
-      puts "\n\n\n+++scenes: #{table.pretty_inspect}"
+      # 
+      # Pour @data_scenes
+      # 
       table
     end
   end
