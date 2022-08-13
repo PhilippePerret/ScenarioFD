@@ -9,6 +9,14 @@ class Document
 class << self
 
   ##
+  # @param  fd_color {String} La couleur FD stupide
+  # @return {String} La couleur en hexadécimal
+  # 
+  def fd_color_to_color(fd_color)
+    '#' + fd_color[1..2] + fd_color[5..6] + fd_color[9..10]
+  end
+
+  ##
   # Conversion d'un scénario Final Draft vers un scénario Scenario,
   # donc un fichier XML de nom scenario.sce
   # 
@@ -74,7 +82,37 @@ class << self
     end
 
     # POUR VOIR LES DONNÉES DES SCÈNES
-    # puts "\n\ndata_scenes:\n#{data_scenes}"
+    # puts "\n\ndata_scenes:\n#{data_scenes.pretty_inspect}"
+
+    # 
+    # --- Données des styles d'éléments
+    # 
+    data_elements = []
+    xsce.xpath('/FinalDraft/ElementSettings').each do |node|
+      delement = {}
+      delement.merge!(:type => node['Type'])
+      font_spec = node.css('FontSpec').first
+      para_spec = node.css('ParagraphSpec').first
+      behavior  = node.css('Behavior').first
+      outline   = node.css('Ouline').first
+      delement.merge!({
+        font:       font_spec['Font'],
+        size:       font_spec['Size'],
+        color:      fd_color_to_color(font_spec['Color']),
+        background: fd_color_to_color(font_spec['Background']),
+        align:      para_spec['Alignment'],
+        indent1:    para_spec['FirstIndent'],
+        indentL:    para_spec['LeftIndent'],
+        indentR:    para_spec['RightIndent'],
+        before:     para_spec['SpaceBefore'],
+        spacing:    para_spec['Spacing'],
+      })
+      data_elements << delement
+    end
+
+    # POUR VOIR LES DONNÉES DES STYLES ÉLÉMENTS
+    # puts "\n\ndata_elements:\n#{data_elements.pretty_inspect}"
+
 
     #
     # Le constructeur
@@ -120,7 +158,28 @@ class << self
             # break # pour en voir une seule
           end
 
-        end
+        end # /x.scenes
+
+        # 
+        # --- Les éléments ---
+        # 
+        x.elements do
+          data_elements.each do |delement|
+            x.element({'name' => delement[:type]}) do
+              x.font_family(delement[:font])
+              x.font_size(delement[:size])
+              x.font_color(delement[:color])
+              x.background(delement[:background])
+              x.align(delement[:align])
+              x.first_indent(delement[:indent1])
+              x.left_indent(delement[:indentL])
+              x.right_indent(delement[:indentR])
+              x.space_before(delement[:before])
+              x.spacing(delement[:spacing])
+            end
+          end
+        end #/ x.elements
+
       end
     
     end # @builder
@@ -205,9 +264,8 @@ class << self
     # hexadécimal. Par exemple, la couleur #0099CC va donner le code
     # #00009999CCCC.
     # 
-    if ( (c = node['Color']) )
-      color = '#' + c[1..2] + c[5..6] + c[9..10]
-      data_scene.merge!(color: color)
+    if ( node['Color'] )
+      data_scene.merge!(color: fd_color_to_color(node['Color']) )
     end
 
     #
@@ -225,12 +283,10 @@ class << self
     # Arcs de personnages
     #
     personnages = {}
-    puts "node.css('SceneArcBeats').first = #{node.css('SceneArcBeats').first.inspect}".rouge
     node.css('SceneArcBeats').first.children.each do |snode|
       if snode.name == 'CharacterArcBeat'
         personnage = snode['Name']
         personnages.merge!(personnage => [])
-        puts "Personnages en est à : #{personnages.inspect}".bleu
         snode.css('Paragraph').each do |ssnode|
           next if ssnode.text?
           strnode = ssnode.text.strip

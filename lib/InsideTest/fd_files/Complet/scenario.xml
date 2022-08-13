@@ -2,7 +2,7 @@
 <scenario>
   <metadata>
     <final_draft_filename>Complet.fdx</final_draft_filename>
-    <converted_at>1660325136</converted_at>
+    <converted_at>1660364252</converted_at>
     <scenario_version>0.5</scenario_version>
     <finaldraft_version>5</finaldraft_version>
   </metadata>
@@ -61,4 +61,210 @@ Il y en a meme trois.</summary>
       </FD-scene-properties>
     </scene>
   </scenes>
+  <elements>
+    <element name="General">
+      <font_family>Geneva</font_family>
+      <font_size>12</font_size>
+      <font_color>#000000</font_color>
+      <background>#FFFFFF</background>
+      <align>Left</align>
+      <first_indent>0.00</first_indent>
+      <left_indent>2.50</left_indent>
+      <right_indent>6.50</right_indent>
+      <space_before>0</space_before>
+      <spacing>1</spacing>
+    </element>
+    <element name="Scene Heading">
+      <font_family>Geneva</font_family>
+      <font_size>12</font_size>
+      <font_color>#000000</font_color>
+      <background>#FFFFFF</background>
+      <align>Left</align>
+      <first_indent>0.00</first_indent>
+      <left_indent>1.50</left_indent>
+      <right_indent>7.50</right_indent>
+      <space_before>24</space_before>
+      <spacing>1</spacing>
+    </element>
+    <element name="Action">
+      <font_family>Geneva</font_family>
+      <font_size>12</font_size>
+      <font_color>#000000</font_color>
+      <background>#FFFFFF</background>
+      <align>Left</align>
+      <first_indent>0.00</first_indent>
+      <left_indent>1.50</left_indent>
+      <right_indent>7.50</right_indent>
+      <space_before>12</space_before>
+      <spacing>1</spacing>
+    </element>
+    <element name="Character">
+      <font_family>Geneva</font_family>
+      <font_size>12</font_size>
+      <font_color>#000000</font_color>
+      <background>#FFFFFF</background>
+      <align>Left</align>
+      <first_indent>0.00</first_indent>
+      <left_indent>3.50</left_indent>
+      <right_indent>7.25</right_indent>
+      <space_before>12</space_before>
+      <spacing>1</spacing>
+    </element>
+    <element name="Parenthetical">
+      <font_family>Geneva</font_family>
+      <font_size>12</font_size>
+      <font_color>#000000</font_color>
+      <background>#FFFFFF</background>
+      <align>Left</align>
+      <first_indent>-0.10</first_indent>
+      <left_indent>3.00</left_indent>
+      <right_indent>5.50</right_indent>
+      <space_before>0</space_before>
+      <spacing>1</spacing>
+    </element>
+    <element name="Dialogue">
+      <font_family>Geneva</font_family>
+      <font_size>12</font_size>
+      <font_color>#000000</font_color>
+      <background>#FFFFFF</background>
+      <align>Left</align>
+      <first_indent>0.00</first_indent>
+      <left_indent>2.50</left_indent>
+      <right_indent>6.00</right_indent>
+      <space_before>0</space_before>
+      <spacing>1</spacing>
+    </element>
+    <element name="Transition">
+      <font_family>Geneva</font_family>
+      <font_size>12</font_size>
+      <font_color>#000000</font_color>
+      <background>#FFFFFF</background>
+      <align>Right</align>
+      <first_indent>0.00</first_indent>
+      <left_indent>5.50</left_indent>
+      <right_indent>7.10</right_indent>
+      <space_before>12</space_before>
+      <spacing>1</spacing>
+    </element>
+    <element name="Shot">
+      <font_family>Geneva</font_family>
+      <font_size>12</font_size>
+      <font_color>#000000</font_color>
+      <background>#FFFFFF</background>
+      <align>Left</align>
+      <first_indent>0.00</first_indent>
+      <left_indent>1.50</left_indent>
+      <right_indent>7.50</right_indent>
+      <space_before>12</space_before>
+      <spacing>1</spacing>
+    </element>
+    <element name="Cast List">
+      <font_family>Geneva</font_family>
+      <font_size>12</font_size>
+      <font_color>#000000</font_color>
+      <background>#FFFFFF</background>
+      <align>Left</align>
+      <first_indent>0.00</first_indent>
+      <left_indent>1.50</left_indent>
+      <right_indent>7.50</right_indent>
+      <space_before>0</space_before>
+      <spacing>1</spacing>
+    </element>
+    <element name="New Act">
+      <font_family>Geneva</font_family>
+      <font_size>12</font_size>
+      <font_color>#000000</font_color>
+      <background>#FFFFFF</background>
+      <align>Center</align>
+      <first_indent>0.00</first_indent>
+      <left_indent>1.50</left_indent>
+      <right_indent>7.50</right_indent>
+      <space_before>12</space_before>
+      <spacing>1</spacing>
+    </element>
+    <element name="End of Act">
+      <font_family>Geneva</font_family>
+      <font_size>12</font_size>
+      <font_color>#000000</font_color>
+      <background>#FFFFFF</background>
+      <align>Center</align>
+      <first_indent>0.00</first_indent>
+      <left_indent>1.50</left_indent>
+      <right_indent>7.50</right_indent>
+      <space_before>24</space_before>
+      <spacing>1</spacing>
+    </element>
+    <element name="Outline Body">
+      <font_family>Geneva</font_family>
+      <font_size>12</font_size>
+      <font_color>#878FE0</font_color>
+      <background>#FFFFFF</background>
+      <align>Left</align>
+      <first_indent>0.00</first_indent>
+      <left_indent>1.25</left_indent>
+      <right_indent>7.50</right_indent>
+      <space_before>0</space_before>
+      <spacing>1</spacing>
+    </element>
+    <element name="Outline 1">
+      <font_family>Geneva</font_family>
+      <font_size>12</font_size>
+      <font_color>#878FE0</font_color>
+      <background>#FFFFFF</background>
+      <align>Left</align>
+      <first_indent>0.00</first_indent>
+      <left_indent>1.25</left_indent>
+      <right_indent>7.50</right_indent>
+      <space_before>12</space_before>
+      <spacing>1</spacing>
+    </element>
+    <element name="Outline 2">
+      <font_family>Geneva</font_family>
+      <font_size>12</font_size>
+      <font_color>#878FE0</font_color>
+      <background>#FFFFFF</background>
+      <align>Left</align>
+      <first_indent>0.00</first_indent>
+      <left_indent>1.38</left_indent>
+      <right_indent>7.50</right_indent>
+      <space_before>12</space_before>
+      <spacing>1</spacing>
+    </element>
+    <element name="Outline 3">
+      <font_family>Geneva</font_family>
+      <font_size>12</font_size>
+      <font_color>#878FE0</font_color>
+      <background>#FFFFFF</background>
+      <align>Left</align>
+      <first_indent>0.00</first_indent>
+      <left_indent>1.50</left_indent>
+      <right_indent>7.50</right_indent>
+      <space_before>12</space_before>
+      <spacing>1</spacing>
+    </element>
+    <element name="Outline 4">
+      <font_family>Geneva</font_family>
+      <font_size>12</font_size>
+      <font_color>#878FE0</font_color>
+      <background>#FFFFFF</background>
+      <align>Left</align>
+      <first_indent>0.00</first_indent>
+      <left_indent>1.62</left_indent>
+      <right_indent>7.50</right_indent>
+      <space_before>12</space_before>
+      <spacing>1</spacing>
+    </element>
+    <element name="Centr&#xE9;">
+      <font_family>Geneva</font_family>
+      <font_size>12</font_size>
+      <font_color>#FF2600</font_color>
+      <background>#FFFFFF</background>
+      <align>Center</align>
+      <first_indent>0.00</first_indent>
+      <left_indent>2.50</left_indent>
+      <right_indent>5.50</right_indent>
+      <space_before>12</space_before>
+      <spacing>1</spacing>
+    </element>
+  </elements>
 </scenario>

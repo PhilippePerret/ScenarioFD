@@ -3,11 +3,14 @@
 
 =end
 module Scenario
+
+
 class InsideTest
 class << self
 
   ##
   # Test de l'importation d'un fichier Final-Draft dans Scénario
+  # (note : on parle de "conversion" d'un fichier FD vers Scenario)
   # 
   # Synopsis 
   # --------
@@ -92,7 +95,9 @@ class << self
   #                   scénario.
   # 
   def check_document_simple_imported(scenario)
-    @errors = []
+    
+    reset_errors
+
     data = scenario.data_for_client
 
     # puts "\n\n\n+++ Données à envoyer au client (pour check):\n#{data.pretty_inspect}"
@@ -116,7 +121,7 @@ class << self
     end
 
     if data.key?(:personnages)
-      err_if_not_equal(data[:personnages], [], "Mauvaise donnée personnages.")
+      must_be_equal(data[:personnages], [], "Mauvaise donnée personnages.")
     else
       @errors.push("La donnée :personnages devrait exister.")
     end
@@ -128,10 +133,16 @@ class << self
   # Vérification du document "Complet/complet.fdx"
   # 
   def check_document_complet_imported(scenario)
-    @errors = []
+    
+    reset_errors
 
     data = scenario.data_for_client
 
+    # 
+    # Vérification des scènes
+    # 
+    # On utilise la classe {ITScene} pour faciliter le travail
+    # 
     if not data.key?(:scenes)
       @errors.push("La donnée :scenes devrait impérativement exister.")
     elsif data[:scenes].count != 3
@@ -158,11 +169,79 @@ class << self
       end
     end
 
-    return @errors
+    # 
+    # Vérification des MÉTADONNÉES
+    # 
+    if not data.key?(:metadata)
+      @errors << "Les :metadata devrait être définies."
+    else
+      md = data[:metadata]
+      must_be_equal(md['final_draft_filename'], 'Complet.fdx', "Métadonnée 'final_draft_filename")
+      must_be_equal(md['scenario_version'], APP_VERSION, "Metada 'scenario_version'")
+    end
+
+    #
+    # Vérification des DÉFINITIONS ÉLÉMENTS
+    # 
+    # Il y a deux choses à vérifier ici :
+    #   - que le style "Centré" a bien été pris en compte comme 
+    #     nouveau type d'élément.
+    #   - que les styles prennent bien en compte la nouvelle police
+    # 
+    if not data.key?(:elements)
+      errors << "Les :elements devrait être définis"
+    else
+      dels = data[:elements]
+      table_elements = {}
+      dels.each do |del|
+        table_elements.merge!(del[:name] => del)
+      end
+      # 
+      # On doit trouver tous les types d'éléments
+      # 
+      [
+        'General', 'Scene Heading', 'Action', 'Character', 
+        'Parenthetical', 'Dialogue', 'Transition', 'Shot', 
+        'Cast List', 'Outline Body', 'Outline 1', 'Outline 2', 
+        'Outline 3', 'Outline 4', 
+        'Centré' # le nouveau style
+      ].each do |type|
+        table_elements.key?(type) || errors << "Le style d'élément #{type.inspect} devrait exister."
+      end
+      # 
+      # On vérifie le nouveau style
+      # (si ses valeurs sont bonnes, les valeurs des autres éléments
+      #  doivent être bonnes aussi)
+      # 
+      dele = table_elements['Centré']
+      must_be_equal(dele['font_family']   , 'Geneva'  , 'font-family du style Centré')
+      must_be_equal(dele['font_size']     , '12'      , 'font-size du style Centré')
+      must_be_equal(dele['font_color']    , '#FF2600' , 'font-color du style Centré')
+      must_be_equal(dele['background']    , '#FFFFFF' , 'font-color du style Centré')
+      must_be_equal(dele['align']         , 'Center'  , 'font-color du style Centré')
+      must_be_equal(dele['first_indent']  , '0.00'    , 'font-color du style Centré')
+      must_be_equal(dele['left_indent']   , '2.50'    , 'font-color du style Centré')
+      must_be_equal(dele['right_indent']  , '5.50'    , 'font-color du style Centré')
+      must_be_equal(dele['space_before']  , '12'      , 'font-color du style Centré')
+      must_be_equal(dele['spacing']       , '1'       , 'font-color du style Centré')
+
+
+      # puts "\n\n\ntable_elements: #{table_elements.pretty_inspect}".bleu
+    end
+
+    return errors
   end
 
 
+  # class ITScene
+  # -------------
+  # Pour gérer plus facilement les données des scènes dans les
+  # données du scénario remontées au client.
+  # 
   class ITScene
+
+    include ITClass
+
     attr_reader :data
     attr_reader :errors
     def initialize(data)
@@ -177,22 +256,22 @@ class << self
     # --- Méthodes publiques de test ---
 
     def id_must_be(value)
-      err_if_not_equal(data['sceneId'].to_i, value, "Mauvais ID pour #{inspect}")
+      must_be_equal(data['sceneId'].to_i, value, "Mauvais ID pour #{inspect}")
     end
     def scene_properties(value)
-      err_if_not_equal(data['FD-scene-properties'], value, "Mauvais FD-scene-properties pour #{inspect}")
+      must_be_equal(data['FD-scene-properties'], value, "Mauvais FD-scene-properties pour #{inspect}")
     end
     def color_must_be(value)
       content_must_contains("$color = #{value}", "la balise $color")
     end
     def title_must_be(value)
-      err_if_not_equal(scene_properties['title'], value, "Mauvais Title dans les propriétés de #{inspect}")
+      must_be_equal(scene_properties['title'], value, "Mauvais Title dans les propriétés de #{inspect}")
       unless value.nil?
         content_must_contains("$title = #{value}", "la balise $title")
       end
     end
     def summary_must_be(value)
-      err_if_not_equal(scene_properties['summary'], value, "Mauvais Summary dans les propriétés de #{inspect}")
+      must_be_equal(scene_properties['summary'], value, "Mauvais Summary dans les propriétés de #{inspect}")
       content_must_contains(value.gsub(/\n/,'_RET_'), "la balise $summary")
     end
     def must_have_personnage(name)
@@ -209,27 +288,6 @@ class << self
       if not content.match?(Regexp.escape(value))
         @errors.push(epure "Le contenu devrait définir correctement #{what} dans #{inspect}.")
       end
-    end
-
-    # --- Méthodes d'écriture des erreurs ---
-
-    def err_if_not_equal(actual, expected, msg)
-      if actual != expected
-        err msg, expected, actual
-      end
-    end
-
-    def err(msg, expected, actual)
-      msg = "#{msg} Expected: #{expected}. Actual: #{actual}"
-      @errors.push(epure(msg))
-    end
-
-    def epure(str)
-      str = str.to_s
-      str = str.gsub(/\n/, '⏎')
-      str = str.gsub(/"/,"'")
-
-      return str
     end
 
     # --- Méthodes de données ----

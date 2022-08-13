@@ -7,7 +7,50 @@
 
 =end
 module Scenario
+
+# class ITClass
+# -------------
+# Toutes classe doit hériter de cette classe pour pouvoir utiliser
+# les méthodes de gestion des erreurs et des tests comme 
+# must_be_equal ou reset_errors
+# 
+# À la fin de chaque test, on récupère errors pour avoir la liste des
+# erreurs commises.
+# 
+module ITClass
+
+  # --- Méthodes de gestion des erreurs ---
+  
+  attr_reader :errors
+
+  def reset_errors
+    @errors = []
+  end
+
+  def must_be_equal(actual, expected, msg)
+    if actual != expected
+      err msg, expected, actual
+    end
+  end
+
+  def err(msg, expected, actual)
+    msg = "#{msg} Expected: #{expected.inspect}. Actual: #{actual.inspect}"
+    @errors.push(epure(msg))
+  end
+
+  def epure(str)
+    str = str.to_s
+    str = str.gsub(/\n/, '⏎')
+    str = str.gsub(/"/,"'")
+
+    return str
+  end
+end #/class ITClass
+
 class InsideTest
+
+  extend ITClass
+
 class << self
 
   def test_import(data)

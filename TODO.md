@@ -1,5 +1,9 @@
 ## EN COURS
 
+* Faire une classe FinalDraftDocumment pour traiter la conversion et l'export
+  (elle servirait notamment pour le "merging", pour vérifier si des informations ont changé - et de manière générale elle simplifierait et clarifierait les choses,
+  D'autre part, elle faciliterait l'adaptation aux changements de versions)
+  
 * Poursuivre les tests (cf. [ci-dessous](#tests))
 * Poursuivre le filtre
   - pour faire la liste des effets, il faut prendre ceux présents dans le scénario

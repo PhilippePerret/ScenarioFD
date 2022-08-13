@@ -30,7 +30,9 @@ class Document
   # @return les données pour le client
   def data_for_client
     {
+      metadata:     metadata,
       scenes:       data_scenes,
+      elements:     elements,
       options:      options,
       infos:        infos,
       preferences:  get_preferences,
@@ -132,9 +134,26 @@ class Document
     getNodes('//infos/*') || Document::DEFAULT_DATA['infos']
   end
 
+  def elements
+    tbl_elements = []
+    xml.xpath('/scenario/elements/element').each do |node|
+      dele = {name: node['name']}
+      node.children.each do |cnode|
+        dele.merge!(cnode.name => cnode.text)
+      end
+      tbl_elements << dele
+    end
+
+    return tbl_elements
+  end
+
   # La liste des personnages
-  # Elle se récupère dans toutes les balises <personnages> des
-  # scènes (donc attention aux doublons)
+  # ------------------------
+  # Attention : ce n'est pas la liste des personnages qu'on 
+  # trouve dans les scènes, mais ceux qui sont définis par une fiche
+  # de personnage dans la balise <personnages> qui leur est dédiée.
+  # Pour ce qui est des personnages des scènes, ils seront récoltés
+  # côté client.
   def personnages
     personnages_node = xml.xpath('/scenario/personnages').first
     if personnages_node.nil?
